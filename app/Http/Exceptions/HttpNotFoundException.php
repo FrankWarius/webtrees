@@ -34,6 +34,6 @@ class HttpNotFoundException extends HttpException
     {
         $message ??= I18N::translate('You do not have permission to view this page.');
 
-        parent::__construct($message, StatusCodeInterface::STATUS_NOT_FOUND);
+        parent::__construct($message, StatusCodeInterface::STATUS_GONE);
     }
 }
