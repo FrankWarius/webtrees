@@ -30,7 +30,15 @@ Disallow: <?= $base_path ?>/account
 Crawl-delay: 1
 
 Disallow: <?= $base_path ?>/login   
+
+Disallow: <?= $base_path ?>/family.php
+Disallow: <?= $base_path ?>/individual.php
+Disallow: <?= $base_path ?>/source.php
+
 Disallow: <?= $base_path ?>/tree/*/contact
+Disallow: <?= $base_path ?>/tree/*/relationships-
+Disallow: <?= $base_path ?>/tree/*/place-list/
+Disallow: <?= $base_path ?>/tree/*/anniversary-ics/
 
 <?php if ($sitemap_url !== '') : ?>
 Sitemap: <?= $sitemap_url ?>
