@@ -44,8 +44,9 @@ use Psr\Http\Message\ServerRequestInterface;
             <?php endif ?>
         </title>
 
-        <link rel="canonical" href="<?= e($record->url()) ?>">
-        
+        <!--cannonical link(self) for records-->
+        <?php if (isset($record)) 
+            echo '<link rel="canonical" href="' . $record->url() . '">'; ?>
         <!--iOS-->
         <link rel="apple-touch-icon" sizes="180x180" href="<?= e(route(AppleTouchIconPng::class)) ?>">
         <!--Generic favicons-->
