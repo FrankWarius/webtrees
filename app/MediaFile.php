@@ -194,6 +194,8 @@ class MediaFile
                         'srcset' => implode(',', $srcset),
                         'alt'    => strip_tags($this->media->fullName()),
                         'loading'=> 'lazy',
+                        'width'  => $width,
+                        'heigh'  => $height,
                     ]) . '>';
 
             $link_attributes = Html::attributes([
