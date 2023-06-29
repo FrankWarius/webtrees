@@ -44,9 +44,9 @@ use Psr\Http\Message\ServerRequestInterface;
             <?php endif ?>
         </title>
 
-        
+        <!--set caonical link-->
         <?php if (isset($record)): ?>
-        <link rel="canonical" href=" <?=e($record->url())?> "> 
+            <link rel="canonical" href=" <?=e($record->url())?> "> 
         <?php endif ?>    
         <!--iOS-->
         <link rel="apple-touch-icon" sizes="180x180" href="<?= e(route(AppleTouchIconPng::class)) ?>">
@@ -55,7 +55,7 @@ use Psr\Http\Message\ServerRequestInterface;
         <link rel="icon" sizes="192x192" href="<?= e(asset('favicon-192.png')) ?>">
         <!--IE11/Edge-->
         <meta name="msapplication-config" content="<?= e(route(BrowserconfigXml::class)) ?>">
-
+        
         <link rel="manifest" href="<?= e(route(WebmanifestJson::class)) ?>" crossorigin="use-credentials">
 
         <link rel="stylesheet" href="<?= e(asset('css/vendor.min.css')) ?>">
