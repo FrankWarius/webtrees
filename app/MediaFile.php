@@ -195,7 +195,7 @@ class MediaFile
                         'alt'    => strip_tags($this->media->fullName()),
                         'loading'=> 'lazy',
                         'width'  => $width,
-                        'height'  => $height,
+                        'height' => 'auto',
                     ]) . '>';
 
             $link_attributes = Html::attributes([
