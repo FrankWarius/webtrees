@@ -55,6 +55,6 @@ class NoRouteFound implements MiddlewareInterface
             throw new HttpNotFoundException();
         }
 
-        return redirect(route(HomePage::class),StatusCodeInterface::STATUS_GONE);
+        return redirect(route(HomePage::class), StatusCodeInterface::STATUS_GONE);
     }
 }

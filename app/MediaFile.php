@@ -189,13 +189,13 @@ class MediaFile
 
         if ($this->isImage()) {
             $image = '<img ' . Html::attributes($image_attributes + [
-                        'dir'    => 'auto',
-                        'src'    => $src,
-                        'srcset' => implode(',', $srcset),
-                        'alt'    => strip_tags($this->media->fullName()),
-                        'loading'=> 'lazy',
-                        'width'  => $width,
-                        'height' => 'auto',
+                        'dir'     => 'auto',
+                        'src'     => $src,
+                        'srcset'  => implode(',', $srcset),
+                        'alt'     => strip_tags($this->media->fullName()),
+                        'loading' => 'lazy',
+                        'width'   => $width,
+                        'height'  => 'auto',
                     ]) . '>';
 
             $link_attributes = Html::attributes([
