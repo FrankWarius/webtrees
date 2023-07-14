@@ -31,6 +31,7 @@ Crawl-delay: 1
 
 Disallow: <?= $base_path ?>/login   
 
+# Old 1.7 Links
 Disallow: <?= $base_path ?>/family.php
 Disallow: <?= $base_path ?>/indilist.php
 Disallow: <?= $base_path ?>/individual.php
@@ -42,6 +43,7 @@ Disallow: <?= $base_path ?>/mediafirewall.php
 Disallow: <?= $base_path ?>/mediaviewer.php
 Disallow: <?= $base_path ?>/module.php
 
+# Noindex Pages blocked
 Disallow: <?= $base_path ?>/tree/*?ajax=1
 Disallow: <?= $base_path ?>/tree/*/ancestors-tree-
 Disallow: <?= $base_path ?>/tree/*/anniversary-ics/
@@ -50,9 +52,9 @@ Disallow: <?= $base_path ?>/tree/*/compact/
 Disallow: <?= $base_path ?>/tree/*/contact?
 Disallow: <?= $base_path ?>/tree/*/descendants-tree-
 Disallow: <?= $base_path ?>/tree/*/hourglass-
-Disallow: <?= $base_path ?>/tree/*/individual-list?
+### Disallow: <?= $base_path ?>/tree/*/individual-list?
 Disallow: <?= $base_path ?>/tree/*/family-book-
-Disallow: <?= $base_path ?>/tree/*/family-list?
+### Disallow: <?= $base_path ?>/tree/*/family-list?
 Disallow: <?= $base_path ?>/tree/*/fan-chart-
 Disallow: <?= $base_path ?>/tree/*/media-download
 Disallow: <?= $base_path ?>/tree/*/media-list?
