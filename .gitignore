@@ -18,3 +18,6 @@
 /tests/clover.xml
 /tests/coverage
 /vendor/
+webtrees.sln
+webtrees.phpproj
+webtrees.phpproj.user
