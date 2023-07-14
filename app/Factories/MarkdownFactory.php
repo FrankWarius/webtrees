@@ -105,7 +105,7 @@ class MarkdownFactory implements MarkdownFactoryInterface
         $environment->addRenderer(Link::class, new ExternalLinkRenderer());
         $environment->addRenderer(Newline::class, new NewlineRenderer());
         $environment->addExtension(new AutolinkExtension());
-        $environment->addExtension(new ExternalLinkExtension);
+        $environment->addExtension(new ExternalLinkExtension());
 
         // Optionally create links to other records.
         if ($tree instanceof Tree) {
