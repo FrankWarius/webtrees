@@ -18,7 +18,12 @@
 /tests/clover.xml
 /tests/coverage
 /vendor/
-webtrees.sln
-webtrees.phpproj
-webtrees.phpproj.user
-web.config
+
+/web.config
+
+/.vscode
+
+/.vs
+/*.sln
+/*.phpproj
+/*.phpproj.user
