@@ -94,7 +94,7 @@ h6 {
 
 [dir] .accordion-button,
 [dir] .accordion-body {
-  padding: 0.25rem 1.25rem;
+  padding: 0.25rem 0.25rem;
 }
 
 [dir] .table {
@@ -156,6 +156,7 @@ h6 {
 
 [dir] .wt-facts-table th {
   padding: 0.2rem 0.2rem;
+  width: 30%;
 }
 
 [dir] .wt-facts-table td {
@@ -167,11 +168,12 @@ h6 {
 }
 
 .wt-family-navigator-family th {
-  width: 35%;
+  width: 30%;
 }
 
 .wt-footers {
-  padding-bottom: 0.5rem;
+  font-size: calc(var(--bs-body-font-size) * .8);
+  padding-bottom: 0.25rem;
 }
 
 [dir] .py-2 {
