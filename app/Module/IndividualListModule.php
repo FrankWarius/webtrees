@@ -471,7 +471,6 @@ class IndividualListModule extends AbstractModule implements ModuleListInterface
             'content' => $html,
             'title'   => $title,
             'tree'    => $tree,
-            'meta_robots'      => 'index,follow',
         ]);
     }
 
