@@ -58,7 +58,7 @@ class SiteMapModule extends AbstractModule implements ModuleConfigInterface, Req
     use ModuleConfigTrait;
 
     private const RECORDS_PER_VOLUME = 500; // Keep sitemap files small, for memory, CPU and max_allowed_packet limits.
-    private const CACHE_LIFE         = 7 * 24 * 60 * 60; // 7 days
+    private const CACHE_LIFE         = 3 * 24 * 60 * 60; // 3 days
 
     private const PRIORITY = [
         Family::RECORD_TYPE     => 0.7,
