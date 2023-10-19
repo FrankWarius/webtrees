@@ -30,43 +30,14 @@ Disallow: <?= $base_path ?>/account
 Crawl-delay: 1
 
 Disallow: <?= $base_path ?>/login   
-
-# Old 1.7 Links
-Disallow: <?= $base_path ?>/family.php
-Disallow: <?= $base_path ?>/indilist.php
-Disallow: <?= $base_path ?>/individual.php
-Disallow: <?= $base_path ?>/note.php
-Disallow: <?= $base_path ?>/source.php
-
-Disallow: <?= $base_path ?>/index.php?route=
 Disallow: <?= $base_path ?>/mediafirewall.php
 Disallow: <?= $base_path ?>/mediaviewer.php
-Disallow: <?= $base_path ?>/module.php
 
-# Noindex Pages blocked
 Disallow: <?= $base_path ?>/tree/*?ajax=1
-Disallow: <?= $base_path ?>/tree/*/ancestors-tree-
-Disallow: <?= $base_path ?>/tree/*/anniversary-ics/
-Disallow: <?= $base_path ?>/tree/*/branches/
-Disallow: <?= $base_path ?>/tree/*/compact/
-Disallow: <?= $base_path ?>/tree/*/contact?
-Disallow: <?= $base_path ?>/tree/*/descendants-tree-
-Disallow: <?= $base_path ?>/tree/*/hourglass-
-### Disallow: <?= $base_path ?>/tree/*/individual-list?
-Disallow: <?= $base_path ?>/tree/*/family-book-
-### Disallow: <?= $base_path ?>/tree/*/family-list?
-Disallow: <?= $base_path ?>/tree/*/fan-chart-
 Disallow: <?= $base_path ?>/tree/*/media-download
-Disallow: <?= $base_path ?>/tree/*/media-list?
 Disallow: <?= $base_path ?>/tree/*/media-thumbnail?
-Disallow: <?= $base_path ?>/tree/*/pedigree-map-
-Disallow: <?= $base_path ?>/tree/*/pedigree-right-
-Disallow: <?= $base_path ?>/tree/*/place-list
-Disallow: <?= $base_path ?>/tree/*/relationships-
-
-Disallow: <?= $base_path ?>/module/tree/Chart/
-Disallow: <?= $base_path ?>/themes/
 
 <?php if ($sitemap_url !== '') : ?>
+
 Sitemap: <?= $sitemap_url ?>
 <?php endif ?>
