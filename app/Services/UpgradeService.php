@@ -79,7 +79,7 @@ class UpgradeService
     private const UPDATE_URL = 'https://dev.webtrees.net/build/latest-version.txt';
 
     // If the update server doesn't respond after this time, give up.
-    private const HTTP_TIMEOUT = 3.0;
+    private const HTTP_TIMEOUT = 1.0;
 
     private TimeoutService $timeout_service;
 
@@ -356,11 +356,13 @@ class UpgradeService
                     Site::setPreference('LATEST_WT_VERSION_TIMESTAMP', (string) $current_timestamp);
                     Site::setPreference('LATEST_WT_VERSION_ERROR', '');
                 } else {
+                    Site::setPreference('LATEST_WT_VERSION_TIMESTAMP', (string) $current_timestamp);
                     Site::setPreference('LATEST_WT_VERSION_ERROR', 'HTTP' . $response->getStatusCode());
                 }
             } catch (GuzzleException $ex) {
                 // Can't connect to the server?
                 // Use the existing information about latest versions.
+                Site::setPreference('LATEST_WT_VERSION_TIMESTAMP', (string) $current_timestamp);
                 Site::setPreference('LATEST_WT_VERSION_ERROR', $ex->getMessage());
             }
         }
