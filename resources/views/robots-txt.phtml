@@ -33,6 +33,12 @@ Disallow: <?= $base_path ?>/login
 
 Disallow: <?= $base_path ?>/mediafirewall.php
 Disallow: <?= $base_path ?>/mediaviewer.php
+Disallow: <?= $base_path ?>/module.php
+
+# Noindex Pages blocked
+Disallow: <?= $base_path ?>/tree/*?ajax=1
+Disallow: <?= $base_path ?>/tree/*/contact?
+
 Disallow: <?= $base_path ?>/tree/*/media-download
 Disallow: <?= $base_path ?>/tree/*/media-list?
 Disallow: <?= $base_path ?>/tree/*/media-thumbnail?
