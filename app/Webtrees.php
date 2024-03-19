@@ -140,10 +140,10 @@ class Webtrees
     public const SCHEMA_VERSION = 45;
 
     // e.g. "-dev", "-alpha", "-beta", etc.
-    public const STABILITY = '';
+    public const STABILITY = '-dev';
 
     // Version number.
-    public const VERSION = '2.1.18' . self::STABILITY;
+    public const VERSION = '2.1.20' . self::STABILITY;
 
     // Project website.
     public const URL = 'https://webtrees.net/';
@@ -284,7 +284,7 @@ class Webtrees
     {
         return static function (int $errno, string $errstr, string $errfile, int $errline): bool {
             // Ignore errors that are silenced with '@'
-            if (error_reporting() & $errno) {
+            if ((error_reporting() & $errno) !== 0) {
                 throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
             }
 
