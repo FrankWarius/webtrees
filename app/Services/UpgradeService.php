@@ -357,13 +357,11 @@ class UpgradeService
                     Site::setPreference('LATEST_WT_VERSION', $response->getBody()->getContents());
                     Site::setPreference('LATEST_WT_VERSION_ERROR', '');
                 } else {
-                    Site::setPreference('LATEST_WT_VERSION_TIMESTAMP', (string) $current_timestamp);
                     Site::setPreference('LATEST_WT_VERSION_ERROR', 'HTTP' . $response->getStatusCode());
                 }
             } catch (GuzzleException $ex) {
                 // Can't connect to the server?
                 // Use the existing information about latest versions.
-                Site::setPreference('LATEST_WT_VERSION_TIMESTAMP', (string) $current_timestamp);
                 Site::setPreference('LATEST_WT_VERSION_ERROR', $ex->getMessage());
             }
         }

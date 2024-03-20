@@ -138,7 +138,6 @@ class SourceListModule extends AbstractModule implements ModuleListInterface, Re
 
         return $this->viewResponse('modules/source-list/page', [
             'sources'       => $sources,
-            'meta_robots'   => 'index,follow',
             'title'         => I18N::translate('Sources'),
             'tree'          => $tree,
         ]);
