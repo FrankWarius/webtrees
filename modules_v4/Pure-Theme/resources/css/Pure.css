@@ -136,11 +136,6 @@ h6 {
   align-items: flex-end;
 }
 
-.wt-header-search-field,
-.wt-header-search-button {
-  font-size: small;
-}
-
 .wt-page-title {
   font-weight: 650;
 }
