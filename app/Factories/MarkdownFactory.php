@@ -94,7 +94,7 @@ class MarkdownFactory implements MarkdownFactoryInterface
      *
      * @return string
      */
-    public function autolink(string $markdown, Tree $tree = null): string
+    public function autolink(string $markdown, ?Tree $tree = null): string
     {
         // Create a minimal commonmark processor - just add support for auto-links.
         $environment = new Environment(static::CONFIG_AUTOLINK);
@@ -129,7 +129,7 @@ class MarkdownFactory implements MarkdownFactoryInterface
      *
      * @return string
      */
-    public function markdown(string $markdown, Tree $tree = null): string
+    public function markdown(string $markdown, ?Tree $tree = null): string
     {
         $environment = new Environment(static::CONFIG_MARKDOWN);
         $environment->addExtension(new CommonMarkCoreExtension());
