@@ -58,7 +58,7 @@ class SiteMapModule extends AbstractModule implements ModuleConfigInterface, Req
     use ModuleConfigTrait;
 
     private const RECORDS_PER_VOLUME = 500; // Keep sitemap files small, for memory, CPU and max_allowed_packet limits.
-    private const CACHE_LIFE         = 3 * 24 * 60 * 60; // 3 days
+    private const CACHE_LIFE         = 1 * 24 * 60 * 60; // 1 day
 
     private const PRIORITY = [
         Family::RECORD_TYPE     => 0.7,
@@ -66,7 +66,7 @@ class SiteMapModule extends AbstractModule implements ModuleConfigInterface, Req
         Media::RECORD_TYPE      => 0.1,
         Note::RECORD_TYPE       => 0.3,
         Repository::RECORD_TYPE => 0.3,
-        Source::RECORD_TYPE     => 0.99,
+        Source::RECORD_TYPE     => 0.9,
         Submitter::RECORD_TYPE  => 0.01,
     ];
 
@@ -91,7 +91,7 @@ class SiteMapModule extends AbstractModule implements ModuleConfigInterface, Req
             ->get('sitemap-style', '/sitemap.xsl', $this);
 
         Registry::routeFactory()->routeMap()
-            ->get('sitemap-index', '/newsitemap.xml', $this);
+            ->get('sitemap-index', '/sitemap.xml', $this);
 
         Registry::routeFactory()->routeMap()
             ->get('sitemap-file', '/sitemap-{tree}-{type}-{page}.xml', $this);
