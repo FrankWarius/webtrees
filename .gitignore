@@ -19,7 +19,7 @@
 /tests/coverage
 /vendor/
 
-/web.config
+web.config
 
 /.vscode
 
