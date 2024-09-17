@@ -79,7 +79,7 @@ class UpgradeService
     private const UPDATE_URL = 'https://dev.webtrees.net/build/latest-version.txt';
 
     // If the update server doesn't respond after this time, give up.
-    private const HTTP_TIMEOUT = 1.0;
+    private const HTTP_TIMEOUT = 3.0;
 
     private TimeoutService $timeout_service;
 
