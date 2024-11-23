@@ -357,7 +357,7 @@ class Validator
             return $value;
         }
 
-        throw new HttpBadRequestException(I18N::translate('The parameter “%s” is missing.', $parameter));
+        throw new HttpBadRequestException(I18N::translate('The parameter “%s” is missing.', $this->parameters));
     }
 
     /**
