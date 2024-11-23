@@ -53,6 +53,7 @@ use function route;
 use function str_contains;
 use function str_ends_with;
 use function str_pad;
+use function str_replace;
 use function str_starts_with;
 use function strtoupper;
 use function strtr;
@@ -246,7 +247,7 @@ class GedcomRecord
      *
      * @return bool
      */
-    public function canShow(int $access_level = null): bool
+    public function canShow(?int $access_level = null): bool
     {
         $access_level ??= Auth::accessLevel($this->tree);
 
@@ -270,7 +271,7 @@ class GedcomRecord
      *
      * @return bool
      */
-    public function canShowName(int $access_level = null): bool
+    public function canShowName(?int $access_level = null): bool
     {
         return $this->canShow($access_level);
     }
@@ -298,36 +299,49 @@ class GedcomRecord
 
     /**
      * Remove private data from the raw gedcom record.
-     * Return both the visible and invisible data. We need the invisible data when editing.
-     *
-     * @param int $access_level
-     *
-     * @return string
      */
     public function privatizeGedcom(int $access_level): string
     {
         if ($access_level === Auth::PRIV_HIDE) {
-            // We may need the original record, for example when downloading a GEDCOM or clippings cart
             return $this->gedcom;
         }
 
-        if ($this->canShow($access_level)) {
-            // The record is not private, but the individual facts may be.
-
-            // Include the entire first line (for NOTE records)
-            [$gedrec] = explode("\n", $this->gedcom . $this->pending, 2);
-
-            // Check each of the facts for access
-            foreach ($this->facts([], false, $access_level) as $fact) {
-                $gedrec .= "\n" . $fact->gedcom();
-            }
-
-            return $gedrec;
+        if (!$this->canShow($access_level)) {
+            return '';
         }
 
-        // We cannot display the details, but we may be able to display
-        // limited data, such as links to other records.
-        return $this->createPrivateGedcomRecord($access_level);
+        // The record is not private, but parts of it may be.
+
+        // Include the entire first line (for NOTE records)
+        [$gedcom] = explode("\n", $this->gedcom . $this->pending, 2);
+
+        // Check each of the facts for access
+        foreach ($this->facts([], false, $access_level) as $fact) {
+            $gedcom .= "\n" . $fact->gedcom();
+        }
+
+        // Remove links to missing and private records
+        $patterns = [
+            '/\n1 ' . Gedcom::REGEX_TAG . ' @(' . Gedcom::REGEX_XREF . ')@(?:\n[2-9].*)*/',
+            '/\n2 ' . Gedcom::REGEX_TAG . ' @(' . Gedcom::REGEX_XREF . ')@(?:\n[3-9].*)*/',
+            '/\n3 ' . Gedcom::REGEX_TAG . ' @(' . Gedcom::REGEX_XREF . ')@(?:\n[4-9].*)*/',
+            '/\n4 ' . Gedcom::REGEX_TAG . ' @(' . Gedcom::REGEX_XREF . ')@(?:\n[5-9].*)*/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            preg_match_all($pattern, $gedcom, $matches, PREG_SET_ORDER);
+
+            foreach ($matches as $match) {
+                $xref   = $match[1];
+                $record = Registry::gedcomRecordFactory()->make($xref, $this->tree);
+
+                if ($record === null || !$record->canShow($access_level)) {
+                    $gedcom = str_replace($match[0], '', $gedcom);
+                }
+            }
+        }
+
+        return $gedcom;
     }
 
     /**
@@ -432,7 +446,7 @@ class GedcomRecord
      *
      * @return void
      */
-    public function setPrimaryName(int $n = null): void
+    public function setPrimaryName(?int $n = null): void
     {
         $this->getPrimaryName   = $n;
         $this->getSecondaryName = null;
@@ -611,7 +625,7 @@ class GedcomRecord
     public function facts(
         array $filter = [],
         bool $sort = false,
-        int $access_level = null,
+        ?int $access_level = null,
         bool $ignore_deleted = false
     ): Collection {
         $access_level ??= Auth::accessLevel($this->tree);
@@ -802,7 +816,7 @@ class GedcomRecord
             throw new Exception('Invalid GEDCOM data passed to GedcomRecord::updateFact(' . $gedcom . ')');
         }
 
-        if ($this->pending) {
+        if ($this->pending !== null && $this->pending !== '') {
             $old_gedcom = $this->pending;
         } else {
             $old_gedcom = $this->gedcom;
@@ -992,18 +1006,6 @@ class GedcomRecord
     }
 
     /**
-     * Generate a private version of this record
-     *
-     * @param int $access_level
-     *
-     * @return string
-     */
-    protected function createPrivateGedcomRecord(int $access_level): string
-    {
-        return '0 @' . $this->xref . '@ ' . static::RECORD_TYPE;
-    }
-
-    /**
      * Convert a name record into sortable and full/display versions. This default
      * should be OK for simple record types. INDI/FAM records will need to redefine it.
      *
@@ -1075,13 +1077,13 @@ class GedcomRecord
     private function parseFacts(): array
     {
         // Split the record into facts
-        if ($this->gedcom) {
+        if ($this->gedcom !== '') {
             $gedcom_facts = preg_split('/\n(?=1)/', $this->gedcom);
             array_shift($gedcom_facts);
         } else {
             $gedcom_facts = [];
         }
-        if ($this->pending) {
+        if ($this->pending !== null && $this->pending !== '') {
             $pending_facts = preg_split('/\n(?=1)/', $this->pending);
             array_shift($pending_facts);
         } else {

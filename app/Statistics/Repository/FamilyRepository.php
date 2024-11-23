@@ -272,7 +272,6 @@ class FamilyRepository
             $top10 = implode('; ', $top10);
         }
 
-
         if ($type === 'list') {
             return '<ul>' . $top10 . '</ul>';
         }
@@ -686,8 +685,8 @@ class FamilyRepository
      * @return string
      */
     public function chartLargestFamilies(
-        string $color_from = null,
-        string $color_to = null,
+        ?string $color_from = null,
+        ?string $color_to = null,
         int $total = 10
     ): string {
         return (new ChartFamilyLargest($this->color_service, $this->tree))
@@ -838,7 +837,7 @@ class FamilyRepository
             })
             ->where('childfamily.l_file', '=', $this->tree->id())
             ->where('parentfamily.l_type', '=', $sex_field)
-            ->where('childbirth.d_julianday2', '>', 'birth.d_julianday1')
+            ->where('childbirth.d_julianday2', '>', new Expression($prefix . 'birth.d_julianday1'))
             ->select(['parentfamily.l_to AS id', new Expression($prefix . 'childbirth.d_julianday2 - ' . $prefix . 'birth.d_julianday1 AS age')])
             ->take(1)
             ->orderBy('age', $age_dir)
@@ -1493,7 +1492,7 @@ class FamilyRepository
                     ->where('birth.d_julianday1', '<>', 0);
             })
             ->where('f_file', '=', $this->tree->id())
-            ->where('married.d_julianday2', '>', 'birth.d_julianday1')
+            ->where('married.d_julianday2', '>', new Expression($prefix . 'birth.d_julianday1'))
             ->orderBy(new Expression($prefix . 'married.d_julianday2 - ' . $prefix . 'birth.d_julianday1'), $age_dir)
             ->select(['f_id AS famid', $sex_field, new Expression($prefix . 'married.d_julianday2 - ' . $prefix . 'birth.d_julianday1 AS age'), 'i_id'])
             ->take(1)
@@ -1725,7 +1724,7 @@ class FamilyRepository
      *
      * @return string
      */
-    public function statsMarr(string $color_from = null, string $color_to = null): string
+    public function statsMarr(?string $color_from = null, ?string $color_to = null): string
     {
         return (new ChartMarriage($this->century_service, $this->color_service, $this->tree))
             ->chartMarriage($color_from, $color_to);
@@ -1739,7 +1738,7 @@ class FamilyRepository
      *
      * @return string
      */
-    public function statsDiv(string $color_from = null, string $color_to = null): string
+    public function statsDiv(?string $color_from = null, ?string $color_to = null): string
     {
         return (new ChartDivorce($this->century_service, $this->color_service, $this->tree))
             ->chartDivorce($color_from, $color_to);

@@ -150,6 +150,8 @@ class SearchAdvancedPage implements RequestHandlerInterface
         $date_options   = $this->dateOptions();
         $name_options   = $this->nameOptions();
 
+        $fields = array_map(static fn (string $x): string => preg_replace('/^\s+|\s+$/uD', '', $x), $fields);
+
         $search_fields = array_filter($fields, static fn (string $x): bool => $x !== '');
 
         if ($search_fields !== []) {
@@ -159,7 +161,8 @@ class SearchAdvancedPage implements RequestHandlerInterface
                 $message = 'Advanced: ' . implode(', ', array_map($fn, array_keys($search_fields), $search_fields));
                 Log::addSearchLog($message, [$tree]);
             }
-            $individuals = $this->search_service->searchIndividualsAdvanced([$tree], $search_fields, $modifiers);
+
+            $individuals = $this->search_service->searchIndividualsAdvanced($tree, $search_fields, $modifiers);
         } else {
             $individuals = new Collection();
         }
@@ -206,7 +209,6 @@ class SearchAdvancedPage implements RequestHandlerInterface
             ->all();
     }
 
-
     /**
      * We use some pseudo-GEDCOM tags for some of our fields.
      *
@@ -220,7 +222,6 @@ class SearchAdvancedPage implements RequestHandlerInterface
             $tmp = strtr($field, ['MOTHER:' => 'INDI:', 'FATHER:' => 'INDI:']);
             $return[$field] = Registry::elementFactory()->make($tmp)->label();
         }
-
 
         return $return;
     }

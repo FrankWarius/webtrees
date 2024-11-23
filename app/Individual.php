@@ -83,7 +83,7 @@ class Individual extends GedcomRecord
      *
      * @return bool
      */
-    public function canShowName(int $access_level = null): bool
+    public function canShowName(?int $access_level = null): bool
     {
         $access_level ??= Auth::accessLevel($this->tree);
 
@@ -103,7 +103,7 @@ class Individual extends GedcomRecord
         if ((int) $this->tree->getPreference('SHOW_DEAD_PEOPLE') >= $access_level && $this->isDead()) {
             $keep_alive             = false;
             $KEEP_ALIVE_YEARS_BIRTH = (int) $this->tree->getPreference('KEEP_ALIVE_YEARS_BIRTH');
-            if ($KEEP_ALIVE_YEARS_BIRTH) {
+            if ($KEEP_ALIVE_YEARS_BIRTH !== 0) {
                 preg_match_all('/\n1 (?:' . implode('|', Gedcom::BIRTH_EVENTS) . ').*(?:\n[2-9].*)*\n2 DATE (.+)/', $this->gedcom, $matches, PREG_SET_ORDER);
                 foreach ($matches as $match) {
                     $date = new Date($match[1]);
@@ -114,7 +114,7 @@ class Individual extends GedcomRecord
                 }
             }
             $KEEP_ALIVE_YEARS_DEATH = (int) $this->tree->getPreference('KEEP_ALIVE_YEARS_DEATH');
-            if ($KEEP_ALIVE_YEARS_DEATH) {
+            if ($KEEP_ALIVE_YEARS_DEATH !== 0) {
                 preg_match_all('/\n1 (?:' . implode('|', Gedcom::DEATH_EVENTS) . ').*(?:\n[2-9].*)*\n2 DATE (.+)/', $this->gedcom, $matches, PREG_SET_ORDER);
                 foreach ($matches as $match) {
                     $date = new Date($match[1]);
@@ -153,7 +153,7 @@ class Individual extends GedcomRecord
         static $cache = null;
 
         $user_individual = Registry::individualFactory()->make($target->tree->getUserPreference(Auth::user(), UserInterface::PREF_TREE_ACCOUNT_XREF), $target->tree);
-        if ($user_individual) {
+        if ($user_individual instanceof Individual) {
             if (!$cache) {
                 $cache = [
                     0 => [$user_individual],
@@ -214,40 +214,6 @@ class Individual extends GedcomRecord
         }
 
         return false;
-    }
-
-    /**
-     * Generate a private version of this record
-     *
-     * @param int $access_level
-     *
-     * @return string
-     */
-    protected function createPrivateGedcomRecord(int $access_level): string
-    {
-        $SHOW_PRIVATE_RELATIONSHIPS = (bool) $this->tree->getPreference('SHOW_PRIVATE_RELATIONSHIPS');
-
-        $rec = '0 @' . $this->xref . '@ INDI';
-        if ((int) $this->tree->getPreference('SHOW_LIVING_NAMES') >= $access_level) {
-            // Show all the NAME tags, including subtags
-            foreach ($this->facts(['NAME']) as $fact) {
-                $rec .= "\n" . $fact->gedcom();
-            }
-        }
-        // Just show the 1 FAMC/FAMS tag, not any subtags, which may contain private data
-        preg_match_all('/\n1 (?:FAMC|FAMS) @(' . Gedcom::REGEX_XREF . ')@/', $this->gedcom, $matches, PREG_SET_ORDER);
-        foreach ($matches as $match) {
-            $rela = Registry::familyFactory()->make($match[1], $this->tree);
-            if ($rela && ($SHOW_PRIVATE_RELATIONSHIPS || $rela->canShow($access_level))) {
-                $rec .= $match[0];
-            }
-        }
-        // Don’t privatize sex.
-        if (preg_match('/\n1 SEX [MFU]/', $this->gedcom, $match)) {
-            $rec .= $match[0];
-        }
-
-        return $rec;
     }
 
     /**
@@ -388,7 +354,7 @@ class Individual extends GedcomRecord
             return $media_file->displayImage($width, $height, $fit, $attributes);
         }
 
-        if ($this->tree->getPreference('USE_SILHOUETTE')) {
+        if ($this->tree->getPreference('USE_SILHOUETTE') === '1') {
             return '<i class="icon-silhouette icon-silhouette-' . strtolower($this->sex()) . ' wt-icon-flip-rtl"></i>';
         }
 
@@ -585,13 +551,13 @@ class Individual extends GedcomRecord
                 $max = [];
                 $tmp = $this->getDeathDate();
                 if ($tmp->isOK()) {
-                    $min[] = $tmp->minimumJulianDay() - $this->tree->getPreference('MAX_ALIVE_AGE') * 365;
+                    $min[] = $tmp->minimumJulianDay() - 365 * (int) $this->tree->getPreference('MAX_ALIVE_AGE');
                     $max[] = $tmp->maximumJulianDay();
                 }
                 foreach ($this->childFamilies() as $family) {
                     $tmp = $family->getMarriageDate();
                     if ($tmp->isOK()) {
-                        $min[] = $tmp->maximumJulianDay() - 365 * 1;
+                        $min[] = $tmp->maximumJulianDay() - 365;
                         $max[] = $tmp->minimumJulianDay() + 365 * 30;
                     }
                     $husband = $family->husband();
@@ -669,7 +635,7 @@ class Individual extends GedcomRecord
                 }
             }
             if ($this->estimated_death_date === null) {
-                if ($this->getEstimatedBirthDate()->minimumJulianDay()) {
+                if ($this->getEstimatedBirthDate()->minimumJulianDay() !== 0) {
                     $max_alive_age              = (int) $this->tree->getPreference('MAX_ALIVE_AGE');
                     $this->estimated_death_date = $this->getEstimatedBirthDate()->addYears($max_alive_age, 'BEF');
                 } else {
@@ -704,7 +670,7 @@ class Individual extends GedcomRecord
      *
      * @return Collection<int,Family>
      */
-    public function spouseFamilies(int $access_level = null): Collection
+    public function spouseFamilies(?int $access_level = null): Collection
     {
         $access_level ??= Auth::accessLevel($this->tree);
 
@@ -770,7 +736,7 @@ class Individual extends GedcomRecord
      *
      * @return Collection<int,Family>
      */
-    public function childFamilies(int $access_level = null): Collection
+    public function childFamilies(?int $access_level = null): Collection
     {
         $access_level ??= Auth::accessLevel($this->tree);
 
@@ -887,7 +853,7 @@ class Individual extends GedcomRecord
                             // One common parent - must be a step family
                             if ($parent->sex() === 'M') {
                                 // Father’s family with someone else
-                                if ($step_family->spouse($step_parent)) {
+                                if ($step_family->spouse($step_parent) instanceof Individual) {
                                     /* I18N: A step-family. %s is an individual’s name */
                                     return I18N::translate('Father’s family with %s', $step_family->spouse($step_parent)->fullName());
                                 }
@@ -897,7 +863,7 @@ class Individual extends GedcomRecord
                             }
 
                             // Mother’s family with someone else
-                            if ($step_family->spouse($step_parent)) {
+                            if ($step_family->spouse($step_parent) instanceof Individual) {
                                 /* I18N: A step-family. %s is an individual’s name */
                                 return I18N::translate('Mother’s family with %s', $step_family->spouse($step_parent)->fullName());
                             }
@@ -926,7 +892,8 @@ class Individual extends GedcomRecord
     public function getSpouseFamilyLabel(Family $family): string
     {
         $spouse = $family->spouse($this);
-        if ($spouse) {
+
+        if ($spouse instanceof Individual) {
             /* I18N: %s is the spouse name */
             return I18N::translate('Family with %s', $spouse->fullName());
         }
