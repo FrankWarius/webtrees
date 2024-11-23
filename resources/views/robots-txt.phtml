@@ -28,6 +28,38 @@ Disallow: <?= $base_path ?>/admin
 Disallow: <?= $base_path ?>/manager
 Disallow: <?= $base_path ?>/editor
 Disallow: <?= $base_path ?>/account
+
+Disallow: <?= $base_path ?>/login   
+
+Disallow: <?= $base_path ?>/mediafirewall.php
+Disallow: <?= $base_path ?>/mediaviewer.php
+Disallow: <?= $base_path ?>/module.php
+
+Disallow: <?= $base_path ?>/public/*.png
+Disallow: <?= $base_path ?>/tree/*?ajax=1
+
+#2.0 links 
+Disallow: <?= $base_path ?>/family.php
+Disallow: <?= $base_path ?>/individual.php
+Disallow: <?= $base_path ?>/source.php
+
+# Noindex Pages blocked
+Disallow: <?= $base_path ?>/tree/*/contact
+Disallow: <?= $base_path ?>/tree/*/hourglass-
+Disallow: <?= $base_path ?>/tree/*/pedigree-
+Disallow: <?= $base_path ?>/tree/*/relationships-
+
+Disallow: <?= $base_path ?>/tree/*/location-list
+Disallow: <?= $base_path ?>/tree/*/place-list
+Disallow: <?= $base_path ?>/tree/*/repository-list
+Disallow: <?= $base_path ?>/tree/*/source-list
+
+Disallow: <?= $base_path ?>/module/tree/Chart/
+
+Disallow: <?= $base_path ?>/tree/*/media-download
+Disallow: <?= $base_path ?>/tree/*/media-list?
+Disallow: <?= $base_path ?>/tree/*/media-thumbnail?
+
 <?php foreach ($trees as $tree) : ?>
 Disallow: <?= $base_path ?>/tree/<?= $tree ?>/ancestors
 Disallow: <?= $base_path ?>/tree/<?= $tree ?>/calendar
@@ -43,7 +75,8 @@ Disallow: <?= $base_path ?>/tree/<?= $tree ?>/pedigree
 Disallow: <?= $base_path ?>/tree/<?= $tree ?>/report
 Disallow: <?= $base_path ?>/tree/<?= $tree ?>/timeline
 <?php endforeach ?>
-Crawl-delay: 10
+
+Crawl-delay: 2
 
 <?php if ($sitemap_url !== '') : ?>
 Sitemap: <?= $sitemap_url ?>
