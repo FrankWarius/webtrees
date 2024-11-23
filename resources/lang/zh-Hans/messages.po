@@ -3,9 +3,10 @@ msgstr ""
 "Project-Id-Version: Chinese (Simplified) (webtrees)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-19 13:09+0000\n"
-"PO-Revision-Date: 2024-03-04 12:16+0000\n"
+"PO-Revision-Date: 2024-10-07 12:22+0000\n"
 "Last-Translator: Greg Roach <greg@subaqua.co.uk>\n"
-"Language-Team: Chinese (Simplified) <https://translate.webtrees.net/projects/webtrees/webtrees/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://translate.webtrees.net/projects/"
+"webtrees/webtrees/zh_Hans/>\n"
 "Language: zh-Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -501,7 +502,7 @@ msgstr "&lt; 选择 &gt;"
 #: resources/views/fact-date.phtml:123
 #, php-format
 msgid "(%s after death)"
-msgstr "(%s之后去世)"
+msgstr "(去世之后%s)"
 
 #. I18N: The current age of a living individual
 #: app/Http/RequestHandlers/IndividualPage.php:179
@@ -3515,7 +3516,7 @@ msgstr "加拿大"
 #: app/Http/RequestHandlers/SitePreferencesAction.php:61
 #, php-format
 msgid "Cannot write to the folder “%s”."
-msgstr ""
+msgstr "无法写入文件夹“%s”。"
 
 # I18N: Name of a country or state
 #. I18N: Name of a country or state
@@ -4173,7 +4174,7 @@ msgstr "连接到数据库服务器"
 
 #: resources/views/setup/step-4-database-mysql.phtml:49
 msgid "Connection type"
-msgstr ""
+msgstr "连接类型"
 
 # I18N: Name of a module
 #. I18N: Name of a module
@@ -4605,7 +4606,7 @@ msgstr "古巴"
 #. I18N: Name of a country or state
 #: app/Statistics/Service/CountryService.php:149
 msgid "Curaçao"
-msgstr ""
+msgstr "库拉索"
 
 # I18N: Location of an LDS church temple
 #. I18N: Location of an LDS church temple
@@ -5668,7 +5669,7 @@ msgstr "孩子时去世：豁免"
 #. I18N: LDS sealing status; see https://en.wikipedia.org/wiki/Sealing_(Mormonism)
 #: app/Elements/LdsOrdinanceStatus.php:75
 msgid "Died less than 1 year old, sealing not required."
-msgstr ""
+msgstr "死亡不到1年，不需要密封。"
 
 #: resources/xml/reports/change_report.xml:60
 msgid "Differences"
@@ -7375,7 +7376,7 @@ msgstr "政府标识符"
 
 #: app/CustomTags/GedcomL.php:283
 msgid "GOV identifier type"
-msgstr ""
+msgstr "GOV标识符类型"
 
 # I18N: Name of a country or state
 #. I18N: Name of a country or state
@@ -8571,7 +8572,7 @@ msgstr "无效的GEDCOM文件—没有标题记录。"
 
 #: app/Http/RequestHandlers/GedcomLoad.php:92
 msgid "Invalid GEDCOM file - no trailer record found."
-msgstr ""
+msgstr "无效的GEDCOM文件-找不到尾部记录。"
 
 #: app/Http/RequestHandlers/CheckTree.php:198
 msgid "Invalid GEDCOM level number."
@@ -9018,7 +9019,7 @@ msgstr "LDS 儿童密封"
 
 #: resources/views/admin/tags.phtml:724
 msgid "LDS church"
-msgstr ""
+msgstr "LDS教堂"
 
 # I18N: gedcom tag CONL. LDS = Church of Latter Day Saints.
 #: app/Gedcom.php:628
@@ -9033,7 +9034,7 @@ msgstr "LDS 捐贈"
 #. I18N: GEDCOM tag INIL - an LDS ceremony
 #: app/CustomTags/Ancestry.php:68 app/CustomTags/Gedcom7.php:131
 msgid "LDS initiatory"
-msgstr ""
+msgstr "LDS初始"
 
 # I18N: gedcom tag SLGS. LDS = Church of Latter Day Saints.
 #: app/Gedcom.php:480
@@ -9067,7 +9068,7 @@ msgstr "土地购买"
 #. I18N: GEDCOM tag _SALE
 #: app/CustomTags/Reunion.php:60
 msgid "Land sale"
-msgstr ""
+msgstr "土地出售"
 
 # I18N: page orientation
 #. I18N: page orientation
@@ -9248,7 +9249,7 @@ msgstr "遗产受赠人"
 
 #: app/CustomTags/Aldfaer.php:72
 msgid "Length"
-msgstr ""
+msgstr "长度"
 
 #: resources/views/modules/statistics-chart/marriage-length.phtml:10
 msgid "Length of marriage"
@@ -9316,11 +9317,11 @@ msgstr "利马,秘鲁"
 
 #: resources/views/admin/gedcom-export-options.phtml:89
 msgid "Line endings"
-msgstr ""
+msgstr "行尾"
 
 #: app/Http/RequestHandlers/CheckTree.php:420
 msgid "Line number"
-msgstr ""
+msgstr "行号"
 
 #: app/Http/RequestHandlers/FixLevel0MediaPage.php:48
 #: resources/views/admin/control-panel.phtml:819
@@ -9537,7 +9538,7 @@ msgstr "杂志"
 #: app/CustomTags/GedcomL.php:116 app/CustomTags/GedcomL.php:170
 #: app/CustomTags/GedcomL.php:213 app/CustomTags/GedcomL.php:299
 msgid "Maidenhead location code"
-msgstr ""
+msgstr "梅登黑德位置代码"
 
 #: app/Services/MessageService.php:232
 msgid "Mailto link"
@@ -9659,7 +9660,7 @@ msgstr "原文"
 
 #: resources/views/admin/tags.phtml:1023
 msgid "Many genealogy applications define their own custom GEDCOM tags and webtrees will be able to display most of them."
-msgstr ""
+msgstr "许多家谱应用程序定义了自己的自定义GEDCOM标记，网络树将能够显示其中的大部分。"
 
 # I18N: Help text for the “GEDCOM errors” configuration setting
 #. I18N: Help text for the “GEDCOM errors” configuration setting
@@ -9689,7 +9690,7 @@ msgstr ""
 #: app/Services/LeafletJsService.php:67
 #: resources/views/admin/control-panel.phtml:669
 msgid "Map providers"
-msgstr ""
+msgstr "地图供应商"
 
 #. I18N: mapbox.com
 #: app/Module/MapBox.php:96
@@ -10697,7 +10698,7 @@ msgstr "第一月"
 #. I18N: twin, triplet, etc.
 #: app/Elements/RelationIsDescriptor.php:116
 msgid "Multiple birth"
-msgstr ""
+msgstr "多胞胎"
 
 #: resources/views/lists/families-table.phtml:141
 msgid "Multiple marriages"
@@ -10785,7 +10786,7 @@ msgstr "犹太名称"
 #: app/CustomTags/GedcomL.php:217 app/CustomTags/Legacy.php:116
 #: app/CustomTags/PersonalAncestralFile.php:73
 msgid "Name of addressee"
-msgstr ""
+msgstr "收件人姓名"
 
 # I18N: gedcom tag NPFX
 #: app/Gedcom.php:689 app/Gedcom.php:697 app/Gedcom.php:703
@@ -11190,7 +11191,7 @@ msgstr "夜间"
 #. I18N: https://nominatim.org
 #: app/Module/MapGeoLocationNominatim.php:39
 msgid "Nominatim"
-msgstr ""
+msgstr "未分层"
 
 #: resources/views/admin/gedcom-export-options.phtml:104
 #: resources/xml/reports/cemetery_report.xml:7
@@ -11264,7 +11265,7 @@ msgstr "未婚"
 #: app/Elements/AbstractXrefElement.php:71
 #: resources/views/fact-association-structure.phtml:104
 msgid "Not recorded"
-msgstr ""
+msgstr "未记录"
 
 #: resources/views/admin/control-panel.phtml:506
 msgid "Not verified by the user"
@@ -11297,7 +11298,7 @@ msgstr "记录"
 #: app/CustomTags/GedcomL.php:120 app/CustomTags/GedcomL.php:174
 #: app/Gedcom.php:902 app/Gedcom.php:916
 msgid "Note on association"
-msgstr ""
+msgstr "关于关联的说明"
 
 #: app/CustomTags/GedcomL.php:224 app/Gedcom.php:451 app/Gedcom.php:618
 #: app/Gedcom.php:765 app/Gedcom.php:786 app/Gedcom.php:817 app/Gedcom.php:833
@@ -11307,7 +11308,7 @@ msgstr "上次改变的说明"
 
 #: app/Gedcom.php:688
 msgid "Note on phonetic name"
-msgstr ""
+msgstr "拼音名称注释"
 
 #: app/CustomTags/GedcomL.php:249 app/Gedcom.php:427 app/Gedcom.php:559
 msgid "Note on place"
@@ -11616,7 +11617,7 @@ msgstr "注意！webtrees 不能在这个目录创建文件。"
 #: app/Module/MapGeoLocationOpenRouteService.php:45
 #: app/Module/OpenRouteServiceAutocomplete.php:82
 msgid "OpenRouteService"
-msgstr ""
+msgstr "开放路线服务"
 
 #: app/Module/MapLinkOpenStreetMap.php:41 app/Module/OpenStreetMap.php:51
 msgid "OpenStreetMap™"
@@ -11678,7 +11679,7 @@ msgstr "方向"
 
 #: app/CustomTags/Ancestry.php:70
 msgid "Origin"
-msgstr ""
+msgstr "起源"
 
 #. I18N: GEDCOM tag _ORIG
 #: app/CustomTags/Ancestry.php:75
@@ -11844,7 +11845,7 @@ msgstr "巴拉圭"
 
 #: app/CustomTags/GedcomL.php:294
 msgid "Parent location"
-msgstr ""
+msgstr "父位置"
 
 #: app/Gedcom.php:742 app/Http/RequestHandlers/IndividualPage.php:210
 #: resources/views/edit/reorder-families.phtml:72
@@ -12032,7 +12033,7 @@ msgstr "照片"
 #: app/CustomTags/Gedcom7.php:118 app/CustomTags/Gedcom7.php:119
 #: app/CustomTags/Gedcom7.php:121 app/CustomTags/Gedcom7.php:123
 msgid "Phrase"
-msgstr ""
+msgstr "成语"
 
 # I18N: The name of a colour-scheme
 #. I18N: The name of a colour-scheme
@@ -13047,7 +13048,7 @@ msgstr "报告"
 #. I18N: ''GEDCOM tag _RPT_PHRS
 #: app/CustomTags/Legacy.php:66 app/CustomTags/Legacy.php:67
 msgid "Report phrase"
-msgstr ""
+msgstr "报告短语"
 
 # I18N: Name of a module
 #. I18N: Name of a module
@@ -13267,7 +13268,7 @@ msgstr "已安装SQLite版本%s。需要SQLite版本%s或更高版本。"
 #. I18N: Use SMTP over SSL/TLS, or Implicit TLS - a secure communications protocol
 #: app/Services/EmailService.php:209
 msgid "SSL/TLS"
-msgstr ""
+msgstr "SSL/TLS"
 
 #. I18N: Use SMTP with STARTTLS, or Explicit TLS - a secure communications protocol
 #: app/Services/EmailService.php:211
@@ -13316,7 +13317,7 @@ msgstr "圣人"
 
 #: app/Statistics/Service/CountryService.php:95
 msgid "Saint Barthélemy"
-msgstr ""
+msgstr "圣巴塞勒米"
 
 # I18N: Name of a country or state
 #. I18N: Name of a country or state
@@ -14326,7 +14327,7 @@ msgstr "显示姓氏列表"
 #: app/Http/RequestHandlers/ModulesMapLinksPage.php:44
 #: app/Module/ModuleMapLinkTrait.php:49
 msgid "Show the location of an event on an external map."
-msgstr ""
+msgstr "在外部地图上显示事件的位置。"
 
 # I18N: Description of the “OSM” module
 #. I18N: Description of the “Places” module
@@ -14602,11 +14603,11 @@ msgstr "一些家谱软件创建 GEDCOM 文件，其中包含多媒体文件名�
 #. I18N: Description of a “Data fix” module
 #: app/Module/FixNameTags.php:93
 msgid "Some genealogy software stores all names in a single name record, using custom tags such as _MARNM and _AKA. An alternative is to create a new name record for each name."
-msgstr ""
+msgstr "在外部地图上显示事件的位置。"
 
 #: resources/views/admin/tags.phtml:37
 msgid "Some of these GEDCOM tags are used infrequently or never used."
-msgstr ""
+msgstr "其中一些GEDCOM标记很少使用或从未使用过。"
 
 # I18N: Help text for the “Hit counters” configuration setting
 #. I18N: Help text for the “Hit counters” configuration setting
@@ -14727,7 +14728,7 @@ msgstr "来源引用"
 
 #: resources/views/admin/tags.phtml:326
 msgid "Source citations"
-msgstr ""
+msgstr "来源引文"
 
 # I18N: A configuration setting
 #: resources/xml/reports/fact_sources.xml:6
@@ -15696,7 +15697,7 @@ msgstr "缺少参数“%s”。"
 #: app/Http/RequestHandlers/AdminMediaFileDownload.php:66
 #: app/Http/RequestHandlers/AdminMediaFileThumbnail.php:66
 msgid "The parameter “path” is invalid."
-msgstr ""
+msgstr "参数“path”无效。"
 
 #: app/Http/RequestHandlers/SetupWizard.php:379
 msgid "The password needs to be at least six characters long."
@@ -15930,7 +15931,7 @@ msgstr "这有个人没有事件。"
 #: app/Module/IndividualListModule.php:224
 #, php-format
 msgid "There are no individuals with the surname “%s”"
-msgstr ""
+msgstr "没有姓“%s”的个人"
 
 #: app/Http/RequestHandlers/ManageMediaData.php:327
 msgid "There are no links to this media object."
@@ -16338,7 +16339,7 @@ msgstr "这个页面允许你绕过通常的形式，直接修改基础数据。
 
 #: app/Http/Exceptions/HttpGoneException.php:35
 msgid "This page has been deleted."
-msgstr ""
+msgstr "这个页面已被删除。"
 
 #: app/Module/HitCountFooterModule.php:113
 #, php-format
@@ -18073,7 +18074,7 @@ msgstr "您的Web服务器使用的PHP版本 %s ，它不再接收安全更新�
 #: resources/views/admin/gedcom-export-options.phtml:40
 #: resources/views/admin/gedcom-export-options.phtml:48
 msgid "ZIP"
-msgstr ""
+msgstr "ZIP"
 
 # I18N: Name of a country or state
 #. I18N: Name of a country or state
@@ -18507,7 +18508,7 @@ msgstr "继续"
 #: app/Elements/GeneatiqueAct.php:40
 msgctxt "NOUN"
 msgid "copy"
-msgstr ""
+msgstr "复制"
 
 # I18N: A button label.
 #. I18N: A button label.
@@ -18697,7 +18698,7 @@ msgstr "导出文件"
 #: app/Elements/GeneatiqueAct.php:42
 msgctxt "NOUN"
 msgid "extract"
-msgstr ""
+msgstr "摘录"
 
 #: app/Http/RequestHandlers/TreePreferencesPage.php:113
 #: resources/xml/reports/fact_sources.xml:6
@@ -20867,7 +20868,7 @@ msgstr "列表"
 #: app/Elements/GeneatiqueAct.php:39
 #: resources/views/setup/step-4-database-mysql.phtml:58
 msgid "local"
-msgstr ""
+msgstr "本地的"
 
 #: app/Http/RequestHandlers/MapDataImportAction.php:193
 #, php-format
@@ -21080,7 +21081,7 @@ msgstr "外甥"
 
 #: resources/views/setup/step-4-database-mysql.phtml:73
 msgid "network"
-msgstr ""
+msgstr "网络"
 
 # I18N: A button label, next page
 #. I18N: A button label, next page
@@ -21248,7 +21249,7 @@ msgstr "从"
 
 #: app/Elements/GeneatiqueAct.php:38
 msgid "online"
-msgstr ""
+msgstr "在线"
 
 #: app/Services/RelationshipService.php:353
 msgid "parent"
@@ -21306,7 +21307,7 @@ msgstr "百分比"
 
 #: app/Elements/GeneatiqueAct.php:41
 msgid "photocopy"
-msgstr ""
+msgstr "影印"
 
 #. I18N: https://en.wikipedia.org/wiki/Plain_text
 #: app/Http/RequestHandlers/TreePreferencesPage.php:106
