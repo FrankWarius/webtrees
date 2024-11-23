@@ -69,7 +69,7 @@ class ResponseFactory implements ResponseFactoryInterface
     public function redirect(
         string $route_name,
         array $parameters = [],
-        int $status = StatusCodeInterface::STATUS_FOUND
+        int $status = StatusCodeInterface::STATUS_MOVED_PERMANENTLY
     ): ResponseInterface {
         $url = Registry::routeFactory()->route($route_name, $parameters);
 
