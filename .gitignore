@@ -21,3 +21,5 @@
 
 /.vs
 /.vscode
+*.ini
+*.config
