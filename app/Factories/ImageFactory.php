@@ -198,7 +198,8 @@ class ImageFactory implements ImageFactoryInterface
                 $image = $this->resizeImage(image: $image, width: $width, height: $height, fit: $fit);
 
                 if ($add_watermark) {
-                    $watermark = $this->createWatermark(width: $image->width(), height: $image->height(), media_file: $media_file);
+                    //  $watermark = $this->createWatermark(width: $image->width(), height: $image->height(), media_file: $media_file);
+                    $watermark = $this->createWatermark(width: $width, height: $height, media_file: $media_file);
                     $image     = $this->addWatermark(image: $image, watermark: $watermark);
                 }
 
