@@ -86,6 +86,9 @@ p, [dir] p {
 .btn {
   --bs-btn-padding-x: 0.2rem;
   --bs-btn-padding-y: var(--bs-btn-padding-x);
+  --bs-btn-font-size: var(--bs-body-font-size);
+  --bs-btn-font-weight: var(--bs-body-font-weight);
+  --bs-btn-line-height: var(--bs-body-line-height);
 }
 .card{
   --bs-card-spacer-y: 0.1rem;
