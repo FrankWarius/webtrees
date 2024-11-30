@@ -1,4 +1,4 @@
-/modules_v4/
+
 
 /node_modules/
 
@@ -18,3 +18,9 @@
 /tests/clover.xml
 /tests/coverage
 /vendor/
+
+*.config
+*.ini
+
+.vscode/launch.json
+/web.config
