@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Module;
 
+use Fisharebest\Webtrees\Contracts\TimestampInterface;
+use Fisharebest\Webtrees\Contracts\UserInterface;
 use Fisharebest\Webtrees\DB;
 use Fisharebest\Webtrees\Family;
 use Fisharebest\Webtrees\GedcomRecord;
@@ -48,20 +50,20 @@ class RecentChangesModule extends AbstractModule implements ModuleBlockInterface
     use ModuleBlockTrait;
 
     // Where do we look for change information
-    private const SOURCE_DATABASE = 'database';
-    private const SOURCE_GEDCOM   = 'gedcom';
+    private const string SOURCE_DATABASE = 'database';
+    private const string SOURCE_GEDCOM   = 'gedcom';
 
-    private const DEFAULT_DAYS       = '7';
-    private const DEFAULT_SHOW_USER  = '1';
-    private const DEFAULT_SHOW_DATE  = '1';
-    private const DEFAULT_SORT_STYLE = 'date_desc';
-    private const DEFAULT_INFO_STYLE = 'table';
-    private const DEFAULT_SOURCE     = self::SOURCE_DATABASE;
-    private const MAX_DAYS           = 90;
+    private const string DEFAULT_DAYS      = '7';
+    private const string DEFAULT_SHOW_USER = '1';
+    private const string DEFAULT_SHOW_DATE  = '1';
+    private const string DEFAULT_SORT_STYLE = 'date_desc';
+    private const string DEFAULT_INFO_STYLE = 'table';
+    private const string DEFAULT_SOURCE = self::SOURCE_DATABASE;
+    private const int    MAX_DAYS       = 90;
 
     // Pagination
-    private const LIMIT_LOW  = 10;
-    private const LIMIT_HIGH = 20;
+    private const int LIMIT_LOW  = 10;
+    private const int LIMIT_HIGH = 20;
 
     private UserService $user_service;
 
@@ -285,7 +287,7 @@ class RecentChangesModule extends AbstractModule implements ModuleBlockInterface
      * @param Tree $tree Changes for which tree
      * @param int  $days Number of days
      *
-     * @return Collection<array-key,object> List of records with changes
+     * @return Collection<array-key,object{record:GedcomRecord,time:TimestampInterface,user:UserInterface}> List of records with changes
      */
     private function getRecentChangesFromDatabase(Tree $tree, int $days): Collection
     {
@@ -317,7 +319,7 @@ class RecentChangesModule extends AbstractModule implements ModuleBlockInterface
      * @param Tree $tree Changes for which tree
      * @param int  $days Number of days
      *
-     * @return Collection<array-key,object> List of records with changes
+     * @return Collection<array-key,object{record:GedcomRecord,time:TimestampInterface,user:UserInterface}> List of records with changes
      */
     private function getRecentChangesFromGenealogy(Tree $tree, int $days): Collection
     {
