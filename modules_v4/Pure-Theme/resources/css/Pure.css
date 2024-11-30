@@ -47,6 +47,12 @@ p, [dir] p {
 [dir] .accordion-button, [dir] .accordion-body{
   padding: var(--bs-accordion-btn-padding-x) var(--bs-accordion-btn-padding-y);
 }
+.table{
+  width: auto;
+}
+.wt-chart-box {
+  line-height: 1.02;
+}
 .wt-site-title {
   order: 4;
   flex: 0 0 calc(100%);
@@ -72,6 +78,9 @@ p, [dir] p {
 }
 [dir] .wt-block {
   margin-bottom: var(--bs-gutter-y) !important;
+}
+.wt-facts-table{
+  width: 100%;
 }
 [dir] .wt-facts-table th, [dir] .wt-facts-table td{
   padding: var(--bs-gutter-x)  .1rem;
@@ -106,4 +115,6 @@ p, [dir] p {
 [dir] .table>:not(caption)>*>* {
   padding: .1rem
 }
+[dir] div.dt-container div.dt-layout-full>:only-child {
+  margin: inherit;
 }
