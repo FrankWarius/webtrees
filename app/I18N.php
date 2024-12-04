@@ -237,7 +237,7 @@ class I18N
     public static function dateFormat(): string
     {
         /* I18N: This is the format string for full dates. See https://php.net/date for codes */
-        return self::$translator->translate('%j %M %Y');
+        return self::$translator->translate('%j %F %Y');
     }
 
     /**
