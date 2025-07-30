@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2023 webtrees development team
+ * Copyright (C) 2025 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -135,7 +135,7 @@ class MapDataImportAction implements RequestHandlerInterface
             }
         } else {
             rewind($fp);
-            while (($row = fgetcsv($fp, 0, MapDataService::CSV_SEPARATOR)) !== false) {
+            while (($row = fgetcsv(stream: $fp, separator: MapDataService::CSV_SEPARATOR, escape: '\\')) !== false) {
                 // Skip the header
                 if (!is_numeric($row[0])) {
                     continue;

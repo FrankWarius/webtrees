@@ -31,9 +31,7 @@ $today                = new Date(strtoupper(date('d M Y')));
 
 $module = Registry::container()->get(ModuleService::class)
     ->findByComponent(ModuleChartInterface::class, $tree, Auth::user())
-    ->first(static function (ModuleInterface $module) {
-        return $module instanceof RelationshipsChartModule;
-    });
+    ->first(static fn (ModuleInterface $module): bool => $module instanceof RelationshipsChartModule);
 ?>
 
 <?php View::push('javascript') ?>
@@ -45,11 +43,11 @@ $("#<?= e($table_id) ?> > .wt-table-individual").dataTable({
         /* Given names  */ { type: "text" },
         /* Surnames     */ { type: "text" },
         /* SOSA number  */ { type: "num", visible: <?= json_encode($sosa, JSON_THROW_ON_ERROR) ?> },
-        /* Birth date   */ { type: "num" },
+        /* Birth date   */ { type: "text" },
         /* Anniversary  */ { type: "num" },
         /* Birthplace   */ { type: "text" },
         /* Children     */ { type: "num" },
-        /* Deate date   */ { type: "num" },
+        /* Deate date   */ { type: "text" },
         /* Anniversary  */ { type: "num" },
         /* Age          */ { type: "num" },
         /* Death place  */ { type: "text" },

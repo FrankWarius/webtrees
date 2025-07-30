@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2023 webtrees development team
+ * Copyright (C) 2025 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -298,26 +298,6 @@ class UpgradeService
         [, , $url] = explode('|', $latest_version . '||');
 
         return $url;
-    }
-
-    /**
-     * @return void
-     */
-    public function startMaintenanceMode(): void
-    {
-        $message = I18N::translate('This website is being upgraded. Try again in a few minutes.');
-
-        file_put_contents(Webtrees::OFFLINE_FILE, $message);
-    }
-
-    /**
-     * @return void
-     */
-    public function endMaintenanceMode(): void
-    {
-        if (file_exists(Webtrees::OFFLINE_FILE)) {
-            unlink(Webtrees::OFFLINE_FILE);
-        }
     }
 
     /**

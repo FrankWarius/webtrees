@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2023 webtrees development team
+ * Copyright (C) 2025 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -92,6 +92,9 @@ class SearchService
         $this->whereTrees($query, 'f_file', $trees);
         $this->whereSearch($query, 'f_gedcom', $search);
 
+        // Remove accents when searching using PHP.
+        $search = array_map(I18N::language()->normalize(...), $search);
+
         return $query
             ->get()
             ->each($this->rowLimiter())
@@ -126,8 +129,7 @@ class SearchService
                     ->where('wife_name.n_type', '<>', '_MARNM');
             });
 
-        $prefix = DB::prefix();
-        $field  = new Expression('COALESCE(' . $prefix . "husb_name.n_full, '') || COALESCE(" . $prefix . "wife_name.n_full, '')");
+        $field  = new Expression('COALESCE(' . DB::prefix('husb_name') . ".n_full, '') || COALESCE(" . DB::prefix('wife_name') . ".n_full, '')");
 
         $this->whereTrees($query, 'f_file', $trees);
         $this->whereSearch($query, $field, $search);
@@ -174,6 +176,9 @@ class SearchService
 
         $this->whereTrees($query, 'i_file', $trees);
         $this->whereSearch($query, 'i_gedcom', $search);
+
+        // Remove accents when searching using PHP.
+        $search = array_map(I18N::language()->normalize(...), $search);
 
         return $query
             ->get()
@@ -1065,9 +1070,9 @@ class SearchService
     /**
      * Apply search filters to a SQL query column.  Apply collation rules to MySQL.
      *
-     * @param Builder           $query
-     * @param Expression|string $column
-     * @param array<string>     $search_terms
+     * @param Builder                   $query
+     * @param Expression<string>|string $column
+     * @param array<string>             $search_terms
      */
     private function whereSearch(Builder $query, Expression|string $column, array $search_terms): void
     {
@@ -1079,9 +1084,9 @@ class SearchService
     /**
      * Apply soundex search filters to a SQL query column.
      *
-     * @param Builder           $query
-     * @param Expression|string $field
-     * @param string            $soundex
+     * @param Builder                   $query
+     * @param Expression<string>|string $field
+     * @param string                    $soundex
      */
     private function wherePhonetic(Builder $query, $field, string $soundex): void
     {
@@ -1141,10 +1146,19 @@ class SearchService
     {
         return static function (GedcomRecord $record) use ($search_terms): bool {
             // Ignore non-genealogy fields
-            $gedcom = preg_replace('/\n\d (?:_UID|_WT_USER) .*/', '', $record->gedcom());
+            $regex = '/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9A-F]{36})$/i';
+
+            if (array_filter($search_terms, static fn (string $term): bool => preg_match($regex, $term) === 1) !== []) {
+                $gedcom = preg_replace('/\n\d _WT_USER .*/', '', $record->gedcom());
+            } else {
+                $gedcom = preg_replace('/\n\d (UID|_UID|_WT_USER) .*/', '', $record->gedcom());
+            }
 
             // Ignore matches in links
             $gedcom = preg_replace('/\n\d ' . Gedcom::REGEX_TAG . '( @' . Gedcom::REGEX_XREF . '@)?/', '', $gedcom);
+
+            // Remove accents when searching using PHP.
+            $gedcom = I18N::language()->normalize($gedcom);
 
             // Re-apply the filtering
             foreach ($search_terms as $search_term) {

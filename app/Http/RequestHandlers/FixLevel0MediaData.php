@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2023 webtrees development team
+ * Copyright (C) 2025 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -80,8 +80,6 @@ class FixLevel0MediaData implements RequestHandlerInterface
             'INDI:RESN',
         ];
 
-        $prefix = DB::prefix();
-
         $search = Validator::queryParams($request)->array('search')['value'] ?? '';
 
         $query = DB::table('media')
@@ -101,7 +99,7 @@ class FixLevel0MediaData implements RequestHandlerInterface
                     ->on('individuals.i_file', '=', 'link.l_file')
                     ->on('individuals.i_id', '=', 'link.l_from');
             })
-            ->where('i_gedcom', 'LIKE', new Expression("('%\n1 OBJE @' || " . $prefix . "media.m_id || '@%')"))
+            ->where('i_gedcom', 'LIKE', new Expression("('%\n1 OBJE @' || " . DB::prefix('media') . ".m_id || '@%')"))
             ->orderBy('individuals.i_file')
             ->orderBy('individuals.i_id')
             ->orderBy('media.m_id')
