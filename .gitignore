@@ -25,3 +25,4 @@
 
 .vscode/launch.json
 /web.config
+phpinfo.php
