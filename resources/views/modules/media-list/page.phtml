@@ -148,8 +148,7 @@ use Illuminate\Support\Collection;
                                     ?>
                                 </p>
                             <?php endif ?>
-                        </div>
-                        <div class="card-footer">
+                        
                             <?php foreach ($linked_record_service->linkedIndividuals($media_object) as $record) : ?>
                                 <?= view('icons/individual') ?>
                                 <a href="<?= e($record->url()) ?>"><?= $record->fullName() ?></a>
