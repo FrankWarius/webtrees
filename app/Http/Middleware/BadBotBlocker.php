@@ -244,12 +244,12 @@ class BadBotBlocker implements MiddlewareInterface
         assert($address instanceof AddressInterface);
 
         if ($ua === '') {
-            return $this->response('Not acceptable: no-ua');
+            return $this->response();
         }
 
         foreach (self::BAD_ROBOTS as $robot) {
             if (str_contains($ua, $robot)) {
-                return $this->response('Not acceptable: bad-ua');
+                return $this->response();
             }
         }
 
@@ -260,7 +260,7 @@ class BadBotBlocker implements MiddlewareInterface
                 if ($this->checkRobotDNS($ip, $valid_domains, false)) {
                     $validated_bot = true;
                 } else {
-                    return $this->response('Not acceptable: bad-dns');
+                    return $this->response();
                 }
             }
         }
@@ -270,7 +270,7 @@ class BadBotBlocker implements MiddlewareInterface
                 if ($this->checkRobotDNS($ip, $valid_domains, true)) {
                     $validated_bot = true;
                 } else {
-                    return $this->response('Not acceptable: bad-dns');
+                    return $this->response();
                 }
             }
         }
@@ -287,7 +287,7 @@ class BadBotBlocker implements MiddlewareInterface
                         }
                     }
 
-                    return $this->response('Not acceptable: bad-dns');
+                    return $this->response();
                 }
             }
         }
@@ -299,7 +299,7 @@ class BadBotBlocker implements MiddlewareInterface
         foreach ($matches[1] as $asn) {
             foreach ($this->fetchIpRangesForAsn($asn) as $range) {
                 if ($range->contains($address)) {
-                    return $this->response('Not acceptable: bad-asn');
+                    return $this->response();
                 }
             }
         }
@@ -331,8 +331,7 @@ class BadBotBlocker implements MiddlewareInterface
                 '<body>Cookie check</body>' .
                 '</html>';
 
-            return $this->response($content)
-                ->withHeader('set-cookie', 'x=y; HttpOnly; SameSite=Strict');
+            return $this->response($content)->withHeader('set-cookie', 'x=y; HttpOnly; SameSite=Strict');
         }
 
         // Bots get restricted access
@@ -345,7 +344,7 @@ class BadBotBlocker implements MiddlewareInterface
         $path = $request->getUri()->getPath();
 
         if (str_starts_with($path, '/xmlrpc.php') || str_starts_with($path, '/wp-')) {
-            return $this->response('Not acceptable: not-wp');
+            return $this->response();
         }
 
         return $handler->handle($request);
@@ -387,7 +386,7 @@ class BadBotBlocker implements MiddlewareInterface
         }, random_int(self::WHOIS_TTL_MIN, self::WHOIS_TTL_MAX));
     }
 
-    private function response(string $content): ResponseInterface
+    private function response(string $content = 'Not acceptable'): ResponseInterface
     {
         return response($content, StatusCodeInterface::STATUS_NOT_ACCEPTABLE);
     }
