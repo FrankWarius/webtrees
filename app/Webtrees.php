@@ -134,8 +134,8 @@ class Webtrees
     // e.g. "-dev", "-alpha", "-beta", etc.
     public const string STABILITY = '';
 
-    // Version number.
-    public const string VERSION = '2.2.3' . self::STABILITY;
+    // Version number
+    public const string VERSION = '2.2.4' . self::STABILITY;
 
     // Project website.
     public const string URL = 'https://webtrees.net/';
