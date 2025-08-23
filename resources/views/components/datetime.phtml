@@ -16,6 +16,6 @@ use Fisharebest\Webtrees\I18N;
     </span>
 <?php else : ?>
     <span class="wt-timestamp" title="<?= e($timestamp->diffForHumans()) ?>" dir="auto">
-        <?= e($timestamp->isoFormat('LLLL')) ?>
+        <?= e($timestamp->isoFormat('llll')) ?>
     </span>
 <?php endif ?>
