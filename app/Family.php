@@ -69,7 +69,7 @@ class Family extends GedcomRecord
      */
     public static function marriageDateComparator(): Closure
     {
-        return static fn (Family $x, Family $y): int => Date::compare($x->getMarriageDate(), $y->getMarriageDate());
+        return static fn(Family $x, Family $y): int => Date::compare($x->getMarriageDate(), $y->getMarriageDate());
     }
 
     /**
@@ -121,16 +121,16 @@ class Family extends GedcomRecord
      */
     protected function canShowByType(int $access_level): bool
     {
-        // Hide a family if any member is private
+        // Don't hHide a family if one member is not private
         preg_match_all('/\n1 (?:CHIL|HUSB|WIFE) @(' . Gedcom::REGEX_XREF . ')@/', $this->gedcom, $matches);
         foreach ($matches[1] as $match) {
             $person = Registry::individualFactory()->make($match, $this->tree);
-            if ($person && !$person->canShow($access_level)) {
-                return false;
+            if (is_null($person) || $person->canShow($access_level)) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -320,7 +320,7 @@ class Family extends GedcomRecord
             // Check the script used by each name, so we can match cyrillic with cyrillic, greek with greek, etc.
             $husb_names = [];
             if ($this->husb instanceof Individual) {
-                $husb_names = array_filter($this->husb->getAllNames(), static fn (array $x): bool => $x['type'] !== '_MARNM');
+                $husb_names = array_filter($this->husb->getAllNames(), static fn(array $x): bool => $x['type'] !== '_MARNM');
             }
             // If the individual only has married names, create a fake birth name.
             if ($husb_names === []) {
@@ -336,7 +336,7 @@ class Family extends GedcomRecord
 
             $wife_names = [];
             if ($this->wife instanceof Individual) {
-                $wife_names = array_filter($this->wife->getAllNames(), static fn (array $x): bool => $x['type'] !== '_MARNM');
+                $wife_names = array_filter($this->wife->getAllNames(), static fn(array $x): bool => $x['type'] !== '_MARNM');
             }
             // If the individual only has married names, create a fake birth name.
             if ($wife_names === []) {
