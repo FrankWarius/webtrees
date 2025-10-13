@@ -241,7 +241,7 @@ class SetupWizard implements RequestHandlerInterface
             return $this->step3DatabaseType($data);
         }
 
-        //$data['mysql_local'] = 'localhost:' . $this->php_service->iniGet(option: 'pdo_mysql.default_socket');
+        $data['mysql_local'] = 'localhost:' . $this->php_service->iniGet(option: 'pdo_mysql.default_socket');
 
         return $this->viewResponse('setup/step-4-database-' . $data['dbtype'], $data);
     }
