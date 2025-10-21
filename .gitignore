@@ -20,4 +20,5 @@
 /tests/clover.xml
 /tests/coverage
 /vendor/
-.vscode/launch.json
+
+/.vscode/
