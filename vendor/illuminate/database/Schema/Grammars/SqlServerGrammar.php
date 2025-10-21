@@ -834,7 +834,7 @@ class SqlServerGrammar extends Grammar
             $column->default(new Expression('CURRENT_TIMESTAMP'));
         }
 
-        return $column->precision ? "datetime2($column->precision)" : 'datetime(0)';
+        return $column->precision ? "datetime2($column->precision)" : 'datetime2(0)';
     }
 
     /**
