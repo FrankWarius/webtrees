@@ -113,7 +113,7 @@ class Migration0 implements MigrationInterface
 
         DB::schema()->create('change', static function (Blueprint $table): void {
             $table->integer('change_id', true);
-            $table->timestamp('change_time')->useCurrent();
+            $table->timestamp('change_time',DB::raw(0))->useCurrent();
             $table->enum('status', ['accepted', 'pending', 'rejected'])->default('pending');
             $table->integer('gedcom_id');
             $table->string('xref', 20);
