@@ -19,6 +19,8 @@
 
 /tests/clover.xml
 /tests/coverage
+
 /vendor/
+!/vendor/illuminate/database/Schema/Grammars/
 
 /.vscode/
