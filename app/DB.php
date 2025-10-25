@@ -109,17 +109,34 @@ class DB extends Manager
         }
 
         $capsule = new self();
-        $capsule->addConnection([
-            'driver'         => $driver,
-            'host'           => $host,
-            'port'           => $port,
-            'database'       => $database,
-            'username'       => $username,
-            'password'       => $password,
-            'prefix'         => $prefix,
-            'prefix_indexes' => true,
-            'options'        => $options,
-        ]);
+
+        if ($driver !== self::SQL_SERVER) {
+            $capsule->addConnection([
+                'driver'         => $driver,
+                'host'           => $host,
+                'port'           => $port,
+                'database'       => $database,
+                'username'       => $username,
+                'password'       => $password,
+                'prefix'         => $prefix,
+                'prefix_indexes' => true,
+                'options'        => $options,
+            ]);
+        } else {
+            $capsule->addConnection([
+                'driver'         => $driver,
+                'host'           => $host,
+                'port'           => $port,
+                'database'       => $database,
+                'username'       => $username,
+                'password'       => $password,
+                'prefix'         => $prefix,
+                'prefix_indexes' => true,
+                'encrypt' => 'yes', // Enable encryption
+                'trust_server_certificate' => true, // Trust the server certificate
+                'options'        => $options,
+            ]);
+        }
         $capsule->setAsGlobal();
 
         // Eager-load the connection, to prevent database credentials appearing in error logs.
