@@ -94,7 +94,7 @@ class Migration0 implements MigrationInterface
 
         DB::schema()->create('log', static function (Blueprint $table): void {
             $table->integer('log_id', true);
-            $table->timestamp('log_time')->useCurrent();
+            $table->timestamp('log_time', 0)->useCurrent();
             $table->enum('log_type', ['auth', 'config', 'debug', 'edit', 'error', 'media', 'search']);
             $table->longText('log_message');
             $table->ipAddress('ip_address');
@@ -113,7 +113,7 @@ class Migration0 implements MigrationInterface
 
         DB::schema()->create('change', static function (Blueprint $table): void {
             $table->integer('change_id', true);
-            $table->timestamp('change_time')->useCurrent();
+            $table->timestamp('change_time, 0')->useCurrent();
             $table->enum('status', ['accepted', 'pending', 'rejected'])->default('pending');
             $table->integer('gedcom_id');
             $table->string('xref', 20);
@@ -135,7 +135,7 @@ class Migration0 implements MigrationInterface
             $table->integer('user_id');
             $table->string('subject', 255);
             $table->longText('body');
-            $table->timestamp('created')->useCurrent();
+            $table->timestamp('created', 0)->useCurrent();
 
             $table->index('user_id');
 
@@ -149,7 +149,7 @@ class Migration0 implements MigrationInterface
             $table->string('tag_type', 15)->nullable();
             $table->enum('resn', ['none', 'privacy', 'confidential', 'hidden']);
             $table->string('comment', 255)->nullable();
-            $table->timestamp('updated')->useCurrent();
+            $table->timestamp('updated', 0)->useCurrent();
 
             $table->unique(['gedcom_id', 'xref', 'tag_type']);
 
@@ -386,7 +386,7 @@ class Migration0 implements MigrationInterface
 
         DB::schema()->create('session', static function (Blueprint $table): void {
             $table->string('session_id', 256);
-            $table->timestamp('session_time')->useCurrent();
+            $table->timestamp('session_time', 0)->useCurrent();
             $table->integer('user_id');
             $table->ipAddress('ip_address');
             $table->longText('session_data');
