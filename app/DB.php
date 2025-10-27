@@ -109,20 +109,19 @@ class DB extends Manager
         }
 
         $capsule = new self();
-
-        if ($driver !== self::SQL_SERVER) {
-            $capsule->addConnection([
-                'driver'         => $driver,
-                'host'           => $host,
-                'port'           => $port,
-                'database'       => $database,
-                'username'       => $username,
-                'password'       => $password,
-                'prefix'         => $prefix,
-                'prefix_indexes' => true,
-                'options'        => $options,
-            ]);
-        } else {
+        $capsule->addConnection([
+            'driver'         => $driver,
+            'host'           => $host,
+            'port'           => $port,
+            'database'       => $database,
+            'username'       => $username,
+            'password'       => $password,
+            'prefix'         => $prefix,
+            'prefix_indexes' => true,
+            'options'        => $options,
+        ]);
+        if ($driver === self::SQL_SERVER) {
+            $capsule = new self();
             $capsule->addConnection([
                 'driver'         => $driver,
                 'host'           => $host,
