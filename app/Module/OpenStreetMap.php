@@ -66,7 +66,8 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 19,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            //  'url'         => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'url'         => '/cache-osm/{z}/{x}/{y}.png',
             ],
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">Karte hergestellt aus OpenStreetMap-Daten</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
@@ -75,7 +76,8 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 18,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+            //  'url'         => 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',                
+                'url'         => '/cache-osm.de/{z}/{x}/{y}.png',
             ],
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
