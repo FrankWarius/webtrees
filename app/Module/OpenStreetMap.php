@@ -67,7 +67,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
                 //'url'         => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                'url'         => '/cache-osm/{z}/{x}/{y}.png',
+                'url'         => '/{s}.cache-osm.org/{z}/{x}/{y}.png',
                 'localName'   => 'OpenStreetMapsMapnik',
             ],
             (object) [
@@ -78,7 +78,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
                 //'url'         => 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
-                'url'         => '/cache-osm.de/{z}/{x}/{y}.png',
+                'url'         => '/{s}.cache-osm.de/{z}/{x}/{y}.png',
                 'localName'   => 'OpenStreetMapsDeutsch',
             ],
             (object) [
