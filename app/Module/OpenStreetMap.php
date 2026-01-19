@@ -58,25 +58,47 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
      */
     public function leafletJsTileLayers(): array
     {
+        $vaild = 300; // Sekunden
+
+        $secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
+        $exp    = time() + $vaild;
+        $nonce  = bin2hex(random_bytes(12));
+        $ip     = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        // HINWEIS: Token enthält KEIN path – das ist absichtlich pro Seite identisch
+        // aber enthält die Client-IP und wird unten pro style gebildet.
+        $makeTok = function (string $style) use ($secret, $exp, $nonce, $ip): string {
+            $data = $nonce . '|' . $exp . '|' . $ip . '|' . $style;
+            $tok  = base64_encode(hash_hmac('sha256', $data, $secret, true));
+            return rtrim(strtr($tok, '+/', '-_'), '=');
+        };
+
+        // Query-Strings pro Style
+        $qOrg = http_build_query(['exp' => $exp, 'n' => $nonce, 'tok' => $makeTok('org')]);
+        $qDe  = http_build_query(['exp' => $exp, 'n' => $nonce, 'tok' => $makeTok('de')]);
+        $qFr  = http_build_query(['exp' => $exp, 'n' => $nonce, 'tok' => $makeTok('fr')]);
+
+        $proxyUrl = '/modules_v4/osm-proxy/proxy';
+
         return [
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
-                'default'     => true,
+                'default'     => false,
                 'label'       => 'Mapnik',
                 'maxZoom'     => 19,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'url'         => $proxyUrl . '/org/{z}/{x}/{y}.png' . $qOrg,
                 'localName'   => 'OpenStreetMapsMapnik',
             ],
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">Karte hergestellt aus OpenStreetMap-Daten</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
-                'default'     => false,
+                'default'     => true,
                 'label'       => 'Deutsch',
-                'maxZoom'     => 18,
+                'maxZoom'     => 20,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+                'url'         => $proxyUrl . '/de/tiles/osmde/{z}/{x}/{y}.png' . $qDe,
                 'localName'   => 'OpenStreetMapsDeutsch',
             ],
             (object) [
@@ -86,10 +108,9 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                'url'         => $proxyUrl . '/fr/osmfr/{z}/{x}/{y}.png' . $qFr,
                 'localName'   => 'OpenStreetMapsFrench',
             ],
         ];
     }
-
 }
