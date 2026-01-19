@@ -78,7 +78,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
         $qDe  = http_build_query(['exp' => $exp, 'n' => $nonce, 'tok' => $makeTok('de')]);
         $qFr  = http_build_query(['exp' => $exp, 'n' => $nonce, 'tok' => $makeTok('fr')]);
 
-        $proxyUrl = '/modules_v4/osm-proxy/proxy';
+        $proxyUrl = '/osm-proxy';
 
         return [
             (object) [
