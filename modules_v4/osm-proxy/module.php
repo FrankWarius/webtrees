@@ -8,6 +8,6 @@ declare(strict_types=1);
 
 namespace OSMProxy;
 
-require __DIR__ . '/osm-proxy';
+require __DIR__ . '\OSMProxyModule.php';
 
 return new OSMProxyModule();
