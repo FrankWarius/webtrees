@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // SECRET
 $secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
 
