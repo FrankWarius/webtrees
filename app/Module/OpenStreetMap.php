@@ -88,7 +88,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 19,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => $proxyUrl . '/org/{z}/{x}/{y}.png' . $qOrg,
+                'url'         => $proxyUrl . '/org/{z}/{x}/{y}.png?' . $qOrg,
                 'localName'   => 'OpenStreetMapsMapnik',
             ],
             (object) [
@@ -98,7 +98,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => $proxyUrl . '/de/tiles/osmde/{z}/{x}/{y}.png' . $qDe,
+                'url'         => $proxyUrl . '/de/tiles/osmde/{z}/{x}/{y}.png?' . $qDe,
                 'localName'   => 'OpenStreetMapsDeutsch',
             ],
             (object) [
@@ -108,7 +108,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => $proxyUrl . '/fr/osmfr/{z}/{x}/{y}.png' . $qFr,
+                'url'         => $proxyUrl . '/fr/osmfr/{z}/{x}/{y}.png?' . $qFr,
                 'localName'   => 'OpenStreetMapsFrench',
             ],
         ];
