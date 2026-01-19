@@ -1,13 +1,15 @@
 <?php
 
-/**
- * 
- */
-
 declare(strict_types=1);
 
-namespace OSMProxy;
+use Fisharebest\Webtrees\Module\ModuleInterface;
+use OSMProxy\OSMProxyModule;
 
-require __DIR__ . '\OSMProxyModule.php';
-
-return new OSMProxyModule();
+/**
+ * Register module classes.
+ *
+ * @return ModuleInterface[]
+ */
+return [
+    new OSMProxyModule(),
+];
