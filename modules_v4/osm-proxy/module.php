@@ -12,6 +12,5 @@ use OSMProxy\OSMProxyModule;
  *
  * @return ModuleInterface[]
  */
-return [
-    new OSMProxyModule(),
-];
+
+return new OSMProxyModule();
