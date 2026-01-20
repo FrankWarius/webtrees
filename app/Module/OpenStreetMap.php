@@ -58,19 +58,21 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
      */
     public function leafletJsTileLayers(): array
     {
-        $vaild = 300; // Sekunden
 
-        $secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
-        $exp    = time() + $vaild;
-        $nonce  = bin2hex(random_bytes(12));
-        $ip     = $_SERVER['REMOTE_ADDR'] ?? '';
+        $validSeconds = 300; // Gültigkeit des Tokens
+        $secret = getenv('OSM_SIG_SECRET') ?: 'E)p=ra;0X^aW5PogT<h<NbP7QfmO{IG9';
 
-        // HINWEIS: Token enthält KEIN path – das ist absichtlich pro Seite identisch
-        // aber enthält die Client-IP und wird unten pro style gebildet.
-        $makeTok = function (string $style) use ($secret, $exp, $nonce, $ip): string {
-            $data = $nonce . '|' . $exp . '|' . $ip . '|' . $style;
-            $tok  = base64_encode(hash_hmac('sha256', $data, $secret, true));
-            return rtrim(strtr($tok, '+/', '-_'), '=');
+        $exp   = time() + $validSeconds;
+        $nonce = bin2hex(random_bytes(12));
+
+        // Session-Cookie für Token-Bindung
+        $sid   = $_COOKIE['__Secure-WT-ID'] ?? '';
+
+        // Token: nonce|exp|sid|style
+        $makeTok = function (string $style) use ($secret, $exp, $nonce, $sid): string {
+            $data = $nonce . '|' . $exp . '|' . $sid . '|' . $style;
+            $raw  = hash_hmac('sha256', $data, $secret, true);
+            return rtrim(strtr(base64_encode($raw), '+/', '-_'), '=');
         };
 
         $proxyBase = '/osm-proxy/';

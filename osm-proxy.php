@@ -1,78 +1,103 @@
 <?php
 
 declare(strict_types=1);
-$http404 = 409;
 
-// Geheimnis aus Umgebung (IIS) laden – NICHT im Code lassen
-$secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
+$HTTP_ERR = 409;
+$secret   = getenv('OSM_SIG_SECRET') ?: 'E)p=ra;0X^aW5PogT<h<NbP7QfmO{IG9';
 
-// Query-Parameter
-$path = isset($_GET['path']) ? $_GET['path'] : '';
-/*$path = urldecode($path);
-$path = ltrim($path, "./\\");
-$path = preg_replace('~[\\/]+~', '/', $path);
-*/
-
-/*
+// ---------------------------------------------------
+// 1) Parameter
+// ---------------------------------------------------
+$path  = $_GET['path'] ?? '';
 $exp   = isset($_GET['exp']) ? (int)$_GET['exp'] : 0;
 $nonce = $_GET['n']   ?? '';
 $tok   = $_GET['tok'] ?? '';
+$now   = time();
 
-// Ablauf kurz halten (z. B. 60–120s)
-$now = time();
-if ($exp < $now || $exp > $now + 600) {  // extra Obergrenze
-    http_response_code($http404);
+// Session-Cookie
+$sid = $_COOKIE['__Secure-WT-ID'] ?? '';
+
+// Normalize path
+$path = urldecode($path);
+$path = ltrim($path, "./\\");
+$path = preg_replace('~[\\/]+~', '/', $path);
+
+// ---------------------------------------------------
+// 2) Validierung
+// ---------------------------------------------------
+if ($path === '' || strpos($path, '..') !== false) {
+    header("X-Debug-Upstream: (invalid-path)");
+    http_response_code($HTTP_ERR);
     exit;
 }
-if ($nonce === '' || $tok === '') {
-    http_response_code($http404);
+
+if ($exp < $now || $exp > $now + 600 || !$nonce || !$tok || !$sid) {
+    header("X-Debug-Upstream: (invalid-token-params)");
+    http_response_code($HTTP_ERR);
     exit;
 }
 
-// Token an NONCE + EXP + CLIENT-IP + STYLE binden
-$clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
-$data = $nonce . '|' . $exp . '|' . $clientIp;
-$calc = base64_encode(hash_hmac('sha256', $data, $secret, true));
-$calc = rtrim(strtr($calc, '+/', '-_'), '=');
+// style = erstes Segment
+$style = explode('/', $path)[0] ?? '';
+
+if ($style === '') {
+    header("X-Debug-Upstream: (no-style)");
+    http_response_code($HTTP_ERR);
+    exit;
+}
+
+// ---------------------------------------------------
+// 3) Token prüfen: nonce|exp|sid|style
+// ---------------------------------------------------
+$data = $nonce . '|' . $exp . '|' . $sid . '|' . $style;
+$calc = rtrim(strtr(base64_encode(hash_hmac('sha256', $data, $secret, true)), '+/', '-_'), '=');
 
 if (!hash_equals($calc, $tok)) {
-    http_response_code($http404);
+    header("X-Debug-Status: (bad-token)");
+    header("X-Debug-Token: calc: $calc - tok: $tok");
+    header("X-Debug-Nonce: $nonce");
+    header("X-Debug-Exp: $exp");
+    header("X-Debug-SID: $sid");
+    header("X-Debug-style: $style");
+    http_response_code($HTTP_ERR);
     exit;
 }
-*/
 
-$upstream = "https://tile.openstreetmap.{$path}";
+// ---------------------------------------------------
+// 4) Upstream bauen
+// Path enthält style + OSM-Subpaths → direkt anfügen
+// ---------------------------------------------------
+$upstream = "https://tile.openstreetmap.$path";
 
-// Kachel holen
+// Debug immer setzen
+header("X-Debug-Upstream: $upstream");
+
+// ---------------------------------------------------
+// 5) Tile abrufen
+// ---------------------------------------------------
 $ch = curl_init($upstream);
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 3,
-    CURLOPT_TIMEOUT        => 8,
+    CURLOPT_CONNECTTIMEOUT => 4,
+    CURLOPT_TIMEOUT        => 10,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_USERAGENT      => 'WebtreesOSMProxy/2.2 (+wbt.warius.info)',
-    CURLOPT_HTTPHEADER     => ['Accept: image/png,image/*;q=0.8,*/*;q=0.5'],
 ]);
-$body = curl_exec($ch);
-$code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$body        = curl_exec($ch);
+$code        = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE) ?: 'image/png';
 unset($ch);
 
-
-header('X-Debug-Path: ' . $path);
-header('X-Debug-Upstream: ' . $upstream);
-
-    header('Content-Type: ' . $contentType);
-    header('Cache-Control: public, max-age=604800, immutable'); // 7 Tage
-    echo $body;
-    exit;
-
-if ($code >= 200 && $code < 300 && $body !== false) {
-    header('Content-Type: ' . $contentType);
-    header('Cache-Control: public, max-age=604800, immutable'); // 7 Tage
+// ---------------------------------------------------
+// 6) Ausliefern
+// ---------------------------------------------------
+if ($code >= 200 && $code < 300 && $body) {
+    header("Content-Type: $contentType");
+    header("Cache-Control: public, max-age=604800, immutable");
+    header("Content-Length: " . strlen($body));
     echo $body;
     exit;
 }
 
-// http_response_code($http404);
+http_response_code($HTTP_ERR);
 exit;
