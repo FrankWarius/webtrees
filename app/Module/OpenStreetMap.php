@@ -75,19 +75,19 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
 
         // Query-Strings pro Style
         $qOrg = http_build_query([
-            'path'  => '/org/{z}/{x}/{y}.png',
+            'path'  => '.org/{z}/{x}/{y}.png',
             'exp'   => $exp,
             'n'     => $nonce,
             'tok'   => $makeTok('org')
         ]);
         $qDe  = http_build_query([
-            'path'  => '/de/tiles/osmde/{z}/{x}/{y}.png',
+            'path'  => '.de/tiles/osmde/{z}/{x}/{y}.png',
             'exp'   => $exp,
             'n'     => $nonce,
             'tok'   => $makeTok('de')
         ]);
         $qFr  = http_build_query([
-            'path'  => '/fr/osmfr/{z}/{x}/{y}.png',
+            'path'  => '.fr/osmfr/{z}/{x}/{y}.png',
             'exp'   => $exp,
             'n'     => $nonce,
             'tok'   => $makeTok('fr')
