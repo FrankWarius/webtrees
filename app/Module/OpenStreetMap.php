@@ -93,7 +93,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
             'tok'   => $makeTok('fr')
         ]);
 
-        $proxyUrl = '/osm-proxy?';
+        $proxyUrl = '/osm-proxy.php?';
 
         return [
             (object) [
