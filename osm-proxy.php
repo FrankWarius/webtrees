@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+$http404 = 409;
 
 // Geheimnis aus Umgebung (IIS) laden – NICHT im Code lassen
 $secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
@@ -13,7 +14,7 @@ $tok   = $_GET['tok'] ?? '';
 // Pfad analysieren (erwartet: /cache-osm/<style>/<z>/<x>/<y>.png)
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '';
 if (!preg_match('~^/cache-osm/(org|fr|de)/([0-9]{1,2})/([0-9]{1,7})/([0-9]{1,7})\.png$~', $uri, $m)) {
-    http_response_code(404);
+    http_response_code($http404);
     exit;
 }
 $style = $m[1];                     // org|fr|de
@@ -25,11 +26,11 @@ $path = "{$z}/{$x}/{$y}.png";
 // Ablauf kurz halten (z. B. 60–120s)
 $now = time();
 if ($exp < $now || $exp > $now + 600) {  // extra Obergrenze
-    http_response_code(404);
+    http_response_code($http404);
     exit;
 }
 if ($nonce === '' || $tok === '') {
-    http_response_code(404);
+    http_response_code($http404);
     exit;
 }
 
@@ -40,7 +41,7 @@ $calc = base64_encode(hash_hmac('sha256', $data, $secret, true));
 $calc = rtrim(strtr($calc, '+/', '-_'), '=');
 
 if (!hash_equals($calc, $tok)) {
-    http_response_code(404);
+    http_response_code($http404);
     exit;
 }
 
@@ -56,7 +57,7 @@ switch ($style) {
         $upstream = "https://tile.openstreetmap.de/tiles/osmde/{$path}";
         break;
     default:
-        http_response_code(404);
+        http_response_code($http404);
         exit;
 }
 
@@ -82,5 +83,5 @@ if ($code >= 200 && $code < 300 && $body !== false) {
     exit;
 }
 
-http_response_code(404);
+http_response_code($http404);
 exit;
