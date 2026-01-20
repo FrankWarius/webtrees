@@ -8,6 +8,12 @@ $secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
 
 // Query-Parameter
 $path = isset($_GET['path']) ? $_GET['path'] : '';
+/*$path = urldecode($path);
+$path = ltrim($path, "./\\");
+$path = preg_replace('~[\\/]+~', '/', $path);
+*/
+
+/*
 $exp   = isset($_GET['exp']) ? (int)$_GET['exp'] : 0;
 $nonce = $_GET['n']   ?? '';
 $tok   = $_GET['tok'] ?? '';
@@ -33,6 +39,8 @@ if (!hash_equals($calc, $tok)) {
     http_response_code($http404);
     exit;
 }
+*/
+
 $upstream = "https://tile.openstreetmap.{$path}";
 
 // Kachel holen
@@ -50,6 +58,15 @@ $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE) ?: 'image/png';
 unset($ch);
 
+
+header('X-Debug-Path: ' . $path);
+header('X-Debug-Upstream: ' . $upstream);
+
+    header('Content-Type: ' . $contentType);
+    header('Cache-Control: public, max-age=604800, immutable'); // 7 Tage
+    echo $body;
+    exit;
+
 if ($code >= 200 && $code < 300 && $body !== false) {
     header('Content-Type: ' . $contentType);
     header('Cache-Control: public, max-age=604800, immutable'); // 7 Tage
@@ -57,5 +74,5 @@ if ($code >= 200 && $code < 300 && $body !== false) {
     exit;
 }
 
-http_response_code($http404);
+// http_response_code($http404);
 exit;

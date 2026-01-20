@@ -73,27 +73,27 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
             return rtrim(strtr($tok, '+/', '-_'), '=');
         };
 
-        // Query-Strings pro Style
-        $qOrg = http_build_query([
-            'path'  => 'org/{z}/{x}/{y}.png',
-            'exp'   => $exp,
-            'n'     => $nonce,
-            'tok'   => $makeTok('org')
-        ]);
-        $qDe  = http_build_query([
-            'path'  => 'de/tiles/osmde/{z}/{x}/{y}.png',
-            'exp'   => $exp,
-            'n'     => $nonce,
-            'tok'   => $makeTok('de')
-        ]);
-        $qFr  = http_build_query([
-            'path'  => 'fr/osmfr/{z}/{x}/{y}.png',
-            'exp'   => $exp,
-            'n'     => $nonce,
-            'tok'   => $makeTok('fr')
-        ]);
+        $proxyBase = '/osm-proxy/';
 
-        $proxyUrl = '/osm-proxy.php?';
+        // Query-Strings pro Style
+        $urlOrg = $proxyBase . 'org/{z}/{x}/{y}.png?' .
+            http_build_query([
+                'exp'   => $exp,
+                'n'     => $nonce,
+                'tok'   => $makeTok('org')
+            ]);
+        $urlDe  = $proxyBase . 'de/tiles/osmde/{z}/{x}/{y}.png?' .
+            http_build_query([
+                'exp'   => $exp,
+                'n'     => $nonce,
+                'tok'   => $makeTok('de')
+            ]);
+        $urlFr  =  $proxyBase . 'fr/osmfr/{z}/{x}/{y}.png?' .
+            http_build_query([
+                'exp'   => $exp,
+                'n'     => $nonce,
+                'tok'   => $makeTok('fr')
+            ]);
 
         return [
             (object) [
@@ -103,7 +103,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 19,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => $proxyUrl . $qOrg,
+                'url'         => $urlOrg,
                 'localName'   => 'OpenStreetMapsMapnik',
             ],
             (object) [
@@ -113,7 +113,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => $proxyUrl . $qDe,
+                'url'         => $urlDe,
                 'localName'   => 'OpenStreetMapsDeutsch',
             ],
             (object) [
@@ -123,7 +123,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
                 'subdomains'  => ['a', 'b', 'c'],
-                'url'         => $proxyUrl . $qFr,
+                'url'         => $urlFr,
                 'localName'   => 'OpenStreetMapsFrench',
             ],
         ];
