@@ -25,7 +25,7 @@ if ($nonce === '' || $tok === '') {
 
 // Token an NONCE + EXP + CLIENT-IP + STYLE binden
 $clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
-$data = $nonce . '|' . $exp . '|' . $clientIp . '|' . $style;
+$data = $nonce . '|' . $exp . '|' . $clientIp;
 $calc = base64_encode(hash_hmac('sha256', $data, $secret, true));
 $calc = rtrim(strtr($calc, '+/', '-_'), '=');
 
@@ -33,7 +33,7 @@ if (!hash_equals($calc, $tok)) {
     http_response_code($http404);
     exit;
 }
-$upstream = "https://tile.openstreetmap{$path}";
+$upstream = "https://tile.openstreetmap.{$path}";
 
 // Kachel holen
 $ch = curl_init($upstream);
