@@ -59,7 +59,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
     public function leafletJsTileLayers(): array
     {
 
-        $validSeconds = 300; // Gültigkeit des Tokens
+        $validSeconds = 600; // Gültigkeit des Tokens
         $secret = getenv('OSM_SIG_SECRET') ?: 'E)p=ra;0X^aW5PogT<h<NbP7QfmO{IG9';
 
         $exp   = time() + $validSeconds;

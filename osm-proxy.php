@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$HTTP_ERR = 409;
+$HTTP_ERR = 404;
 $secret   = getenv('OSM_SIG_SECRET') ?: 'E)p=ra;0X^aW5PogT<h<NbP7QfmO{IG9';
 
 // ---------------------------------------------------
@@ -31,8 +31,26 @@ if ($path === '' || strpos($path, '..') !== false) {
     exit;
 }
 
-if ($exp < $now || $exp > $now + 600 || !$nonce || !$tok || !$sid) {
-    header("X-Debug-Upstream: (invalid-token-params)");
+
+// 1) Expired
+if ($exp < $now) {
+    header("X-OSM-Status: expired");
+    // kein Fehlercode → Browser soll nicht Error-Page zeichnen
+    http_response_code(200);
+    echo '';
+    exit;
+}
+
+// 2) Exp zu weit in der Zukunft
+if ($exp > $now + 1000) {
+    header("X-Debug-Upstream: (exp-too-far)");
+    http_response_code($HTTP_ERR);
+    exit;
+}
+
+// 3) Pflichtdaten fehlen
+if (!$nonce || !$tok || !$sid) {
+    header("X-Debug-Upstream: (missing-token-fields)");
     http_response_code($HTTP_ERR);
     exit;
 }
