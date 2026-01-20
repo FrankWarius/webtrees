@@ -7,6 +7,7 @@ $http404 = 409;
 $secret = getenv('OSM_SIG_SECRET') ?: 'CHANGE_ME_TO_LONG_RANDOM_SECRET';
 
 // Query-Parameter
+$$path = isset($_GET['path']) ? $_GET['path'] : '';
 $exp   = isset($_GET['exp']) ? (int)$_GET['exp'] : 0;
 $nonce = $_GET['n']   ?? '';
 $tok   = $_GET['tok'] ?? '';
