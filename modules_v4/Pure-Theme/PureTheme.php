@@ -60,6 +60,7 @@ class PureTheme extends MinimalTheme implements ModuleCustomInterface {
         // Only files in the /public/ folder will be accessible via the webserver.
         // Since modules cannot copy their files to the /public/ folder, they need to provide them via a callback.
         $stylesheets[] = $this->assetUrl('css/Pure.css');
+        $stylesheets[] = $this->assetUrl('css/osm-tile-fix.css');
 
         return $stylesheets;
     }
