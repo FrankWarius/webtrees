@@ -58,6 +58,8 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
      */
     public function leafletJsTileLayers(): array
     {
+        $proxyBase = '/osm-proxy/';
+        $osmBase  = "https://tile.openstreetmap.";
 
         $validSeconds = 600; // Gültigkeit des Tokens
         $secret = getenv('OSM_SIG_SECRET') ?: 'E)p=ra;0X^aW5PogT<h<NbP7QfmO{IG9';
@@ -67,6 +69,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
 
         // Session-Cookie für Token-Bindung
         $sid   = $_COOKIE['__Secure-WT-ID'] ?? '';
+        $base = ($sid === '') ? $osmBase : $proxyBase;
 
         // Token: nonce|exp|sid|style
         $makeTok = function (string $style) use ($secret, $exp, $nonce, $sid): string {
@@ -75,22 +78,20 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
             return rtrim(strtr(base64_encode($raw), '+/', '-_'), '=');
         };
 
-        $proxyBase = '/osm-proxy/';
-
         // Query-Strings pro Style
-        $urlOrg = $proxyBase . 'org/{z}/{x}/{y}.png?' .
+        $urlOrg = $base . 'org/{z}/{x}/{y}.png?' .
             http_build_query([
                 'exp'   => $exp,
                 'n'     => $nonce,
                 'tok'   => $makeTok('org')
             ]);
-        $urlDe  = $proxyBase . 'de/tiles/osmde/{z}/{x}/{y}.png?' .
+        $urlDe  = $base . 'de/tiles/osmde/{z}/{x}/{y}.png?' .
             http_build_query([
                 'exp'   => $exp,
                 'n'     => $nonce,
                 'tok'   => $makeTok('de')
             ]);
-        $urlFr  =  $proxyBase . 'fr/osmfr/{z}/{x}/{y}.png?' .
+        $urlFr  =  $base . 'fr/osmfr/{z}/{x}/{y}.png?' .
             http_build_query([
                 'exp'   => $exp,
                 'n'     => $nonce,
