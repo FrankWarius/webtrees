@@ -5,6 +5,5 @@
     backface-visibility: hidden;
     transform: translateZ(0);
     outline: 1px solid transparent;
-    margin-right: -0.5px;
-    margin-left: -0.5px;
+    margin: -1px;
 }
