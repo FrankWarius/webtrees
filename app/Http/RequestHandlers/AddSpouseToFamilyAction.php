@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2025 webtrees development team
+ * Copyright (C) 2026 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -76,7 +76,7 @@ final class AddSpouseToFamilyAction implements RequestHandlerInterface
         $levels = Validator::parsedBody($request)->array('flevels');
         $tags   = Validator::parsedBody($request)->array('ftags');
         $values = Validator::parsedBody($request)->array('fvalues');
-        $gedcom = $this->gedcom_edit_service->editLinesToGedcom(Family::RECORD_TYPE, $levels, $tags, $values);
+        $gedcom = $this->gedcom_edit_service->editLinesToGedcom(Family::RECORD_TYPE, $levels, $tags, $values, false);
 
         if ($gedcom !== '') {
             $family->createFact($gedcom, false);
