@@ -50,7 +50,7 @@ class DB extends Manager
         self::MYSQL      => 'utf8mb4_unicode_ci',
         self::POSTGRES   => 'und-x-icu',
         self::SQLITE     => 'NOCASE',
-        self::SQL_SERVER => 'utf8_CI_AI',
+        self::SQL_SERVER => 'Latin1_General_100_CI_AI_SC_UTF8',
     ];
 
     private const array REGEX_OPERATOR = [
@@ -217,7 +217,7 @@ class DB extends Manager
         }
 
         if (self::driverName() === self::SQL_SERVER) {
-            return 'COLLATE SQL_UTF8_General_CI_AI LIKE';
+            return 'COLLATE Latin1_General_100_CI_AS_SC_UTF8 LIKE';
         }
 
         return 'LIKE';
