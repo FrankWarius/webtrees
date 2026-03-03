@@ -47,10 +47,20 @@ final readonly class Migration45 implements MigrationInterface
                 $table->string(column: 'gedcom_filename', length: 255)->default(value: 'tree.ged')->index();
                 $table->integer(column: 'imported')->default(value: 1)->index();
                 $table->integer(column: 'private')->default(value: 0)->index();
+
                 $table->integer(column: 'contact_user_id')->nullable()->index();
                 $table->integer(column: 'support_user_id')->nullable()->index();
-                $table->foreign(columns: ['contact_user_id'])->references(['user_id'])->on('user')->nullOnDelete()->cascadeOnUpdate();
-                $table->foreign(columns: ['support_user_id'])->references(['user_id'])->on('user')->nullOnDelete()->cascadeOnUpdate();
+
+                $table->foreign(columns: 'contact_user_id')
+                    ->references('user_id')
+                    ->on('user')
+                    ->onUpdate('no action')
+                    ->onDelete('no action');
+                $table->foreign(columns: 'support_user_id')
+                    ->references('user_id')
+                    ->on('user')
+                    ->onUpdate('no action')
+                    ->onDelete('no action');
             });
         }
 
