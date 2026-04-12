@@ -14,43 +14,34 @@
  */
 
 /*
- * On-screen keyboard, for entering characters that are not on the keyboard
+ * Bootstrap 5 styling for typeahead.js
  */
-.wt-osk {
-    position: fixed;
-    z-index: 1000;
-    top: 1rem;
-    display: none;
+
+.twitter-typeahead {
+    width: 100%;
 }
 
-.wt-osk-keys {
-    padding: 0.25rem;
-    font-size: larger;
+.twitter-typeahead .tt-hint {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-tertiary-color);
 }
 
-.wt-osk-group {
-    display: inline-block;
-    margin: 0.25rem;
+.twitter-typeahead .tt-menu {
+    background: var(--bs-body-bg);
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    box-shadow: var(--bs-box-shadow);
+    margin-top: 0.25rem;
     padding: 0.25rem 0;
+    width: 100%;
 }
 
-.wt-osk-key {
-    background: var(--bs-secondary-bg);
-    border-radius: .25rem;
-    color: var(--bs-emphasis-color);
-    padding: 0.25rem;
+.twitter-typeahead .tt-suggestion {
+    padding: 0.25rem 0.75rem;
     cursor: pointer;
 }
 
-.wt-osk-key-shift {
-    color: var(--bs-secondary-color);
-    font-size: smaller;
-}
-
-.wt-osk-keys.shifted .wt-osk-key {
-    color: var(--bs-secondary-color);
-}
-
-.wt-osk-keys.shifted .wt-osk-key-shift {
-    color: var(--bs-tertiary-color);
+.twitter-typeahead .tt-suggestion:hover,
+.twitter-typeahead .tt-suggestion.tt-cursor {
+    background-color: var(--bs-tertiary-bg);
 }
