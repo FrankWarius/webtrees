@@ -49,9 +49,9 @@ $theme = Registry::container()->get(ModuleThemeInterface::class);
             <?php endif ?>
         </title>
 
-        <!--set caonical link-->
+        <!--set canonical link-->
         <?php if (isset($record)): ?>
-            <link rel="canonical" href=" <?=e($record->url())?> "> 
+            <link rel="canonical" href="<?=e($record->url())?>"> 
         <?php endif ?>    
         <!--iOS-->
         <link rel="apple-touch-icon" sizes="180x180" href="<?= e(route(AppleTouchIconPng::class)) ?>">
