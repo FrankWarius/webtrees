@@ -2,9 +2,8 @@
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
-  --bs-body-line-height: 105%;
+  --bs-body-line-height: 1.05;
 
-  /* check */
   --bs-gutter-x : 0.4rem;
   --bs-gutter-y : 0rem;
   
@@ -15,10 +14,9 @@
   --link-decoration-hover: underline;
   --link-decoration: none;
 }
-
-/* proofed */
-header{
-  border-bottom: 1pt solid black;
+.row{
+  --bs-gutter-x : .4rem;
+  --bs-gutter-y : 0rem;
 }
 .h1, h1 {
   font-size: 160%;
@@ -39,42 +37,8 @@ header{
   font-size: 100%;
 }
 p, [dir] p {
-  margin-top: 0.2rem;
+  margin-top: 0.1rem;
   margin-bottom: 0.4rem;
-}
-table{
-  border-collapse: collapse;
-}
-[dir] tbody, [dir] td, [dir] tfoot, [dir] th, [dir] thead, [dir] tr {
-    border:inherit;
-}
-.card-header{
-  font-weight: 500;
-}
-.card{
-  --bs-card-border-color: black;
-}
-.table, [dir] .table{
-  width: auto;
-  border: solid lightslategray thin;
-}
-
-th, [dir] th{
-  font-weight: 500;
-}
-
-.wt-facts-table{
-  width: 100%;
-}
-.wt-facts-table xx{
-  font-weight: 600;
-}
-
-/* Check */
-
-.row{
-  --bs-gutter-x : .4rem;
-  --bs-gutter-y : 0rem;
 }
 .accordion{
   --bs-accordion-btn-padding-x: calc(var(--bs-gutter-x) * .5);
@@ -83,7 +47,9 @@ th, [dir] th{
 [dir] .accordion-button, [dir] .accordion-body{
   padding: var(--bs-accordion-btn-padding-x) var(--bs-accordion-btn-padding-y);
 }
-
+.table{
+  width: auto;
+}
 .wt-chart-box {
   line-height: 1.02;
 }
@@ -115,6 +81,9 @@ th, [dir] th{
 }
 [dir] .wt-block {
   margin-bottom: var(--bs-gutter-y) !important;
+}
+.wt-facts-table{
+  width: 100%;
 }
 [dir] .wt-facts-table th, [dir] .wt-facts-table td{
   padding: var(--bs-gutter-x)  .1rem;
