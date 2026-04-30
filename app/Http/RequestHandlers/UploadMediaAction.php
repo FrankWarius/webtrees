@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2025 webtrees development team
+ * Copyright (C) 2026 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -45,26 +45,13 @@ use function trim;
 use const UPLOAD_ERR_NO_FILE;
 use const UPLOAD_ERR_OK;
 
-/**
- * Manage media from the control panel.
- */
-class UploadMediaAction implements RequestHandlerInterface
+final class UploadMediaAction implements RequestHandlerInterface
 {
-    private MediaFileService $media_file_service;
-
-    /**
-     * @param MediaFileService $media_file_service
-     */
-    public function __construct(MediaFileService $media_file_service)
-    {
-        $this->media_file_service = $media_file_service;
+    public function __construct(
+        private readonly MediaFileService $media_file_service,
+    ) {
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $data_filesystem = Registry::filesystem()->data();
@@ -79,7 +66,7 @@ class UploadMediaAction implements RequestHandlerInterface
                 throw new FileUploadException($uploaded_file);
             }
 
-            $key      = substr($key, 9);
+            $key      = substr($key, 9); // "mediafile1", "mediafile2", ...
             $folder   = Validator::parsedBody($request)->string('folder' . $key);
             $filename = Validator::parsedBody($request)->string('filename' . $key);
 
@@ -97,15 +84,19 @@ class UploadMediaAction implements RequestHandlerInterface
             $filename = str_replace('\\', '/', $filename);
             $filename = trim($filename, '/');
 
-            if (preg_match('/([:])/', $filename, $match)) {
-                // Local media files cannot contain certain special characters, especially on MS Windows
-                FlashMessages::addMessage(I18N::translate('Filenames are not allowed to contain the character “%s”.', $match[1]));
+            $tmp = strpbrk($filename, MediaFileService::BLOCKED_CHARACTERS);
+
+            if ($tmp !== false) {
+                $message = I18N::translate('Filenames are not allowed to contain the character “%s”.', $tmp[0]);
+                FlashMessages::addMessage($message);
                 continue;
             }
 
-            if (preg_match('/(\.(php|pl|cgi|bash|sh|bat|exe|com|htm|html|shtml))$/i', $filename, $match)) {
-                // Do not allow obvious script files.
-                FlashMessages::addMessage(I18N::translate('Filenames are not allowed to have the extension “%s”.', $match[1]));
+            $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+            if (in_array(strtolower($extension), MediaFileService::BLOCKED_EXTENSIONS, true)) {
+                $message = I18N::translate('Filenames are not allowed to have the extension “%s”.', $extension);
+                FlashMessages::addMessage($message);
                 continue;
             }
 

@@ -2,7 +2,7 @@
 
 /**
  * webtrees: online genealogy
- * Copyright (C) 2025 webtrees development team
+ * Copyright (C) 2026 webtrees development team
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -35,7 +35,7 @@ class AuthAdministratorTest extends TestCase
 {
     public function testAllowed(): void
     {
-        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler = self::createStub(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn(response('lorem ipsum'));
 
         $user = $this->createMock(User::class);
@@ -54,7 +54,7 @@ class AuthAdministratorTest extends TestCase
         $this->expectException(HttpAccessDeniedException::class);
         $this->expectExceptionMessage('You do not have permission to view this page.');
 
-        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler = self::createStub(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn(response('lorem ipsum'));
 
         $user = $this->createMock(User::class);
@@ -68,7 +68,7 @@ class AuthAdministratorTest extends TestCase
 
     public function testNotLoggedIn(): void
     {
-        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler = self::createStub(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn(response('lorem ipsum'));
 
         $request    = self::createRequest()->withAttribute('user', new GuestUser());
