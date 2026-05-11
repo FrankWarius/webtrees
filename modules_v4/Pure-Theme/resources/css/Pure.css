@@ -55,19 +55,17 @@ table{
   --bs-card-border-color: black;
 }
 .table, [dir] .table{
-  width: auto;
   border: solid lightslategray thin;
 }
-
 th, [dir] th{
   font-weight: 500;
 }
 
+.wt-table-surname{
+  width: auto;
+}
 .wt-facts-table{
   width: 100%;
-}
-.wt-facts-table xx{
-  font-weight: 600;
 }
 
 /* Check */
