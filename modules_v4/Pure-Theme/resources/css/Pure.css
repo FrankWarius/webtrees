@@ -196,25 +196,6 @@ th,
   --bs-gutter-y: 0rem;
 }
 
-/* KORRIGIERT und STILLGELEGT.
-   Im Original stand hier:
-     .row, [dir].row {
-       padding: calc(--bs-gutter-x *.5) calc(--bs-gutter-y *.0);
-       margin:  calc(--bs-gutter-x *.5) calc(--bs-gutter-y *.0);
-     }
-   Zwei Fehler: das fehlende var() macht beide Deklarationen
-   ungueltig, und [dir].row trifft nur Elemente, die zugleich ein
-   dir-Attribut tragen. Der Block hatte also nie eine Wirkung.
-   Repariert eingeschaltet wuerde er das Layout aller Zeilen
-   veraendern — deshalb bleibt er auskommentiert, bis du ihn
-   bewusst willst. */
-/*
-.row, [dir] .row {
-  padding: calc(var(--bs-gutter-x) * 0.5) 0;
-  margin: calc(var(--bs-gutter-x) * 0.5) 0;
-}
-*/
-
 
 /* --- Akkordeon ----------------------------------------------------- */
 .accordion {
@@ -297,6 +278,10 @@ th,
   padding-bottom: 0.25rem;
 }
 
+[dir] .my-2 {
+  margin-bottom: .2rem !important;
+  margin-top: .2rem !important;
+}
 
 /* --- Schaltflaechen ------------------------------------------------ */
 .btn {
@@ -317,8 +302,7 @@ th,
   margin: inherit;
 }
 
-[dir] .table> :not(caption)>*>* 
-[dir] table:not([cellpadding]) td,
+[dir] .table> :not(caption)>*>* [dir] table:not([cellpadding]) td,
 [dir] table:not([cellpadding]) th {
   padding: 0.2rem 0.4rem;
 }
