@@ -58,24 +58,6 @@ return new class extends AbstractModule implements ModuleCustomInterface, Module
      */
     public function getFooter(ServerRequestInterface $request): string
     {
-        $url = route(ModuleAction::class, [
-            'module' => $this->name(),
-            'action' => 'Page',
-        ]);
-        return view($this->name() . '::footer', ['url' => $url]);
-    }
-
-    /**
-     * Generate the page that will be shown when we click the link in the footer.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public function getPageAction(ServerRequestInterface $request): ResponseInterface
-    {
-        return $this->viewResponse($this->name() . '::page', [
-            'title' => $this->title(),
-        ]);
+         return view($this->name() . '::footer');
     }
 };
