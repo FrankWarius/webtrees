@@ -4,6 +4,7 @@
 
 /modules_v4/*
 !/modules_v4/Pure-Theme/
+!/modules_v4/Warius-footer/
 
 /node_modules/
 
