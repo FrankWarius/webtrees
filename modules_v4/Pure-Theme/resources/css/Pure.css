@@ -1,0 +1,324 @@
+/* ==================================================================
+   Pure — webtrees-Theme
+   Portiert nach webtrees 2.3.0
+   ------------------------------------------------------------------
+   Farbschema: ausschliesslich hell. Das Theme muss dazu
+   bootstrapColorScheme() mit 'light' ueberschreiben.
+
+   Angeglichen an warius.info: Schriftfamilie, Ueberschriftengewicht,
+   Laufweite, Linkfarben, Tabellenausrichtung.
+   Groessen und Abstaende bleiben unveraendert aus der bisherigen
+   Fassung — die Oberflaeche ist datendicht, nicht fliesstextlastig.
+   ================================================================== */
+
+
+/* --- Schriftart Inter, selbst gehostet -----------------------------
+   Dateien im Ordner "fonts" neben dieser Datei ablegen.
+   Quelle: rsms/inter, SIL Open Font License 1.1.
+   Selbst gehostet statt ueber Google Fonts, damit keine Anfrage an
+   Dritte entsteht.
+   ------------------------------------------------------------------ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("Asset?asset=fonts%2FInter-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("Asset?asset=fonts%2FInter-Bold.woff2") format("woff2");
+}
+
+
+/* --- Grundwerte ---------------------------------------------------- */
+:root {
+  /* GEAENDERT: Inter als Textschrift, System-Stack als Rueckfall */
+  --bs-body-font-family: "Inter", var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  /* GEAENDERT: einheitenlos statt 105%. Eine Prozentangabe wird zu
+     einem festen Betrag berechnet und so vererbt; einheitenlos
+     rechnet jedes Element mit seiner eigenen Schriftgroesse. */
+  --bs-body-line-height: 1.05;
+
+  --bs-gutter-x: 0.4rem;
+  --bs-gutter-y: 0rem;
+
+  --chart-line-radius: 1rem;
+  --chart-line: solid gray thin;
+
+  /* GEAENDERT: Hover-Farbe von schwarz auf das Blau von warius.info */
+  --link-color: black;
+  --link-color-hover: #104e8b;
+  --link-decoration: none;
+  --link-decoration-hover: underline;
+}
+
+/* --- Grundschrift am body erzwingen --------------------------------
+   vendor.min.css setzt font-family und line-height direkt am body und
+   ueberschreibt damit Bootstraps variablengesteuerte Regel. Deshalb
+   hier noch einmal explizit, statt nur ueber die Variablen.
+   ------------------------------------------------------------------ */
+body {
+  font-family: var(--bs-body-font-family);
+  line-height: var(--bs-body-line-height);
+}
+
+[dir] body {
+  margin: 0;
+}
+
+/* --- Kopfbereich --------------------------------------------------- */
+header {
+  border-bottom: 1pt solid black;
+}
+
+
+/* --- Ueberschriften ------------------------------------------------
+   Groessen unveraendert. Gewicht und Laufweite von warius.info.
+   ------------------------------------------------------------------ */
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* NEU: aus theme.json, elements.heading */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.h1,
+h1 {
+  font-size: 160%;
+}
+
+.h2,
+h2 {
+  font-size: 140%;
+}
+
+.h3,
+h3 {
+  font-size: 130%;
+}
+
+.h4,
+h4 {
+  font-size: 120%;
+}
+
+.h5,
+h5 {
+  font-size: 110%;
+}
+
+.h6,
+h6 {
+  font-size: 100%;
+}
+
+
+/* --- Fliesstext ---------------------------------------------------- */
+p,
+[dir] p {
+  margin-top: 0.2rem;
+  margin-bottom: 0.4rem;
+}
+
+
+/* --- Tabellen ------------------------------------------------------ */
+table {
+  border-collapse: collapse;
+}
+
+/* NEU: aus theme.json, styles.blocks.core/table */
+tbody {
+  vertical-align: top;
+}
+
+[dir] tbody,
+[dir] td,
+[dir] tfoot,
+[dir] th,
+[dir] thead,
+[dir] tr {
+  border: inherit;
+}
+
+.table,
+[dir] .table {
+  border: solid var(--bs-table-border-color) thin;
+}
+
+th,
+[dir] th {
+  font-weight: 500;
+}
+
+
+/* --- Karten -------------------------------------------------------- */
+.card {
+  --bs-card-border-color: black;
+  --bs-card-spacer-y: 0.1rem;
+  --bs-card-spacer-x: 0.25rem;
+  --bs-card-cap-padding-x: calc(var(--bs-gutter-x) * 0.5);
+  --bs-card-cap-padding-y: calc(var(--bs-gutter-y) * 0.5);
+}
+
+.card-header {
+  font-weight: 500;
+}
+
+/* KORRIGIERT: Achsen waren vertauscht. Die Kurzform erwartet y x.
+   Wirkung: bisher 0.2rem oben/unten und 0 links/rechts, jetzt
+   umgekehrt. Falls der Kartenkopf dadurch zu flach wirkt, entweder
+   --bs-gutter-y anheben oder hier feste Werte setzen. */
+[dir] .card-header {
+  padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);
+}
+
+
+/* --- Raster -------------------------------------------------------- */
+.row {
+  --bs-gutter-x: 0.4rem;
+  --bs-gutter-y: 0rem;
+}
+
+/* KORRIGIERT und STILLGELEGT.
+   Im Original stand hier:
+     .row, [dir].row {
+       padding: calc(--bs-gutter-x *.5) calc(--bs-gutter-y *.0);
+       margin:  calc(--bs-gutter-x *.5) calc(--bs-gutter-y *.0);
+     }
+   Zwei Fehler: das fehlende var() macht beide Deklarationen
+   ungueltig, und [dir].row trifft nur Elemente, die zugleich ein
+   dir-Attribut tragen. Der Block hatte also nie eine Wirkung.
+   Repariert eingeschaltet wuerde er das Layout aller Zeilen
+   veraendern — deshalb bleibt er auskommentiert, bis du ihn
+   bewusst willst. */
+/*
+.row, [dir] .row {
+  padding: calc(var(--bs-gutter-x) * 0.5) 0;
+  margin: calc(var(--bs-gutter-x) * 0.5) 0;
+}
+*/
+
+
+/* --- Akkordeon ----------------------------------------------------- */
+.accordion {
+  --bs-accordion-btn-padding-x: calc(var(--bs-gutter-x) * 0.5);
+  --bs-accordion-btn-padding-y: 0.25rem;
+}
+
+/* KORRIGIERT: Achsen waren vertauscht, siehe Kartenkopf. */
+[dir] .accordion-button,
+[dir] .accordion-body {
+  padding: var(--bs-accordion-btn-padding-y) var(--bs-accordion-btn-padding-x);
+}
+
+
+/* --- webtrees-eigene Bausteine ------------------------------------- */
+.wt-table-surname {
+  width: auto;
+}
+
+.wt-facts-table {
+  width: 100%;
+}
+
+[dir] .wt-facts-table th,
+[dir] .wt-facts-table td {
+  padding: var(--bs-gutter-x) 0.1rem;
+}
+
+[dir] .wt-facts-table th {
+  width: 30%;
+}
+
+.wt-chart-box {
+  line-height: 1.02;
+}
+
+[dir] .wt-header-wrapper {
+  background: none;
+}
+
+.wt-site-title {
+  order: 4;
+  flex: 0 0 calc(100%);
+  font-size: x-large;
+  font-weight: bold;
+  color: black;
+}
+
+.wt-header-search {
+  order: 3;
+  align-items: flex-end;
+}
+
+.wt-secondary-navigation {
+  order: 2;
+  flex-grow: 1;
+  flex-direction: column;
+  flex-wrap: wrap-reverse;
+}
+
+/* UNVERAENDERT bei 650. Ueberschriften stehen jetzt auf 700; diese
+   Regel gewinnt weiterhin, weil sie spaeter steht und gleich
+   spezifisch ist. Auf 700 anheben, wenn der Seitentitel zu den
+   uebrigen Ueberschriften passen soll. */
+.wt-page-title {
+  font-weight: 650;
+}
+
+.wt-main-blocks,
+.wt-side-blocks {
+  --bs-gutter-y: 0.4rem;
+}
+
+[dir] .wt-block {
+  margin-bottom: var(--bs-gutter-y) !important;
+}
+
+.wt-footers {
+  font-size: calc(var(--bs-body-font-size) * 0.8);
+  padding-bottom: 0.25rem;
+}
+
+
+/* --- Schaltflaechen ------------------------------------------------ */
+.btn {
+  --bs-btn-padding-x: 0.2rem;
+  --bs-btn-padding-y: var(--bs-btn-padding-x);
+  --bs-btn-font-size: var(--bs-body-font-size);
+  --bs-btn-font-weight: var(--bs-body-font-weight);
+  --bs-btn-line-height: var(--bs-body-line-height);
+}
+
+
+/* --- DataTables ----------------------------------------------------
+   Zielt auf die Markup-Struktur von DataTables 2. Mit dem in
+   Vorbereitung befindlichen Wechsel auf 3.0.0 koennen sich die
+   Klassennamen aendern — dann hier nachziehen.
+   ------------------------------------------------------------------ */
+[dir] div.dt-container div.dt-layout-full> :only-child {
+  margin: inherit;
+}
+
+[dir] .table> :not(caption)>*>* 
+[dir] table:not([cellpadding]) td,
+[dir] table:not([cellpadding]) th {
+  padding: 0.2rem 0.4rem;
+}

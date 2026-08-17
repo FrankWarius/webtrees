@@ -2,7 +2,8 @@
 
 /build
 
-/modules_v4/
+/modules_v4/*
+!/modules_v4/Pure-Theme/
 
 /node_modules/
 
@@ -23,3 +24,6 @@
 
 /vendor/
 .vscode/launch.json
+
+web.old.config
+MyInfo.php
