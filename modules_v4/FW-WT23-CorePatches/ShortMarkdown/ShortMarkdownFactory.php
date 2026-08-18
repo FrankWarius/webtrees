@@ -1,14 +1,14 @@
 <?php
 
 /**
- * FW-Short-markdown
+ * FW-WT23-CorePatches
  *
- * Ablage: modules_v4/FW-Short-markdown/src/MarkdownFabrikMitKurzenLinks.php
+ * Ablage: modules_v4/FW-WT23-CorePatches/ShortMarkdown/ShortMarkdownFactory.php
  */
 
 declare(strict_types=1);
 
-namespace FrankWarius\ShortMarkdown;
+namespace FrankWarius\CorePatches;
 
 use Fisharebest\Webtrees\CommonMark\XrefExtension;
 use Fisharebest\Webtrees\Factories\MarkdownFactory;
@@ -38,12 +38,10 @@ use function strtr;
  * Nur autolink() ist überschrieben. markdown() wird unverändert geerbt und
  * verhält sich wie im Kern.
  */
-final class MarkdownFabrikMitKurzenLinks extends MarkdownFactory
+final class ShortMarkdownFactory extends MarkdownFactory
 {
     /**
      * Wie im Kern, ergänzt um die Konfiguration der ExternalLinkExtension.
-     * Die Werte für nofollow, noopener und noreferrer sind aus der bisherigen
-     * Kernanpassung unverändert übernommen.
      */
     protected const array CONFIG_AUTOLINK = [
         'allow_unsafe_links' => false,
@@ -75,7 +73,7 @@ final class MarkdownFabrikMitKurzenLinks extends MarkdownFactory
         $umgebung->addRenderer(Document::class, new DocumentRenderer());
         $umgebung->addRenderer(Paragraph::class, new ParagraphRenderer());
         $umgebung->addRenderer(Text::class, new TextRenderer());
-        $umgebung->addRenderer(Link::class, new ExternerLinkRenderer());
+        $umgebung->addRenderer(Link::class, new ShortLinkRenderer());
         $umgebung->addRenderer(Newline::class, new NewlineRenderer());
         $umgebung->addExtension(new AutolinkExtension());
         $umgebung->addExtension(new ExternalLinkExtension());

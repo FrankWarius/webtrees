@@ -1,14 +1,14 @@
 <?php
 
 /**
- * FW-Short-markdown
+ * FW-WT23-CorePatches
  *
- * Ablage: modules_v4/FW-Short-markdown/src/ExternerLinkRenderer.php
+ * Ablage: modules_v4/FW-WT23-CorePatches/ShortMarkdown/ShortLinkRenderer.php
  */
 
 declare(strict_types=1);
 
-namespace FrankWarius\ShortMarkdown;
+namespace FrankWarius\CorePatches;
 
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Node;
@@ -25,7 +25,7 @@ use function parse_url;
  * Linktext aber nicht die vollständige Adresse, sondern nur Schema, Host und
  * Pfad.
  */
-final class ExternerLinkRenderer implements NodeRendererInterface
+final class ShortLinkRenderer implements NodeRendererInterface
 {
     public function render(Node $node, ChildNodeRendererInterface $childRenderer): Stringable|string|null
     {
@@ -50,14 +50,14 @@ final class ExternerLinkRenderer implements NodeRendererInterface
             $attribute['rel'] = 'noopener noreferrer';
         }
 
-        return new HtmlElement('a', $attribute, $this->kuerzeUrlAufBasispfad($node->getUrl()));
+        return new HtmlElement('a', $attribute, $this->shortenUrlToBasePath($node->getUrl()));
     }
 
     /**
      * Liefert die Adresse ohne Abfragezeichenfolge und ohne Fragment.
      * Lässt sich die Adresse nicht zerlegen, bleibt sie unverändert.
      */
-    private function kuerzeUrlAufBasispfad(string $url): string
+    private function shortenUrlToBasePath(string $url): string
     {
         $bestandteile = parse_url($url);
 
