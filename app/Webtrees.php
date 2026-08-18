@@ -162,7 +162,7 @@ class Webtrees
         ClientIp::class,
         ContentLength::class,
         CompressResponse::class,
-        BadBotBlocker::class,
+    //  BadBotBlocker::class,
         UseDatabase::class,
         DebugLogger::class,
         UpdateDatabaseSchema::class,
