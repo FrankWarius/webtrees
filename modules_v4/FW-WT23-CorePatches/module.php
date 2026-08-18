@@ -43,7 +43,7 @@ return new class extends AbstractModule implements ModuleCustomInterface {
     {
         return 'Anpassungen am Verhalten von webtrees, die ohne Änderung am Kern auskommen.';
     }
-    
+
     /**
      * Läuft über die Middleware BootModules, also nach LoadRoutes und vor
      * Router. Änderungen an der Routensammlung greifen daher noch.
@@ -66,6 +66,7 @@ return new class extends AbstractModule implements ModuleCustomInterface {
         return [
             $this->loadPatch('SitemapUrl'),
             $this->loadPatch('ShortMarkdown'),
+            $this->loadPatch('RobotsTxt'),
         ];
     }
 
