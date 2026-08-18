@@ -5,7 +5,7 @@
 /modules_v4/*
 !/modules_v4/Pure-Theme/
 !/modules_v4/Warius-footer/
-!/modules_v4/FW-Short-markdown/
+!/modules_v4/FW-*/
 
 /node_modules/
 
