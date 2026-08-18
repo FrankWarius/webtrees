@@ -6,10 +6,12 @@
  * Sammelt Anpassungen am Verhalten von webtrees, die sich über die
  * vorgesehenen Haken erledigen lassen, damit der Kern unverändert bleibt.
  *
- * Je Anpassung ein Unterordner mit einer Klasse, die Patch implementiert.
- * Neue Anpassungen werden in patches() eingetragen — bewusst als Liste und
- * nicht über eine Verzeichnissuche, damit nachvollziehbar bleibt, was aktiv
- * ist.
+ * Aufbau: Je Anpassung ein Unterordner. Darin eine gleichnamige Datei mit
+ * einer gleichnamigen Klasse, die Patch implementiert — Ordner, Datei und
+ * Klasse heißen also gleich. Weitere Dateien einer Anpassung bindet deren
+ * Einsprungklasse selbst ein, nicht diese Datei.
+ *
+ * Eine neue Anpassung kostet genau eine Zeile in patches().
  *
  * Ablage: modules_v4/FW-WT23-CorePatches/module.php
  *
@@ -25,12 +27,9 @@ use Fisharebest\Webtrees\Module\AbstractModule;
 use Fisharebest\Webtrees\Module\ModuleCustomInterface;
 use Fisharebest\Webtrees\Module\ModuleCustomTrait;
 
-// Module in modules_v4 bringen keinen Autoloader mit, daher direkt einbinden.
+// Module in modules_v4 bringen keinen Autoloader mit. Hier nur die
+// gemeinsame Schnittstelle; alles Weitere lädt loadPatch().
 require_once __DIR__ . '/Patch.php';
-require_once __DIR__ . '/SitemapUrl/SitemapUrl.php';
-require_once __DIR__ . '/ShortMarkdown/ShortLinkRenderer.php';
-require_once __DIR__ . '/ShortMarkdown/ShortMarkdownFactory.php';
-require_once __DIR__ . '/ShortMarkdown/ShortMarkdown.php';
 
 return new class extends AbstractModule implements ModuleCustomInterface {
     use ModuleCustomTrait;
@@ -44,17 +43,7 @@ return new class extends AbstractModule implements ModuleCustomInterface {
     {
         return 'Anpassungen am Verhalten von webtrees, die ohne Änderung am Kern auskommen.';
     }
-
-    public function customModuleAuthorName(): string
-    {
-        return 'Frank Warius';
-    }
-
-    public function customModuleVersion(): string
-    {
-        return '1.0.0';
-    }
-
+    
     /**
      * Läuft über die Middleware BootModules, also nach LoadRoutes und vor
      * Router. Änderungen an der Routensammlung greifen daher noch.
@@ -67,13 +56,29 @@ return new class extends AbstractModule implements ModuleCustomInterface {
     }
 
     /**
+     * Aktive Anpassungen, bewusst als Liste und nicht über eine
+     * Verzeichnissuche — so ist auf einen Blick erkennbar, was läuft.
+     *
      * @return array<Patch>
      */
     private function patches(): array
     {
         return [
-            new SitemapUrl(),
-            new ShortMarkdown(),
+            $this->loadPatch('SitemapUrl'),
+            $this->loadPatch('ShortMarkdown'),
         ];
+    }
+
+    /**
+     * Lädt die Einsprungklasse einer Anpassung nach der Namenskonvention
+     * Ordner = Datei = Klasse und gibt eine Instanz zurück.
+     */
+    private function loadPatch(string $name): Patch
+    {
+        require_once __DIR__ . '/' . $name . '/' . $name . '.php';
+
+        $className = __NAMESPACE__ . '\\' . $name;
+
+        return new $className();
     }
 };
