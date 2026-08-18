@@ -13,13 +13,18 @@ declare(strict_types=1);
  */
 
 ?>
-# robots.txt for <?= $base_url ?>
+<?php
+// Hinweis: PHP verschluckt einen Zeilenumbruch direkt hinter dem
+// schliessenden PHP-Tag. Zeilen, die mit einer Ausgabe enden, haengen ihn
+// deshalb selbst an.
+?>
+# robots.txt for <?= $base_url, "\n" ?>
 <?php if ($base_path !== '') : ?>
 # CAUTION!  This robots.txt needs to be copied to the root folder.
 <?php endif ?>
 User-agent: *
 <?php foreach ($disallowed_paths as $disallowed_path) : ?>
-Disallow: <?= $base_path ?>/<?= $disallowed_path ?>
+Disallow: <?= $base_path ?>/<?= $disallowed_path, "\n" ?>
 <?php endforeach ?>
 Disallow: <?= $base_path ?>/login
 
@@ -68,5 +73,5 @@ Disallow: <?= $base_path ?>/module/statistics_chart
 Disallow: <?= $base_path ?>/module/tree
 Crawl-delay: 2
 <?php if ($sitemap_url !== '') : ?>
-Sitemap: <?= $sitemap_url ?>
+Sitemap: <?= $sitemap_url, "\n" ?>
 <?php endif ?>
