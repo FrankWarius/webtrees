@@ -1,0 +1,42 @@
+<?php
+
+use Fisharebest\Webtrees\I18N;
+
+/**
+ * @var array<object>        $chapters
+ * @var object               $mainChapter
+ * @var string               $moduleName
+ * @var string               $privacyPolicyDate
+ * @var array<string,string> $sectionViewByChapterKey
+ */
+?>
+
+    <h2 class="hh-legal-notice-chapter"><?= e($mainChapter->getHeading()) ?></h2>
+
+    <?php if ($mainChapter->getKey() === 'DataProtection') : ?>
+        <p class="hh-legal-notice-reference-date">
+            <small><?= I18N::translate('Privacy policy date: %s', e($privacyPolicyDate)) ?></small>
+        </p>
+    <?php endif ?>
+
+    <div class="hh-legal-notice-chapter-body">
+        <?php foreach ($chapters as $section) : ?>
+            <?php if ($section->getLink() !== $mainChapter->getId() || !$section->getEnabled()) : ?>
+                <?php continue; ?>
+            <?php endif ?>
+
+            <?php if (array_key_exists($section->getKey(), $sectionViewByChapterKey)) : ?>
+                <?php $chapter = $section ?>
+                <?= view($moduleName . '::page/sections/' . $sectionViewByChapterKey[$section->getKey()], get_defined_vars()) ?>
+                <?php continue; ?>
+            <?php endif ?>
+
+            <?php $paragraphs = $section->getContent() ?>
+            <?php if ($paragraphs !== []) : ?>
+                <h3 class="hh-legal-notice-section"><?= e($section->getHeading()) ?></h3>
+                <?php foreach ($paragraphs as $paragraph): ?>
+                    <p><?= e($paragraph) ?></p>
+                <?php endforeach ?>
+            <?php endif ?>
+        <?php endforeach ?>
+    </div>

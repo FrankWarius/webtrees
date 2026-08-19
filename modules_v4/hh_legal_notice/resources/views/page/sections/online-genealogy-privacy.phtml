@@ -1,0 +1,38 @@
+<?php
+
+use Fisharebest\Webtrees\I18N;
+?>
+
+    <h3 class="hh-legal-notice-section"><?= e($chapter->getHeading()) ?></h3>
+
+    <p>
+        <?php if ($useEuPrivacyLaw) : ?>
+            <?= I18N::plural('I am a strong advocate of data protection and would like to emphasize that I naturally make every effort to comply with the GDPR.', 'We are strong advocates of data protection and would like to emphasize that we naturally make every effort to comply with the GDPR.', $singular ? 1 : 2) ?>
+        <?php else : ?>
+            <?= I18N::plural('I am a strong advocate of data protection and would like to emphasize that I naturally make every effort to comply with applicable data protection requirements.', 'We are strong advocates of data protection and would like to emphasize that we naturally make every effort to comply with applicable data protection requirements.', $singular ? 1 : 2) ?>
+        <?php endif ?>
+        <?= I18N::translate('At the same time, online genealogy raises questions that are not always fully clarified legally and require careful balancing in individual cases.') ?>
+    </p>
+
+    <p>
+        <?= I18N::translate('Family trees are usually created from information contributed by relatives about entire branches of the family.') ?>
+        <?= I18N::plural('I therefore cannot verify that every person entered in this family tree knows about it or has given consent.', 'We therefore cannot verify that every person entered in this family tree knows about it or has given consent.', $singular ? 1 : 2) ?>
+    </p>
+
+    <p>
+        <?= I18N::plural('Taking all potentially sensitive data offline would, in my opinion, largely prevent the intended use for family history and historical research.', 'Taking all potentially sensitive data offline would, in our opinion, largely prevent the intended use for family history and historical research.', $singular ? 1 : 2) ?>
+        <?php if ($useEuPrivacyLaw) : ?>
+            <?= I18N::plural('I therefore continue to provide the data online on the basis of legitimate interests in family history and historical research.', 'We therefore continue to provide the data online on the basis of legitimate interests in family history and historical research.', $singular ? 1 : 2) ?>
+            <?= I18N::translate('The GDPR expressly recognizes that personal data may also be processed for historical research purposes, subject to appropriate safeguards.') ?>
+        <?php else : ?>
+            <?= I18N::plural('I therefore continue to provide the data online in the interest of family history and historical research.', 'We therefore continue to provide the data online in the interest of family history and historical research.', $singular ? 1 : 2) ?>
+        <?php endif ?>
+        <?= I18N::translate('The data is handled carefully, and objections or requests for restriction or deletion are reviewed individually.') ?>
+        <?= I18N::plural('I ask all users of this website to follow the procedure below:', 'We ask all users of this website to follow the procedure below:', $singular ? 1 : 2) ?>
+    </p>
+
+    <p>
+        <?= I18N::plural('If you discover data that you believe is unlawfully visible, please inform me.', 'If you discover data that you believe is unlawfully visible, please inform us.', $singular ? 1 : 2) ?>
+        <?= I18N::plural('I will then try as quickly as possible to obtain consent, remove visibility, or delete the data.', 'We will then try as quickly as possible to obtain consent, remove visibility, or delete the data.', $singular ? 1 : 2) ?>
+        <?= I18N::plural('If, for specific reasons, data about a person should not be visible even within the group of authorized registered users, please inform me so that I can further restrict visibility here as well.', 'If, for specific reasons, data about a person should not be visible even within the group of authorized registered users, please inform us so that we can further restrict visibility here as well.', $singular ? 1 : 2) ?>
+    </p>

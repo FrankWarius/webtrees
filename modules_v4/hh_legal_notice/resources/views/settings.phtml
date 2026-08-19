@@ -1,0 +1,920 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+use Fisharebest\Webtrees\View;
+use Fisharebest\Webtrees\Http\RequestHandlers\ControlPanel;
+use Hartenthaler\Webtrees\Module\LegalNotice\Internationalization\MoreI18N;
+use Hartenthaler\Webtrees\Module\LegalNotice\LegalNoticeSupport;
+
+/**
+ * @var string                  $title                  title of this custom module
+ * @var string                  $description            description of this module
+ *
+ * @var bool                    $showCopyRight          option whether copyright should be shown
+ * @var string                  $copyRightStartYear     start year of copyright
+ * @var string                  $copyRightName          name of holder of copyright
+ *
+ * @var string                  $responsibleFirst       first name(s) of responsible person
+ * @var string                  $responsibleSurname     surname(s) of responsible person
+ * @var string                  $responsibleSex         gender of responsible person ('M', 'F', 'X')
+ * @var string                  $showGravatar           option whether to show image from www.gravatar.com site for this user
+ * @var string                  $showEditorialResp      option whether to show the person responsible for editorial content
+ *
+ * @var string                  $organization           club name or organization name
+ *
+ * @var string                  $additionalAddress      additional address line
+ * @var string                  $street                 street in address of responsible person
+ * @var string                  $city                   city in address of responsible person
+ * @var string                  $phone                  phone number of responsible person (optional)
+ * @var string                  $fax                    fax number of responsible person (optional)
+ * @var string                  $email                  eMail address of responsible person (optional)
+ * @var string                  $simpleEmail            option whether to show only eMail address or to show additional header and body of eMail
+ *
+ * @var string                  $vatNumberLabel         label like "VAT ID No." or other registration number label
+ * @var string                  $vatNumber              VAT ID No. or other registration number
+ *
+ * @var string                  $showTreeContacts       option whether to show tree contacts
+ * @var string                  $showAdministrators     option whether to show administrators of webtrees
+ * @var string                  $dpoNamed               option whether a data protection officer has been designated
+ * @var string                  $dpoName                name of the data protection officer
+ * @var string                  $dpoCompany             company of the data protection officer
+ * @var string                  $dpoAddress             address of the data protection officer
+ * @var string                  $dpoEmail               e-mail address of the data protection officer
+ * @var string                  $supervisoryAuthorityName name of the competent supervisory authority
+ * @var string                  $supervisoryAuthorityUrl URL of the competent supervisory authority
+ * @var string                  $registeredUsersAreRelatives option whether registered users are relatives or relatives by marriage
+ * @var array<string,string>    $researchTypePrompts    research purpose detail prompts
+ * @var array<string,string>    $researchTypeDetailPreferences preference names for research purpose detail fields
+ * @var list<array{count:int,purpose:string,trees:list<string>}> $researchPurposeTreeSummaries per-tree research purposes grouped for admin orientation
+ * @var int                  $inactiveUserYears     when should inactive users be deleted?
+ * @var int                     $sensitiveDataYears  years after death before sensitive genealogical data is released
+ * @var array<int,object>       $inactiveUserAccountSummaries inactive user accounts for admin decision support
+ * @var string                  $registeredUserNames    compact list of registered users
+ *
+ * @var array<object>           $chapters               list of chapter objects
+ * @var array<int,string>       $dataProtectionSectionKeys keys of the data protection sections rendered on the page
+ * @var string                  $privacyPolicyDateSource source used for the privacy policy reference date
+ * @var string                  $privacyPolicyManualDate manually configured privacy policy reference date
+ *
+ * @var string                  $hostingCountry         country of the webtrees server location
+ * @var string                  $hostingCompanyName     hosting service company name
+ * @var string                  $hostingCompanyUrl      hosting service link
+ * @var string                  $hostingPrivacyNotice   hosting service link to privacy notice
+ * @var bool                    $orderProcessing        option if Auftragsverarbeitung is used
+ * @var string                  $hostingStartDate       hosting Auftragsverarbeitung agreement first date
+ * @var string                  $hostingEndDate         hosting Auftragsverarbeitung agreement last date
+ * @var string                  $showGoogleCharts       option whether Google Charts should be mentioned as third-party service
+ * @var string                  $additionalThirdPartyServices additional third-party services, one service per line
+ */
+?>
+
+<?= view('components/breadcrumbs', [
+        'links' => [route(ControlPanel::class) => MoreI18N::xlate('Control panel'), $title]]) ?>
+
+<h1><?= e($title) ?></h1>
+<p><?= e($description) ?></p>
+
+<div class="hh-legal-notice hh-legal-notice-settings mb-5">
+    <?php $chapterByKey = [] ?>
+    <?php foreach ($chapters as $chapter) : ?>
+        <?php $chapterByKey[$chapter->getKey()] = $chapter ?>
+    <?php endforeach ?>
+    <?php $chapterGroups = [
+        [
+            'heading' => I18N::translate('In which sequence should the sections of the chapter "Data protection" be shown?'),
+            'label' => I18N::translate('Section'),
+            'parentKey' => 'DataProtection',
+            'keys' => $dataProtectionSectionKeys,
+        ],
+    ] ?>
+    <?php foreach ($dataProtectionSectionKeys as $dataProtectionSectionKey) : ?>
+        <?php $childKeys = LegalNoticeSupport::listChildChapterKeys($dataProtectionSectionKey) ?>
+        <?php if ($childKeys !== []) : ?>
+            <?php $chapterGroups[] = [
+                'heading' => I18N::translate('In which sequence should the subsections of "%s" be shown?', $chapterByKey[$dataProtectionSectionKey]->getHeading()),
+                'label' => I18N::translate('Subsection'),
+                'parentKey' => $dataProtectionSectionKey,
+                'keys' => $childKeys,
+            ] ?>
+        <?php endif ?>
+    <?php endforeach ?>
+    <?php $chapterGroups[] = [
+        'heading' => I18N::translate('In which sequence should the sections of the chapter "Legal Regulations" be shown?'),
+        'label' => I18N::translate('Section'),
+        'parentKey' => 'LegalRegulations',
+        'keys' => LegalNoticeSupport::listChildChapterKeys('LegalRegulations'),
+    ] ?>
+
+    <form method="post">
+        <?= csrf_field() ?>
+        <input type="hidden" name="save" id="save" value="1">
+
+        <h3><?= I18N::translate('In which sequence should the main chapters be shown?') ?></h3>
+        <table class="table table-bordered wt-table-menu">
+            <thead>
+                <tr>
+                    <th><?= I18N::translate('Chapter') ?></th>
+                    <th class="text-center"><?= MoreI18N::xlate('Enabled') ?></th>
+                    <th class="text-center"><?= MoreI18N::xlate('Move up') ?></th>
+                    <th class="text-center"><?= MoreI18N::xlate('Move down') ?></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php foreach ($chapters as $chapter) : ?>
+                    <?php if ($chapter->getLevel() == 1): ?>
+                        <tr>
+                            <th scope="col">
+                                <input type="hidden" name="order[]" value="<?= $chapter->getKey() ?>">
+                                <span title="<?= $chapter->getHeading() ?>">
+                                    <?= $chapter->getHeading() ?>
+                                </span>
+                            </th>
+
+                            <td class="text-center">
+                                <label class="d-block">
+                                    <input type="checkbox" name="status-<?= $chapter->getKey() ?>" id="status-<?= $chapter->getKey() ?>" data-controls-chapters="<?= e($chapter->getKey()) ?>" <?= ($chapter->getEnabled()) ? 'checked' : '' ?>>
+                                    <span class="sr-only">
+                                        <?= MoreI18N::xlate('Enabled') ?>
+                                    </span>
+                                </label>
+                            </td>
+
+                            <td class="move up text-center">
+                                <a href="#" title="<?= MoreI18N::xlate('Move up') ?>">
+                                    <?= view('icons/arrow-up') ?>
+                                </a>
+                            </td>
+                            <td class="move down text-center">
+                                <a href="#" title="<?= MoreI18N::xlate('Move down') ?>">
+                                    <?= view('icons/arrow-down') ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endif ?>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+
+        <?php foreach ($chapterGroups as $chapterGroup) : ?>
+            <?php $parentChapter = $chapterByKey[$chapterGroup['parentKey']] ?? null ?>
+            <?php if ($parentChapter === null) : ?>
+                <?php continue ?>
+            <?php endif ?>
+
+            <div class="hh-legal-notice-dependent-chapters<?= $parentChapter->getEnabled() ? '' : ' d-none' ?>" data-parent-key="<?= e($chapterGroup['parentKey']) ?>">
+                <h3><?= e($chapterGroup['heading']) ?></h3>
+                <table class="table table-bordered wt-table-menu">
+                    <thead>
+                    <tr>
+                        <th><?= e($chapterGroup['label']) ?></th>
+                        <th class="text-center"><?= MoreI18N::xlate('Enabled') ?></th>
+                        <th class="text-center"><?= MoreI18N::xlate('Move up') ?></th>
+                        <th class="text-center"><?= MoreI18N::xlate('Move down') ?></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <?php foreach ($chapters as $chapter) : ?>
+                        <?php if (in_array($chapter->getKey(), $chapterGroup['keys'], true)): ?>
+                            <tr>
+                                <th scope="col">
+                                    <input type="hidden" name="order[]" value="<?= $chapter->getKey() ?>">
+                                    <span title="<?= $chapter->getHeading() ?>">
+                                        <?= $chapter->getHeading() ?>
+                                    </span>
+                                </th>
+
+                                <td class="text-center">
+                                    <label class="d-block">
+                                        <input type="checkbox" name="status-<?= $chapter->getKey() ?>" id="status-<?= $chapter->getKey() ?>" data-controls-chapters="<?= e($chapter->getKey()) ?>" <?= ($chapter->getEnabled()) ? 'checked' : '' ?>>
+                                        <span class="sr-only">
+                                            <?= MoreI18N::xlate('Enabled') ?>
+                                        </span>
+                                    </label>
+                                </td>
+
+                                <td class="move up text-center">
+                                    <a href="#" title="<?= MoreI18N::xlate('Move up') ?>">
+                                        <?= view('icons/arrow-up') ?>
+                                    </a>
+                                </td>
+                                <td class="move down text-center">
+                                    <a href="#" title="<?= MoreI18N::xlate('Move down') ?>">
+                                        <?= view('icons/arrow-down') ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endforeach ?>
+
+        <button type="submit" class="btn btn-secondary d-block mb-3" name="resetOrder" value="1">
+            <?= I18N::translate('Restore default sorting for all chapters and sections') ?>
+        </button>
+
+        <h4><?= MoreI18N::xlate('Responsible person') . ' (' . I18N::translate('Name') . ' ' . I18N::translate('mandatory') . ')' ?></h4>
+
+        <div class="row">
+            <!-- first names of responsible person -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="responsibleFirst">
+                <?= I18N::translate('First name(s)') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="responsibleFirst" name="responsibleFirst" type="text"
+                       value="<?= $responsibleFirst ?>">
+            </div>
+
+            <!-- surnames of responsible person -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="responsibleSurname">
+                <?= I18N::translate('Surname(s)') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="responsibleSurname" name="responsibleSurname" type="text"
+                       value="<?= $responsibleSurname ?>">
+            </div>
+
+            <!-- sex of responsible person -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="responsibleSex">
+                <?= MoreI18N::xlate('Sex') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <?= view('components/radios-inline', [
+                    'id' => 'responsibleSex',
+                    'name' => 'responsibleSex',
+                    'options' => [
+                        'M' => MoreI18N::xlate('Male'),
+                        'F' => MoreI18N::xlate('Female'),
+                        'X' => I18N::translate('Other sex'),
+                    ],
+                    'selected' => $responsibleSex,
+                ]) ?>
+            </div>
+
+            <!-- show gravatar -->
+            <fieldset class="form-group mb-3">
+                <div class="row">
+                    <legend class="col-form-label col-sm-3 wt-page-options-label">
+                        <?= I18N::translate('Should a gravatar image be shown (see www.gravatar.com)?') ?>
+                    </legend>
+                    <div class="col-sm-9 wt-page-options-value">
+                        <?= view('components/radios-inline', [
+                            'id' => 'showGravatar',
+                            'name' => 'showGravatar',
+                            'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                            'selected' => (int)$showGravatar
+                        ]) ?>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- show person responsible for editorial content -->
+            <fieldset class="form-group mb-3">
+                <div class="row">
+                    <legend class="col-form-label col-sm-3 wt-page-options-label">
+                        <?= I18N::translate('Does this website contain editorially prepared content that is not intended only for the family, such as blog posts or news articles?') ?>
+                    </legend>
+                    <div class="col-sm-9 wt-page-options-value">
+                        <?= view('components/radios-inline', [
+                            'id' => 'showEditorialResp',
+                            'name' => 'showEditorialResp',
+                            'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                            'selected' => (int)$showEditorialResp
+                        ]) ?>
+                        <p class="small text-muted mb-0">
+                            <?= I18N::translate('If enabled, the person named in the legal notice is also shown as responsible for editorial content. The address is referenced from the legal notice above. If Section 18 paragraph 2 of the German Media State Treaty applies, this person must be resident in Germany.') ?>
+                        </p>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <h4><?= I18N::translate('Club or Organization') ?></h4>
+
+        <div class="row">
+            <!-- name of organization -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="organization">
+                <?= I18N::translate('Name of club or organization') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="organization" name="organization" type="text" value="<?= $organization ?>">
+            </div>
+        </div>
+        <h4><?= I18N::translate('Address data') . ' (' . I18N::translate('mandatory') . ')'  ?></h4>
+
+        <div class="row">
+            <!-- additional address line -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="additionalAddress">
+                <?= I18N::translate('Additional address line') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="additionalAddress" name="additionalAddress" type="text" value="<?= $additionalAddress ?>">
+            </div>
+
+            <!-- street name and house number -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="street">
+                <?= I18N::translate('Street name and house number') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="street" name="street" type="text" value="<?= $street ?>">
+            </div>
+
+            <!-- city and zip code -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="city">
+                <?= I18N::translate('City including zip code') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="city" name="city" type="text" value="<?= $city ?>">
+            </div>
+        </div>
+        <h4><?= I18N::translate('Communication data') ?></h4>
+
+        <div class="row">
+            <!-- phone number -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="phone">
+                <?= I18N::translate('Phone number (including country prefix, e.g. "+49 30 123456")') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="phone" name="phone" type="text" value="<?= $phone ?>">
+            </div>
+
+            <!--fax number -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="fax">
+                <?= I18N::translate('Fax number (including country prefix, e.g. "+49 30 654321")') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="fax" name="fax" type="text" value="<?= $fax ?>">
+            </div>
+
+            <!-- eMail address -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="email">
+                <?= I18N::translate('eMail address') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="email" name="email" type="text" value="<?= $email ?>">
+            </div>
+
+            <!-- use simple eMail link -->
+            <fieldset class="form-group mb-3">
+                <div class="row">
+                    <legend class="col-form-label col-sm-3 wt-page-options-label">
+                        <?= I18N::translate('Should a simple eMail link be used (if "no": subject and body of eMail are generated, too)?') ?>
+                    </legend>
+                    <div class="col-sm-9 wt-page-options-value">
+                        <?= view('components/radios-inline', [
+                            'id' => 'simpleEmail',
+                            'name' => 'simpleEmail',
+                            'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                            'selected' => (int)$simpleEmail
+                        ]) ?>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <h4><?= I18N::translate('Registration data') ?></h4>
+
+        <div class="row">
+            <!-- label for VAT ID or other registration number -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="vatNumberLabel">
+                <?= I18N::translate('Label like "VAT ID No." or other registration number label') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="vatNumberLabel" name="vatNumberLabel" type="text" value="<?= $vatNumberLabel ?>">
+            </div>
+
+            <!-- registration number -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="vatNumber">
+                <?= I18N::translate('Registration number') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="vatNumber" name="vatNumber" type="text" value="<?= $vatNumber ?>">
+            </div>
+        </div>
+        <h4><?= I18N::translate('Additional contacts to be shown') ?></h4>
+
+        <div class="row">
+
+            <!-- show tree contacts -->
+            <fieldset class="form-group mb-3">
+                <div class="row">
+                    <legend class="col-form-label col-sm-3 wt-page-options-label">
+                        <?= I18N::translate('Should the tree contacts be shown (there are maybe genealogical and technical contacts defined)?') ?>
+                    </legend>
+                    <div class="col-sm-9 wt-page-options-value">
+                        <?= view('components/radios-inline', [
+                            'id' => 'showTreeContacts',
+                            'name' => 'showTreeContacts',
+                            'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                            'selected' => (int)$showTreeContacts
+                        ]) ?>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- show administrators -->
+            <fieldset class="form-group mb-3">
+                <div class="row">
+                    <legend class="col-form-label col-sm-3 wt-page-options-label">
+                        <?= I18N::translate('Should the administrators of this website be shown?') ?>
+                    </legend>
+                    <div class="col-sm-9 wt-page-options-value">
+                        <?= view('components/radios-inline', [
+                            'id' => 'showAdministrators',
+                            'name' => 'showAdministrators',
+                            'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                            'selected' => (int)$showAdministrators
+                        ]) ?>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="DataProtectionOfficer">
+            <h4><?= I18N::translate('Data protection officer') ?></h4>
+
+            <div class="row">
+                <fieldset class="form-group mb-3 col-12">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 wt-page-options-label">
+                            <?= I18N::translate('Has a data protection officer been designated?') ?>
+                        </legend>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <?= view('components/radios-inline', [
+                                'id' => 'dpoNamed',
+                                'name' => 'dpoNamed',
+                                'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                                'selected' => (int)($dpoNamed ?? '0'),
+                            ]) ?>
+                            <p class="small text-muted">
+                                <?= I18N::translate('If no data protection officer has been designated, the privacy policy states that no designation is required under the applicable law.') ?>
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="col-12 hh-legal-notice-input-setting" data-dependent-on-input="dpoNamed" data-dependent-value="1">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label wt-page-options-label" for="dpoName">
+                            <?= I18N::translate('Name of the data protection officer') ?>
+                        </label>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <input class="form-control" id="dpoName" name="dpoName" type="text" value="<?= e($dpoName) ?>">
+                        </div>
+
+                        <label class="col-sm-3 col-form-label wt-page-options-label" for="dpoCompany">
+                            <?= I18N::translate('Company of the data protection officer') ?>
+                        </label>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <input class="form-control" id="dpoCompany" name="dpoCompany" type="text" value="<?= e($dpoCompany) ?>">
+                        </div>
+
+                        <label class="col-sm-3 col-form-label wt-page-options-label" for="dpoAddress">
+                            <?= I18N::translate('Address of the data protection officer') ?>
+                        </label>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <textarea class="form-control" id="dpoAddress" name="dpoAddress" rows="3"><?= e($dpoAddress) ?></textarea>
+                        </div>
+
+                        <label class="col-sm-3 col-form-label wt-page-options-label" for="dpoEmail">
+                            <?= I18N::translate('E-mail address of the data protection officer') ?>
+                        </label>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <input class="form-control" id="dpoEmail" name="dpoEmail" type="email" value="<?= e($dpoEmail) ?>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php if ($researchPurposeTreeSummaries !== []) : ?>
+            <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="Purpose">
+                <h4><?= I18N::translate('Research purposes of family trees') ?></h4>
+                <p class="small text-muted">
+                    <?= I18N::translate('The list shows the research purposes stored by hh-family-trees-list as guidance for configuring the overall purpose of this website.') ?>
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-sm small">
+                        <thead>
+                            <tr>
+                                <th class="text-end"><?= I18N::translate('Frequency') ?></th>
+                                <th><?= I18N::translate('Purpose') ?></th>
+                                <th><?= MoreI18N::xlate('Family trees') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($researchPurposeTreeSummaries as $summary) : ?>
+                                <tr>
+                                    <td class="text-end"><?= e((string) $summary['count']) ?></td>
+                                    <td><?= e($summary['purpose']) ?></td>
+                                    <td><?= e(implode(', ', $summary['trees'])) ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="Purpose" data-dependent-on-any-chapter="<?= e(implode(' ', array_keys($researchTypeDetailPreferences))) ?>">
+            <h4><?= I18N::translate('Research purpose details') ?></h4>
+
+            <div class="row">
+                <?php foreach ($researchTypeDetailPreferences as $researchType => $detailPreference) : ?>
+                    <label class="col-sm-3 col-form-label wt-page-options-label hh-legal-notice-section-setting" data-dependent-on-chapter="<?= e($researchType) ?>" for="<?= e($detailPreference) ?>">
+                        <?= e($chapterByKey[$researchType]->getHeading()) ?>
+                    </label>
+                    <div class="col-sm-9 wt-page-options-value hh-legal-notice-section-setting" data-dependent-on-chapter="<?= e($researchType) ?>">
+                        <input class="form-control" id="<?= e($detailPreference) ?>" name="<?= e($detailPreference) ?>" type="text" value="<?= e($$detailPreference) ?>" placeholder="<?= e($researchTypePrompts[$researchType]) ?>">
+                    </div>
+                <?php endforeach ?>
+                <div class="offset-sm-3 col-sm-9 wt-page-options-value">
+                    <p class="small text-muted mb-0">
+                        <?= I18N::translate('The detail fields are optional and make the generated purpose description more specific. Visibility and sequence are controlled by the subsections of "Purpose". Research focus details are not translated, so they should be kept short.') ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="UserAccountData">
+            <h4><?= I18N::translate('Registered users') ?></h4>
+
+            <div class="row">
+                <fieldset class="form-group mb-3">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 wt-page-options-label">
+                            <?= I18N::translate('Are the registered users relatives or relatives by marriage?') ?>
+                        </legend>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <?= view('components/radios-inline', [
+                                'id' => 'registeredUsersAreRelatives',
+                                'name' => 'registeredUsersAreRelatives',
+                                'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                                'selected' => (int)$registeredUsersAreRelatives
+                            ]) ?>
+                            <p class="small text-muted">
+                                <?= I18N::translate('Select this only if registered users are limited to relatives or relatives by marriage and family-internal confidentiality should be stated in the privacy policy.') ?>
+                                <?php if ($registeredUserNames !== '') : ?>
+                                    <br>
+                                    <?= I18N::translate('Registered users: %s', e($registeredUserNames)) ?>
+                                <?php endif ?>
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="row">
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="inactiveUserYears">
+                    <?= I18N::translate('When are inactive user accounts deleted?') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <?= view('components/select', [
+                        'id' => 'inactiveUserYears',
+                        'name' => 'inactiveUserYears',
+                        'options' => ['0' => MoreI18N::xlate('never')] + array_combine(
+                            range(1, 10),
+                            array_map(static fn (int $years): string => I18N::plural('after %s year', 'after %s years', $years, I18N::number($years)), range(1, 10))
+                        ),
+                        'selected' => $inactiveUserYears ?? '0',
+                    ]) ?>
+                    <p class="small text-muted">
+                        <?= I18N::translate('If "never" is selected, no retention period for inactive user accounts is mentioned in the privacy policy.') ?>
+                        <br>
+                        <?php if ($inactiveUserAccountSummaries === []) : ?>
+                            <?= I18N::translate('No user account has been inactive for at least one year.') ?>
+                        <?php else : ?>
+                            <?= I18N::translate('User accounts inactive for at least one year:') ?>
+                        <?php endif ?>
+                    </p>
+                    <?php if ($inactiveUserAccountSummaries !== []) : ?>
+                        <ul class="small text-muted">
+                            <?php foreach ($inactiveUserAccountSummaries as $inactiveUserAccountSummary) : ?>
+                                <li>
+                                    <?= I18N::plural(
+                                        '%1$s: inactive since %2$s (%3$s year).',
+                                        '%1$s: inactive since %2$s (%3$s years).',
+                                        $inactiveUserAccountSummary->inactiveYears,
+                                        e($inactiveUserAccountSummary->name),
+                                        date('Y-m-d', $inactiveUserAccountSummary->lastActiveTimestamp),
+                                        I18N::number($inactiveUserAccountSummary->inactiveYears)
+                                    ) ?>
+                                </li>
+                            <?php endforeach ?>
+                        </ul>
+                    <?php endif ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="DataProtection">
+            <h4><?= I18N::translate('Privacy policy reference date') ?></h4>
+
+            <div class="row">
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="privacyPolicyDateSource">
+                    <?= I18N::translate('Which date should be shown in the privacy policy?') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <?= view('components/select', [
+                        'id' => 'privacyPolicyDateSource',
+                        'name' => 'privacyPolicyDateSource',
+                        'options' => [
+                            'release' => I18N::translate('Module release date'),
+                            'manual' => I18N::translate('Manually configured date'),
+                            'current' => I18N::translate('Current date'),
+                        ],
+                        'selected' => $privacyPolicyDateSource,
+                    ]) ?>
+                    <p class="small text-muted">
+                        <?= I18N::translate('Use the current date only if you want the dynamically generated privacy policy to always show the day on which it is viewed.') ?>
+                    </p>
+                </div>
+
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="privacyPolicyManualDate">
+                    <?= I18N::translate('Manual privacy policy date') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <input class="form-control" id="privacyPolicyManualDate" name="privacyPolicyManualDate" type="date" value="<?= e($privacyPolicyManualDate) ?>">
+                    <p class="small text-muted">
+                        <?= I18N::translate('Used only when the manually configured date option is selected.') ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h4><?= I18N::translate('Server location') ?></h4>
+
+        <div class="row">
+            <!-- country of the webtrees server location -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingCountry">
+                <?= I18N::translate('Country of the webtrees server location') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="hostingCountry" name="hostingCountry" type="text" value="<?= $hostingCountry ?>">
+            </div>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="Hosting">
+            <h4><?= I18N::translate('Hosting service') ?></h4>
+
+            <div class="row">
+            <!-- hosting service company name -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingCompanyName">
+                <?= I18N::translate('Name of hosting service company') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="hostingCompanyName" name="hostingCompanyName" type="text" value="<?= $hostingCompanyName ?>">
+            </div>
+
+            <!-- hosting service link (URL) -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingCompanyUrl">
+                <?= I18N::translate('Hosting service link (URL)') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="hostingCompanyUrl" name="hostingCompanyUrl" type="text" value="<?= $hostingCompanyUrl ?>">
+            </div>
+
+            <!-- hosting service link to privacy notice (URL) -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingPrivacyNotice">
+                <?= I18N::translate('Hosting service link to privacy notice (URL)') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="hostingPrivacyNotice" name="hostingPrivacyNotice" type="text" value="<?= $hostingPrivacyNotice ?>">
+            </div>
+
+            <hr>
+            <!-- hosting Order Processing (Auftragsverarbeitung) agreement -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingControlProcessing">
+                <?= I18N::translate('Should a section about Order Processing agreement be shown?') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <?= view('components/radios-inline', [
+                    'id' => 'orderProcessing',
+                    'name' => 'orderProcessing',
+                    'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                    'selected' => (int)$orderProcessing
+                ]) ?>
+            </div>
+
+            <!-- hosting Order Processing agreement first date -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingStartDate">
+                <?= I18N::translate('Date when the Order Processing agreement was first concluded') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="hostingStartDate" name="hostingStartDate" type="date" min="2000-01-01" max="<?= date('Y-m-d') ?>" value="<?= e($hostingStartDate) ?>">
+            </div>
+
+            <!-- hosting Order Processing agreement last date / time -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="hostingEndDate">
+                <?= I18N::translate('Date when the Order Processing agreement was last updated') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="hostingEndDate" name="hostingEndDate" type="date" min="2000-01-01" max="<?= date('Y-m-d') ?>" value="<?= e($hostingEndDate) ?>">
+            </div>
+            </div>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="SensitiveData">
+            <h4><?= I18N::translate('Special categories of personal data') ?></h4>
+
+            <div class="row">
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="sensitiveDataYears">
+                    <?= I18N::translate('Protection period after death') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <input class="form-control" id="sensitiveDataYears" name="sensitiveDataYears" type="number" min="0" max="100" step="1"
+                           value="<?= e((string) ($sensitiveDataYears ?? 10)) ?>">
+                    <p class="small text-muted">
+                        <?= I18N::translate('For how many years after death should particularly sensitive genealogical data remain protected?') ?>
+                        <?= I18N::translate('Use 0 if no specific release period should be stated in the privacy policy.') ?>
+                        <?= I18N::translate('The same period should be used by the privacy assistant when applying RESN CONFIDENTIAL automatically.') ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="ProvidingInformation">
+            <h4><?= I18N::translate('Supervisory authority') ?></h4>
+
+            <div class="row">
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="supervisoryAuthorityName">
+                    <?= I18N::translate('Name of the competent supervisory authority') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <input class="form-control" id="supervisoryAuthorityName" name="supervisoryAuthorityName" type="text" value="<?= e($supervisoryAuthorityName) ?>">
+                    <p class="small text-muted">
+                        <?= I18N::translate('If this field is empty, no specific supervisory authority is named in the privacy policy.') ?>
+                    </p>
+                </div>
+
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="supervisoryAuthorityUrl">
+                    <?= I18N::translate('URL of the competent supervisory authority') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <input class="form-control" id="supervisoryAuthorityUrl" name="supervisoryAuthorityUrl" type="text" value="<?= e($supervisoryAuthorityUrl) ?>">
+                    <p class="small text-muted">
+                        <?= I18N::translate('The specific supervisory authority is linked only when both name and URL are configured.') ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hh-legal-notice-section-setting" data-dependent-on-chapter="ThirdPartyServices">
+            <h4><?= I18N::translate('External services') ?></h4>
+
+            <div class="row">
+                <fieldset class="form-group mb-3">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 wt-page-options-label">
+                            <?= I18N::translate('Should Google Charts be mentioned as an external service?') ?>
+                        </legend>
+                        <div class="col-sm-9 wt-page-options-value">
+                            <?= view('components/radios-inline', [
+                                'id' => 'showGoogleCharts',
+                                'name' => 'showGoogleCharts',
+                                'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                                'selected' => (int)$showGoogleCharts,
+                            ]) ?>
+                            <p class="small text-muted">
+                                <?= I18N::translate('webtrees statistics pages can load Google Charts from %s.', 'https://www.gstatic.com/charts/loader.js') ?>
+                                <?= I18N::translate('Google Charts is only listed when this option is enabled and the webtrees statistics chart module is enabled.') ?>
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <label class="col-sm-3 col-form-label wt-page-options-label" for="additionalThirdPartyServices">
+                    <?= I18N::translate('Additional third-party services') ?>
+                </label>
+                <div class="col-sm-9 wt-page-options-value">
+                    <textarea class="form-control" id="additionalThirdPartyServices" name="additionalThirdPartyServices" rows="4"><?= e($additionalThirdPartyServices) ?></textarea>
+                    <p class="small text-muted">
+                        <?= I18N::translate('Enter one service per line using the format “Name | URL | Country”. The country is optional, but should be provided when known. Example: %s', 'Usercentrics | https://usercentrics.com/ | Germany') ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h4><?= MoreI18N::xlate('Copyright') ?></h4>
+
+        <div class="row">
+            <!-- show copyright -->
+            <fieldset class="form-group mb-3">
+                <div class="row">
+                    <legend class="col-form-label col-sm-3 wt-page-options-label">
+                        <?= I18N::translate('Should a copyright notice be included in this page footer element?') ?>
+                    </legend>
+                    <div class="col-sm-9 wt-page-options-value">
+                        <?= view('components/radios-inline', [
+                            'id' => 'showCopyRight',
+                            'name' => 'showCopyRight',
+                            'options' => [MoreI18N::xlate('no'), MoreI18N::xlate('yes')],
+                            'selected' => (int)$showCopyRight
+                        ]) ?>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- copy right start year -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="copyRightStartYear">
+                <?= I18N::translate('Start year of copyright (e.g. "2020")') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="copyRightStartYear" name="copyRightStartYear" type="text"
+                       value="<?= $copyRightStartYear ?>">
+            </div>
+
+            <!-- name of holder of copy right -->
+            <label class="col-sm-3 col-form-label wt-page-options-label" for="copyRightName">
+                <?= I18N::translate('Name of holder of copyright') ?>
+            </label>
+            <div class="col-sm-9 wt-page-options-value">
+                <input class="form-control" id="copyRightName" name="copyRightName" type="text"
+                       value="<?= $copyRightName ?>">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary d-block">
+            <?= view('icons/save') ?>
+            <?= MoreI18N::xlate('save') ?>
+        </button>
+    </form>
+</div>
+
+<?php View::push('javascript') ?>
+    <script>
+        $('.wt-table-menu td.move').click(function () {
+            var row = $(this).closest('tr');
+
+            if ($(this).hasClass('up')) {
+                row.prev().before(row);
+            } else {
+                row.next().after(row);
+            }
+
+            return false;
+        });
+
+        function hhLegalNoticeParentIsVisible(chapterKey) {
+            var checkbox = $('[data-controls-chapters="' + chapterKey + '"]');
+            var parentGroup = checkbox.closest('.hh-legal-notice-dependent-chapters');
+
+            return checkbox.prop('checked') && (parentGroup.length === 0 || !parentGroup.hasClass('d-none'));
+        }
+
+        function hhLegalNoticeAnyParentIsVisible(chapterKeys) {
+            if (!chapterKeys) {
+                return true;
+            }
+
+            return chapterKeys.split(/\s+/).some(hhLegalNoticeParentIsVisible);
+        }
+
+        function hhLegalNoticeUpdateDependentChapters() {
+            $('.hh-legal-notice-dependent-chapters').each(function () {
+                $(this).toggleClass('d-none', !hhLegalNoticeParentIsVisible($(this).data('parent-key')));
+            });
+
+            $('.hh-legal-notice-section-setting').each(function () {
+                var dependentOnChapter = $(this).attr('data-dependent-on-chapter');
+                var dependentOnAnyChapter = $(this).attr('data-dependent-on-any-chapter');
+                var hidden = !hhLegalNoticeAnyParentIsVisible(dependentOnAnyChapter)
+                    || (dependentOnChapter && !hhLegalNoticeParentIsVisible(dependentOnChapter));
+
+                $(this).toggleClass('d-none', hidden);
+            });
+
+            $('.hh-legal-notice-input-setting').each(function () {
+                var inputName = $(this).attr('data-dependent-on-input');
+                var expectedValue = $(this).attr('data-dependent-value');
+                var checkedValue = $('[name="' + inputName + '"]:checked').val();
+
+                $(this).toggleClass('d-none', checkedValue !== expectedValue);
+            });
+        }
+
+        $('[data-controls-chapters]').on('change', hhLegalNoticeUpdateDependentChapters);
+        $('[data-dependent-on-input]').each(function () {
+            $('[name="' + $(this).attr('data-dependent-on-input') + '"]').on('change', hhLegalNoticeUpdateDependentChapters);
+        });
+        hhLegalNoticeUpdateDependentChapters();
+    </script>
+<?php View::endpush() ?>
+
+<?php View::push('styles') ?>
+    <style>
+        .wt-table-menu tr:first-child .wt-icon-arrow-up {
+            display:none;
+        }
+        .wt-table-menu tr:last-child .wt-icon-arrow-down {
+            display:none;
+        }
+        .hh-legal-notice-settings h3,
+        .hh-legal-notice-settings h4 {
+            margin-top: 2rem;
+        }
+    </style>
+<?php View::endpush() ?>

@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+use Hartenthaler\Webtrees\Module\LegalNotice\Internationalization\MoreI18N;
+use Fisharebest\Webtrees\View;
+
+/**
+ * @var string      $title                  title of this footer element
+ * @var string      $url                    link to Legal Notice
+ *
+ * @var bool        $showCopyRight          option whether copyright should be shown
+ * @var string      $copyRightStartYear     start year of copyright
+ * @var string      $copyRightName          name of holder of copyright
+ *
+ * @var bool        $cookiesWarning         option whether a cookies warning should be shown
+ * @var string      $cookiesMessage         message that cookies are used
+ */
+?>
+
+<div class="wt-footer wt-footer-custom hh-legal-notice text-center py-2">
+    <?php if ($showCopyRight) : ?>
+        &copy;&nbsp;
+        <?php if ($copyRightStartYear !== '') : ?>
+            <?= e($copyRightStartYear) ?>&nbsp;-
+        <?php endif ?>
+        <?= date("Y"); ?> <?= e($copyRightName) ?> |
+    <?php endif ?>
+    <a href="<?= e($url) ?>"><?= e($title) ?></a>
+
+    <?php if ($cookiesWarning) : ?>
+        <div class="alert alert-info alert-dismissible fade" id="cookie-warning">
+            <?= e($cookiesMessage) ?>
+
+            <button type="button" id="cookie-warning-button" class="close" data-dismiss="alert" aria-label="<?= MoreI18N::xlate('close') ?>">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+    <?php View::push('javascript') ?>
+        <script>
+            if (localStorage.getItem("cookie-warning") !== "ok") {
+                document.getElementById("cookie-warning").classList.add("show");
+            }
+            document.getElementById("cookie-warning-button").addEventListener("click", function () {
+                localStorage.setItem("cookie-warning", "ok");
+            });
+        </script>
+        <?php View::endpush() ?>
+    <?php endif ?>
+</div>

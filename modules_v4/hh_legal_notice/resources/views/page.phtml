@@ -1,0 +1,123 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\View;
+use Hartenthaler\Webtrees\Module\LegalNotice\LegalNoticeSupport;
+use Illuminate\Support\Collection;
+
+/**
+ * @var string                      $title                  required for view compatibility
+ * @var \Fisharebest\Webtrees\Tree  $tree                   required for view compatibility
+ * @var string                      $moduleName             registered view namespace of this module
+ * @var string                      $stylesheet             stylesheet URL for this page
+ *
+ * @var string                      $legalNoticeTitle       title of this module
+ * @var string                      $legalNoticeHead1       main title of this page
+ * @var string                      $legalNoticeHead2       subtitle of this page
+ *
+ * @var string                      $responsibleName        name of responsible person
+ * @var array<int,string>           $responsibleContactNotices contact notices for responsible person roles
+ * @var bool                        $showEditorialResp      option whether to show the person responsible for editorial content
+ * @var bool                        $showGravatar           option whether to show image from www.gravatar.com site for this user
+ * @var string                      $image                  image from Gravatar (string containing complete html tag)
+ * @var string                      $organization           name of club or organization
+ * @var string                      $representedBy          name person that represents this club or organization
+ *
+ * @var string                      $additionalAddress      additional address line
+ * @var string                      $street                 street in address of responsible person
+ * @var string                      $city                   city in address of responsible person
+ *
+ * @var string                      $phoneLabel             label for phone number of responsible person
+ * @var string                      $phone                  phone number of responsible person
+ * @var string                      $faxLabel               label for fax number of responsible person
+ * @var string                      $fax                    fax number of responsible person
+ * @var string                      $emailLabel             label for eMail address of responsible person
+ * @var string                      $email                  eMail address of responsible person
+ *
+ * @var string                      $vatNumberLabel         label like "VAT ID No." or other registration number
+ * @var string                      $vatNumber              VAT ID No. or other registration number
+ *
+ * @var bool                        $showTreeContacts       option whether to show tree contacts
+ * @var string                      $headTreeContacts       heading of list of tree contacts
+ * @var int                         $countTreeContacts      number of tree contacts
+ * @var array<int|string>           $contactsTreeContacts   list of tree contacts
+ *
+ * @var bool                        $showAdministrators     option whether to show administrators of webtrees
+ * @var string                      $headAdministrators     heading of list of administrators
+ * @var string                      $commentAdministrators  comment about administrator role
+ * @var int                         $countAdministrators    number of administrators
+ * @var array<int|object>           $contactsAdministrators list of administrators
+ *
+ * @var array<object>               $chapters               list of chapter objects
+ * @var array<int,string>           $dataProtectionSectionKeys keys of the data protection sections rendered on the page
+ * @var array<string,string>        $sectionViewByChapterKey partial view names keyed by chapter key
+ * @var bool                        $showDataProtection     option whether to show the data protection chapter
+ * @var bool                        $showLegalRegulations   option whether to show the legal regulations chapter
+ * @var string                      $privacyLawRegion       privacy law region inferred from the configured hosting country
+ * @var bool                        $useGermanPrivacyLaw    whether German privacy law references should be shown
+ * @var bool                        $useEuPrivacyLaw  whether EU privacy law references should be shown
+ * @var string                      $supervisoryAuthorityName name of the competent supervisory authority
+ * @var string                      $supervisoryAuthorityUrl URL of the competent supervisory authority
+ * @var bool                        $registeredUsersAreRelatives whether registered users are relatives or relatives by marriage
+ * @var bool                        $showFamilyTreeList whether the global family tree list is shown
+ * @var int                         $familyTreeCount number of configured family trees, without access checks
+ * @var bool                        $allowVisitorRegistration whether visitors may request a new user account
+ * @var bool                        $showRegisterCaution whether the acceptable use agreement is shown on account request
+ * @var int                         $inactiveUserYears years after which inactive user accounts are deleted; 0 means never
+ * @var int                         $sensitiveDataYears years after death before sensitive genealogical data is released; 0 means not stated
+ * @var bool                        $dpoNamed whether a data protection officer has been designated
+ * @var string                      $dpoName name of the data protection officer
+ * @var string                      $dpoCompany company of the data protection officer
+ * @var string                      $dpoAddress address of the data protection officer
+ * @var string                      $dpoEmail e-mail address of the data protection officer
+ *
+ * @var bool                        $singular               is the report written using "I" or "We"?
+ * @var Collection                  $analytics
+ * @var array                       $trackingServices
+ * @var array                       $thirdPartyServices
+ * @var array                       $cookiesServices
+ * @var array                       $externalTranscriptionProviders
+ *
+ * @var bool                        $https                  host URL starts with https
+ * @var string                      $hostingDomain          domain name of host
+ * @var string                      $hostingCountry         country where the host is located (in English)
+ * @var string                      $mediaStateTreatyReference German media treaty reference
+ * @var string                      $federalDataProtectionActReference German federal data protection act reference
+ * @var string                      $telecommunicationDigitalServicesDataProtectionActReference German telecommunications digital services data protection act reference
+ * @var string                      $hostingCompanyName     name of hosting company
+ * @var string                      $hostingCompanyUrl      URL of hosting company
+ * @var string                      $hostingPrivacyNotice   URL of privacy notice of hosting company
+ * @var bool                        $orderProcessing        option if Auftragsverarbeitung is used
+ * @var string                      $hostingStartDate       date of first agreement Auftragsdatenverarbeitung with hosting company
+ * @var string                      $hostingEndDate         date of last agreement Auftragsdatenverarbeitung with hosting company
+ */
+?>
+
+<div class="wt-footer wt-footer-contact hh-legal-notice hh-legal-notice-page my-2">
+    <?= view($moduleName . '::page/header', get_defined_vars()) ?>
+
+    <?php foreach ($chapters as $chapter) : ?>
+        <?php if ($chapter->getLevel() !== 1 || !$chapter->getEnabled()) : ?>
+            <?php continue; ?>
+        <?php endif ?>
+
+        <?php if ($chapter->getKey() === 'DataProtection' && !$showDataProtection) : ?>
+            <?php continue; ?>
+        <?php endif ?>
+
+        <?php if ($chapter->getKey() === 'LegalRegulations' && !$showLegalRegulations) : ?>
+            <?php continue; ?>
+        <?php endif ?>
+
+        <?php if (!LegalNoticeSupport::hasEnabledChildChapter($chapters, $chapter)) : ?>
+            <?php continue; ?>
+        <?php endif ?>
+
+        <?= view($moduleName . '::page/chapter', array_merge(get_defined_vars(), ['mainChapter' => $chapter])) ?>
+    <?php endforeach ?>
+</div>
+
+<?php View::push('styles') ?>
+    <link rel="stylesheet" href="<?= e($stylesheet) ?>">
+<?php View::endpush() ?>

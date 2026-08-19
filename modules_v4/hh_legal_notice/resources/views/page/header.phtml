@@ -1,0 +1,119 @@
+<?php
+
+use Fisharebest\Webtrees\I18N;
+
+?>
+
+    <h2><?= e($legalNoticeTitle) ?></h2>
+    <?php if ($legalNoticeLawReference !== ''): ?>
+        <p><?= e($legalNoticeLawReference) ?></p>
+    <?php endif ?>
+
+    <h4 class="hh-legal-notice-page-heading"><?= e($legalNoticeHead1) ?></h4>
+
+    <p><?= e($legalNoticeHead2) ?></p>
+
+    <?php if ($organization <> ''): ?>
+        <div class="hh-legal-notice-organization">
+            <i><?= e($organization) ?></i>
+            <div><?= e($representedBy) ?></div>
+        </div>
+    <?php endif ?>
+
+    <table cellpadding="5" valign="top">
+        <tbody>
+            <tr>
+                <td valign="top">
+                    <b><?= e($responsibleName) ?></b>
+                    <?php if ($showGravatar): ?>
+                        <br />
+                        <?= $image ?>
+                    <?php endif ?>
+                </td>
+                <?php if ($additionalAddress <> '' || $street <> '' || $city <> ''): ?>
+                    <td valign="top">
+                        <?php if ($additionalAddress <> ''): ?>
+                            <?= e($additionalAddress) ?>
+                        <?php endif ?>
+                        <?php if ($street <> ''): ?>
+                            <?php if ($additionalAddress <> ''): ?>
+                                <br />
+                            <?php endif ?>
+                            <?= e($street) ?>
+                        <?php endif ?>
+                        <?php if ($city <> ''): ?>
+                            <?php if ($street <> '' || $additionalAddress <> ''): ?>
+                                <br />
+                            <?php endif ?>
+                            <?= e($city) ?>
+                        <?php endif ?>
+                    </td>
+                <?php endif ?>
+            </tr>
+            <?php if ($phone <> ''): ?>
+                <tr>
+                    <td><?= e($phoneLabel) ?>:</td>
+                    <td><?= e($phone) ?></td>
+                </tr>
+            <?php endif ?>
+            <?php if ($fax <> ''): ?>
+                <tr>
+                    <td><?= e($faxLabel) ?>:</td>
+                    <td><?= e($fax) ?></td>
+                </tr>
+            <?php endif ?>
+            <?php if ($email <> ''): ?>
+                <tr>
+                    <td><?= e($emailLabel) ?>:</td>
+                    <td><?= $email ?></td>
+                </tr>
+            <?php endif ?>
+            <?php if ($vatNumberLabel <> '' && $vatNumber <> ''): ?>
+                <tr>
+                    <td><?= e($vatNumberLabel) ?>:</td>
+                    <td><?= e($vatNumber) ?></td>
+                </tr>
+            <?php endif ?>
+        </tbody>
+    </table>
+
+    <?php if ($responsibleContactNotices !== []): ?>
+        <div class="hh-legal-notice-responsible-contact-notices">
+            <ul>
+                <?php foreach ($responsibleContactNotices as $notice): ?>
+                    <li><?= $notice ?></li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+    <?php endif ?>
+
+    <?php if ($showTreeContacts && $countTreeContacts > 0): ?>
+        <h4 class="hh-legal-notice-contact-section"><?= e($headTreeContacts) ?></h4>
+        <ul>
+            <?php foreach ($contactsTreeContacts as $link): ?>
+                <li><?= $link ?></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
+
+    <?php if ($showAdministrators && $countAdministrators > 0): ?>
+        <h4 class="hh-legal-notice-contact-section"><?= e($headAdministrators) ?></h4>
+        <p><?= e($commentAdministrators) ?></p>
+        <ul>
+            <?php foreach ($contactsAdministrators as $link): ?>
+                <li><?= $link ?></li>
+            <?php endforeach ?>
+        </ul>
+    <?php endif ?>
+
+    <?php if ($showEditorialResp): ?>
+        <h4 class="hh-legal-notice-contact-section">
+            <?= e($useGermanPrivacyLaw ? I18N::translate('Editorially responsible person according to Section 18 paragraph 2 %s', $mediaStateTreatyReference) : I18N::translate('Editorially responsible person')) ?>
+        </h4>
+        <p><?= e(I18N::translate('In addition to genealogical data, this website also contains editorially prepared content addressed to the general public, such as explanations of family history, the software used, or historical topics.')) ?></p>
+        <?php if ($useGermanPrivacyLaw) : ?>
+            <p><?= e(I18N::translate('Responsible for this content is: %s (resident in Germany; address: see above).', $responsibleName)) ?></p>
+        <?php else : ?>
+            <p><?= e(I18N::translate('Responsible for this content is: %s. Address: see above.', $responsibleName)) ?></p>
+        <?php endif ?>
+    <?php endif ?>
