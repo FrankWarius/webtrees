@@ -43,22 +43,21 @@ declare(strict_types=1);
 
 namespace Hartenthaler\Webtrees\Module\LegalNotice;
 
-use Fisharebest\Localization\Translation;
 use Fisharebest\Webtrees\Contracts\UserInterface;
 use Fisharebest\Webtrees\FlashMessages;
+use Fisharebest\Webtrees\Http\RequestHandlers\ModuleAction;
 use Fisharebest\Webtrees\I18N;
+use Fisharebest\Webtrees\Module\ModuleAnalyticsInterface;
+use Fisharebest\Webtrees\Module\ModuleConfigInterface;
+use Fisharebest\Webtrees\Module\ModuleConfigTrait;
 use Fisharebest\Webtrees\Module\ModuleCustomInterface;
 use Fisharebest\Webtrees\Module\ModuleCustomTrait;
 use Fisharebest\Webtrees\Module\ModuleFooterInterface;
 use Fisharebest\Webtrees\Module\ModuleFooterTrait;
-use Fisharebest\Webtrees\Module\ModuleAnalyticsInterface;
-use Fisharebest\Webtrees\Module\ModuleConfigInterface;
-use Fisharebest\Webtrees\Module\ModuleConfigTrait;
-use Fisharebest\Webtrees\Module\PrivacyPolicy;
 use Fisharebest\Webtrees\Module\ModuleMapLinkInterface;
 use Fisharebest\Webtrees\Module\ModuleMapProviderInterface;
+use Fisharebest\Webtrees\Module\PrivacyPolicy;
 use Fisharebest\Webtrees\Registry;
-use Fisharebest\Webtrees\Http\RequestHandlers\ModuleAction;
 use Fisharebest\Webtrees\Services\ModuleService;
 use Fisharebest\Webtrees\Services\TreeService;
 use Fisharebest\Webtrees\Services\UserService;
@@ -68,6 +67,7 @@ use Fisharebest\Webtrees\Validator;
 use Fisharebest\Webtrees\View;
 use Hartenthaler\Webtrees\Module\LegalNotice\Internationalization\MoreI18N;
 use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -510,14 +510,9 @@ implements ModuleCustomInterface, ModuleFooterInterface, ModuleConfigInterface
      */
     public function customTranslations(string $language): array
     {
-        $lang_dir = $this->resourcesFolder() . 'lang' . DIRECTORY_SEPARATOR;
-        $file = $lang_dir . $language . '.mo';
-
-        if (file_exists($file)) {
-            return (new Translation($file))->asArray();
-        } else {
+       
             return [];
-        }
+        
     }
 
     /**
@@ -1602,6 +1597,20 @@ implements ModuleCustomInterface, ModuleFooterInterface, ModuleConfigInterface
     /**
      * @return list<array{name:string,url:string,country:string,tracker:bool,type?:string,thirdCountryTransfer:bool}>
      */
+
+    /**
+     * Nachbildung der gleichnamigen Methode aus PrivacyPolicy, die in
+     * webtrees 2.3.0 auf private gesetzt wurde.
+     *
+     * @return Collection<int,ModuleAnalyticsInterface>
+     */
+    private function analyticsModules(Tree $tree, UserInterface $user): Collection
+    {
+        return $this->moduleService
+            ->findByComponent(ModuleAnalyticsInterface::class, $tree, $user)
+            ->filter(static fn (ModuleAnalyticsInterface $module): bool => $module->isTracker());
+    }
+
     private function trackingServices(Tree $tree, UserInterface $user): array
     {
         $services = [];
