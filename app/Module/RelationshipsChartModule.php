@@ -282,6 +282,16 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
             $min_y = 0;
             $max_y = 0;
             $max_x = 0;
+            // *** Mod: direction of the previous step - up, down, right, or an
+            // empty string at the start. A diagonal belongs only at a change of
+            // direction between up and down; consecutive steps in the same
+            // direction stay in the same column.
+            //
+            // 2.2.6 tested this with preg_match('/son|dau|chi/',
+            // $relationships[$n - 2]). That test was lost when the path logic
+            // was rewritten, leaving only "$n > 2" - so every step from the
+            // third one onwards was drawn diagonally.
+            $previous_direction = '';
             // For each node in the path.
             foreach ($nodes as $n => $record) {
                 if ($record instanceof Family) {
@@ -298,12 +308,13 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                             $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
                             '</div><div style="height: 32px;">' . view('icons/arrow-right') . '</div></div>';
                         $x                 += 2;
+                        $previous_direction = 'right';
                     } elseif (
                         $record->spouses()->contains($prev) && $record->children()->contains($next) ||
                         $record->spouses()->contains($prev) && $record->children()->contains($next)
                     ) {
                         // Parent to child.  We are moving down.
-                        if ($n > 2) {
+                        if ($n > 2 && $previous_direction === 'up') {
                             $table[$x + 1][$y - 1] =
                                 '<div style="background:url(' . $diagonal2 . '); width: 64px; height: 64px; text-align: center;"><div style="height: 32px; text-align: end;">' .
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -315,10 +326,11 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
                                 '</div><div style="display: inline-block; width:50%; line-height: 64px;">' . view('icons/arrow-down') . '</div></div>';
                         }
-                        $y -= 2;
+                        $y                 -= 2;
+                        $previous_direction = 'down';
                     } else {
                         // Child to parent.  We are moving up.
-                        if ($n > 2) {
+                        if ($n > 2 && $previous_direction === 'down') {
                             $table[$x + 1][$y + 1] =
                                 '<div style="background:url(' . $diagonal1 . '); background-position: top right; width: 64px; height: 64px; text-align: center;"><div style="height: 32px; text-align: start;">' .
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -330,7 +342,8 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
                                 '</div><div style="display: inline-block; width: 50%; line-height: 32px">' . view('icons/arrow-up') . '</div></div>';
                         }
-                        $y += 2;
+                        $y                 += 2;
+                        $previous_direction = 'up';
                     }
 
                     $max_x = max($max_x, $x);
@@ -611,10 +624,10 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
         Individual $xref,
         Individual $xref2,
     ): ResponseInterface {
-        // *** Mod: InvokeController sucht zuerst in den Routen-Attributen, und
-        // die Adresse enthaelt ancestors und recursion bereits. Als typisierte
-        // Parameter kaemen hier deshalb immer die alten Werte an, nie die
-        // Auswahl aus dem Formular. Darum ausdruecklich aus dem Body lesen.
+        // *** Mod: InvokeController resolves parameters from the route
+        // attributes first, and the URL already supplies ancestors and
+        // recursion. As typed parameters they would therefore always carry the
+        // old values, never the choice made in the form. Read the body instead.
         $ancestors = Validator::parsedBody($request)->integer('ancestors', 0);
         $recursion = Validator::parsedBody($request)->integer('recursion', 0);
 
