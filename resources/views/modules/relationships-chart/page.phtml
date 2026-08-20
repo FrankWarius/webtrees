@@ -72,7 +72,8 @@ use Fisharebest\Webtrees\Tree;
                 <?= I18N::translate('Find the closest relationships') ?>
                 <input type="hidden" name="recursion" value="0">
             <?php else : ?>
-                <?= view('components/radios', ['name' => 'recursion', 'options' => $recursion_options, 'selected' => $recursion]) ?>
+                <?php // *** Mod: Vorauswahl immer 0 - die teure rekursive Suche soll nicht klebenbleiben ?>
+                <?= view('components/radios', ['name' => 'recursion', 'options' => $recursion_options, 'selected' => 0]) ?>
             <?php endif ?>
         </div>
     </fieldset>
