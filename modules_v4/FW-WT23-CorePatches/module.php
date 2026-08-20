@@ -67,6 +67,7 @@ return new class extends AbstractModule implements ModuleCustomInterface {
             $this->loadPatch('SitemapUrl'),
             $this->loadPatch('ShortMarkdown'),
             $this->loadPatch('RobotsTxt'),
+            $this->loadPatch('FamilyVisibility'),
         ];
     }
 
