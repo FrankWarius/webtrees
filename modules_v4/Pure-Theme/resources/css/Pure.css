@@ -292,6 +292,7 @@ th,
   --bs-btn-line-height: var(--bs-body-line-height);
 }
 
+/* --- Patches ------------------------------------------------------- */
 
 /* --- DataTables ----------------------------------------------------
    Zielt auf die Markup-Struktur von DataTables 2. Mit dem in
@@ -322,4 +323,62 @@ th,
     background-color: transparent;
     border-top: 0;
     padding-top: 0;
+}
+
+/* Statistikblock: erste Spalte nur so breit wie ihr Inhalt.
+   Der Kern gibt beiden Spalten "col col", wodurch sie die Zeile haelfteln
+   und die schmale linke Tabelle unnoetig gedehnt wird. */
+@media (min-width: 576px) {
+    .wt-block-content-gedcom_stats .row > .col:first-child {
+        flex: 0 0 auto;
+        width: auto;
+    }
+}
+
+.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table {
+    width: auto;
+}
+
+.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table td {
+    text-align: end;
+    width: 1%;
+}
+
+/* Nachnamenlisten: Zahlen rechtsbuendig statt zentriert. Die Kernvorlage
+   setzt die Bootstrap-Utility "text-center", die mit !important arbeitet. */
+.wt-table-surname td.text-center {
+    text-align: end !important;
+}
+
+/* ------------------------------------------------------------------
+   Nachrichtenblock (user_messages)
+   ------------------------------------------------------------------ */
+
+/* Bei table-layout:auto sind Prozentwerte nur Wuensche — der lange Betreff
+   setzt sich sonst durch. Bei festem Layout zaehlen nur die Breiten der
+   ersten Zeile, und sie muessen zusammen 100 Prozent ergeben. */
+.wt-block-content-user_messages table {
+    table-layout: fixed;
+}
+
+.wt-block-content-user_messages th:nth-child(1) {
+    width: 10%;
+}
+
+.wt-block-content-user_messages th:nth-child(2) {
+    width: 45%;
+}
+
+.wt-block-content-user_messages th:nth-child(3) {
+    width: 20%;
+}
+
+.wt-block-content-user_messages th:nth-child(4) {
+    width: 25%;
+}
+
+/* Lange Adressen umbrechen statt ueberlaufen. Festes Layout wuerde sonst
+   in die Nachbarspalte schreiben. */
+.wt-block-content-user_messages td:nth-child(4) {
+    overflow-wrap: anywhere;
 }
