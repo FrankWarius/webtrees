@@ -306,3 +306,20 @@ th,
 [dir] table:not([cellpadding]) th {
   padding: 0.2rem 0.4rem;
 }
+
+/* Medienliste: Verweisliste nicht ans Kartenende druecken.
+   Der Kern legt die verlinkten Datensaetze in den card-footer. Zusammen mit
+   "card h-100" werden alle Karten einer Zeile auf gleiche Hoehe gezogen, der
+   Body waechst mit, und zwischen Bilddaten und Verweisen entsteht eine grosse
+   Leerflaeche. Hier waechst der Body nicht mehr, und der Footer verliert Grund
+   und Trennlinie, damit die Naht nicht sichtbar bleibt. Der verbleibende
+   Leerraum sitzt dann unten in der Karte, wo er nicht stoert. */
+.wt-route-MediaListModule .card-body {
+    flex-grow: 0;
+}
+
+.wt-route-MediaListModule .card-footer {
+    background-color: transparent;
+    border-top: 0;
+    padding-top: 0;
+}
