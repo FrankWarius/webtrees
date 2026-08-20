@@ -21,6 +21,9 @@ namespace Fisharebest\Webtrees\Module;
 
 use Fisharebest\Webtrees\I18N;
 
+use function strtolower;
+use function substr;
+
 /**
  * Class OpenStreetMap - use maps within webtrees
  */
@@ -29,6 +32,17 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
     use ModuleMapProviderTrait;
 
     private const OSM_REFERRER_POLICY = 'strict-origin-when-cross-origin';
+
+    private const LAYER_MAPNIK = 'OpenStreetMapsMapnik';
+    private const LAYER_GERMAN = 'OpenStreetMapsDeutsch';
+    private const LAYER_FRENCH = 'OpenStreetMapsFrench';
+
+    // The German and French tile servers render place names in those languages.
+    // Use them by default when the interface is in the matching language.
+    private const DEFAULT_LAYER_BY_LANGUAGE = [
+        'de' => self::LAYER_GERMAN,
+        'fr' => self::LAYER_FRENCH,
+    ];
 
     /**
      * Name of the map provider.
@@ -56,40 +70,52 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
      */
     public function leafletJsTileLayers(): array
     {
+        $default_layer = $this->defaultLayer();
+
         return [
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
-                'default'     => true,
+                'default'     => $default_layer === self::LAYER_MAPNIK,
                 'label'       => 'Mapnik',
                 'referrerPolicy' => self::OSM_REFERRER_POLICY,
                 'maxZoom'     => 19,
                 'minZoom'     => 2,
-                'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                'localName'   => 'OpenStreetMapsMapnik',
+                'url'         => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'localName'   => self::LAYER_MAPNIK,
             ],
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">Karte hergestellt aus OpenStreetMap-Daten</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
-                'default'     => false,
+                'default'     => $default_layer === self::LAYER_GERMAN,
                 'label'       => 'Deutsch',
                 'referrerPolicy' => self::OSM_REFERRER_POLICY,
                 'maxZoom'     => 18,
                 'minZoom'     => 2,
-                'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
-                'localName'   => 'OpenStreetMapsDeutsch',
+                'url'         => 'https://tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+                'localName'   => self::LAYER_GERMAN,
             ],
             (object) [
                 'attribution' => 'Map data ©<a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC-BY-SA</a>',
-                'default'     => false,
+                'default'     => $default_layer === self::LAYER_FRENCH,
                 'label'       => 'Français',
                 'referrerPolicy' => self::OSM_REFERRER_POLICY,
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
-                'subdomains'  => ['a', 'b', 'c'],
-                'url'         => 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
-                'localName'   => 'OpenStreetMapsFrench',
+                'url'         => 'https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                'localName'   => self::LAYER_FRENCH,
             ],
         ];
+    }
+
+    /**
+     * The tile layer to use when the visitor has not chosen one.
+     *
+     * Note that this only applies to visitors without a stored preference;
+     * a layer chosen in the map's layer control takes precedence.
+     */
+    private function defaultLayer(): string
+    {
+        $language = strtolower(substr(I18N::languageTag(), 0, 2));
+
+        return self::DEFAULT_LAYER_BY_LANGUAGE[$language] ?? self::LAYER_MAPNIK;
     }
 }
