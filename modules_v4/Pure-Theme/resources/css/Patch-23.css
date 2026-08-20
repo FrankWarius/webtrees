@@ -1,0 +1,77 @@
+/* ==================================================================
+   Patch-23 — Ausgleich fuer Fehler im Kern von webtrees 2.3.0
+   ------------------------------------------------------------------
+   Wird nach Pure.css geladen; die Reihenfolge steht im Rueckgabearray
+   von stylesheets() im Theme-Modul.
+
+   Alles hier hat eine begrenzte Lebensdauer: sobald der zugehoerige
+   Fehler oben behoben ist, faellt der Block ersatzlos weg. Jeder Block
+   nennt deshalb die Issue-Nummer. Beim Sprung auf 2.4 gehoert diese
+   Datei komplett auf den Pruefstand.
+   ================================================================== */
+
+
+/* --- DataTables ----------------------------------------------------
+   Zielt auf die Markup-Struktur von DataTables 2. Mit dem in
+   Vorbereitung befindlichen Wechsel auf 3.0.0 koennen sich die
+   Klassennamen aendern — dann hier nachziehen.
+
+   Kein Issue: das gleicht die Fremdbibliothek aus, nicht webtrees.
+   Steht trotzdem hier, weil auch dieser Block bei einem Versions-
+   sprung zur Ueberpruefung ansteht.
+   ------------------------------------------------------------------ */
+[dir] div.dt-container div.dt-layout-full> :only-child {
+    margin: inherit;
+}
+
+[dir] .table> :not(caption)>*>* [dir] table:not([cellpadding]) td,
+[dir] table:not([cellpadding]) th {
+    padding: 0.2rem 0.4rem;
+}
+
+
+/* --- Medienliste, Leerflaeche in den Karten — #5469 -----------------
+   Der Kern legt die verlinkten Datensaetze in den card-footer. Zusammen
+   mit "card h-100" werden alle Karten einer Zeile auf gleiche Hoehe
+   gezogen, der Body waechst mit, und zwischen Bilddaten und Verweisen
+   entsteht eine grosse Leerflaeche. Hier waechst der Body nicht mehr,
+   und der Footer verliert Grund und Trennlinie, damit die Naht nicht
+   sichtbar bleibt. Der verbleibende Leerraum sitzt dann unten in der
+   Karte, wo er nicht stoert.
+   ------------------------------------------------------------------ */
+.wt-route-MediaListModule .card-body {
+    flex-grow: 0;
+}
+
+.wt-route-MediaListModule .card-footer {
+    background-color: transparent;
+    border-top: 0;
+    padding-top: 0;
+}
+
+
+/* --- Statistikblock, Spaltenbreite ---------------------------------
+   Der Kern gibt beiden Spalten "col col", wodurch sie die Zeile
+   haelfteln und die schmale linke Tabelle unnoetig gedehnt wird.
+   Entspricht dem, was "col col-sm-auto" im Markup bewirken wuerde.
+
+   width:1% liegt unter der Mindestbreite, die Zahlenspalte faellt
+   dadurch auf Inhaltsbreite zurueck und die Beschriftungsspalte
+   bekommt den Rest.
+
+   Nicht gemeldet — als Meldung noch offen.
+   ------------------------------------------------------------------ */
+@media (min-width: 576px) {
+    .wt-block-content-gedcom_stats .row>.col:first-child {
+        flex: 0 0 auto;
+        width: auto;
+    }
+}
+
+.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table {
+    width: auto;
+}
+
+.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table td {
+    width: 1%;
+}
