@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+use Carbon\CarbonImmutable;
+use Fisharebest\Webtrees\I18N;
+
+/**
+ * Ersetzt resources/views/components/datetime.phtml.
+ *
+ * Einziger Unterschied zur Kernfassung: isoFormat('llll') statt
+ * isoFormat('LLLL') — abgekürzter Wochentag und Monat.
+ *
+ * @var CarbonImmutable $timestamp
+ */
+
+?>
+
+<?php if ($timestamp->getTimestamp() === 0) : ?>
+    <span class="wt-timestamp">
+        <?= I18N::translate('Never') ?>
+    </span>
+<?php else : ?>
+    <span class="wt-timestamp" title="<?= e($timestamp->diffForHumans()) ?>" dir="auto">
+        <?= e($timestamp->isoFormat('llll')) ?>
+    </span>
+<?php endif ?>

@@ -5,7 +5,7 @@
  *
  * Einsprungklasse der Anpassung.
  *
- * Ablage: modules_v4/FW-WT23-CorePatches/RobotsTxt/RobotsTxt.php
+ * Ablage: modules_v4/FW-WT23-CorePatches/ShortDateTime/ShortDateTime.php
  */
 
 declare(strict_types=1);
@@ -16,22 +16,24 @@ use Fisharebest\Webtrees\Module\ModuleCustomInterface;
 use Fisharebest\Webtrees\View;
 
 /**
- * Ersetzt die Vorlage für robots.txt.
+ * Kürzt die Zeitstempel in Listen und Verwaltungsseiten.
  *
- * Gegenüber der Kernfassung: kein Block mit den 1.600 Einträgen aus
- * BAD_ROBOTS, dafür zusätzliche Sperren für Alt-Adressen, Listenseiten und
- * Ajax-Aufrufe, und Crawl-delay 2 statt 10.
+ * Der Kern formatiert mit "LLLL" — "Dienstag, 17. September 2024 17:12".
+ * Hier "llll" — "Di., 17. Sept. 2024 17:12". Sonst unverändert.
+ *
+ * Betrifft nur components/datetime.phtml. components/datetime-diff.phtml
+ * bleibt auf der Kernfassung.
  */
-final class RobotsTxt implements Patch
+final class ShortDateTime implements Patch
 {
     public function apply(ModuleCustomInterface $module): void
     {
         // Eigener Namensraum je Patch. View::registerNamespace() überschreibt
         // einen bereits belegten Namen kommentarlos — ein gemeinsamer Name
         // würde den jeweils zuvor registrierten Patch aushebeln.
-        $namespace = $module->name() . '-RobotsTxt';
+        $namespace = $module->name() . '-ShortDateTime';
 
         View::registerNamespace($namespace, __DIR__ . '/views/');
-        View::registerCustomView('::robots-txt', $namespace . '::robots-txt');
+        View::registerCustomView('::components/datetime', $namespace . '::components/datetime');
     }
 }
