@@ -100,7 +100,10 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'referrerPolicy' => self::OSM_REFERRER_POLICY,
                 'maxZoom'     => 20,
                 'minZoom'     => 2,
-                'url'         => 'https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                // The French server requires the subdomain form.
+                // Only the .org and .de servers serve tiles from the canonical hostname.
+                'subdomains'  => ['a', 'b', 'c'],
+                'url'         => 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
                 'localName'   => self::LAYER_FRENCH,
             ],
         ];
