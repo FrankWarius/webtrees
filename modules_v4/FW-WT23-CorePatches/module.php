@@ -69,6 +69,7 @@ return new class extends AbstractModule implements ModuleCustomInterface {
             $this->loadPatch('RobotsTxt'),
             $this->loadPatch('FamilyVisibility'),
             $this->loadPatch('ShortDateTime'),
+            $this->loadPatch('MediaImageAttributes'),
         ];
     }
 
