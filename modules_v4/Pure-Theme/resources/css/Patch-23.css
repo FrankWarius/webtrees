@@ -24,11 +24,10 @@
     margin: inherit;
 }
 
-[dir] .table> :not(caption)>*>* [dir] table:not([cellpadding]) td,
+[dir] table:not([cellpadding]) td,
 [dir] table:not([cellpadding]) th {
-    padding: 0.2rem 0.4rem;
+  padding: 0.2rem 0.4rem;
 }
-
 
 /* --- Medienliste, Leerflaeche in den Karten — #5469 -----------------
    Der Kern legt die verlinkten Datensaetze in den card-footer. Zusammen
