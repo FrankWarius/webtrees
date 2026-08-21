@@ -1,27 +1,7 @@
-/* ==================================================================
-   Pure — webtrees-Theme
-   Portiert nach webtrees 2.3.0
-   ------------------------------------------------------------------
-   Farbschema: ausschliesslich hell. Das Theme muss dazu
-   bootstrapColorScheme() mit 'light' ueberschreiben.
-
-   Angeglichen an warius.info: Schriftfamilie, Ueberschriftengewicht,
-   Laufweite, Linkfarben, Tabellenausrichtung.
-   Groessen und Abstaende bleiben unveraendert aus der bisherigen
-   Fassung — die Oberflaeche ist datendicht, nicht fliesstextlastig.
-
-   Diese Datei enthaelt ausschliesslich Gestaltung. Was nur existiert,
-   um einen Fehler im Kern auszugleichen, steht in Patch-23.css und
-   wird nach Pure.css geladen.
-   ================================================================== */
+/* Pure — webtrees-Theme, 2.3.0. Erlaeuterungen in Theme-Notizen.md */
 
 
-/* --- Schriftart Inter, selbst gehostet -----------------------------
-   Dateien im Ordner "fonts" neben dieser Datei ablegen.
-   Quelle: rsms/inter, SIL Open Font License 1.1.
-   Selbst gehostet statt ueber Google Fonts, damit keine Anfrage an
-   Dritte entsteht.
-   ------------------------------------------------------------------ */
+/* --- Schrift Inter, selbst gehostet, SIL OFL 1.1 -------------------- */
 @font-face {
   font-family: "Inter";
   font-style: normal;
@@ -41,13 +21,9 @@
 
 /* --- Grundwerte ---------------------------------------------------- */
 :root {
-  /* GEAENDERT: Inter als Textschrift, System-Stack als Rueckfall */
   --bs-body-font-family: "Inter", var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
-  /* GEAENDERT: einheitenlos statt 105%. Eine Prozentangabe wird zu
-     einem festen Betrag berechnet und so vererbt; einheitenlos
-     rechnet jedes Element mit seiner eigenen Schriftgroesse. */
   --bs-body-line-height: 1.05;
 
   --bs-gutter-x: 0.4rem;
@@ -56,18 +32,13 @@
   --chart-line-radius: 1rem;
   --chart-line: solid gray thin;
 
-  /* GEAENDERT: Hover-Farbe von schwarz auf das Blau von warius.info */
   --link-color: black;
   --link-color-hover: #104e8b;
   --link-decoration: none;
   --link-decoration-hover: underline;
 }
 
-/* --- Grundschrift am body erzwingen --------------------------------
-   vendor.min.css setzt font-family und line-height direkt am body und
-   ueberschreibt damit Bootstraps variablengesteuerte Regel. Deshalb
-   hier noch einmal explizit, statt nur ueber die Variablen.
-   ------------------------------------------------------------------ */
+/* Wiederholung noetig, siehe Notizen */
 body {
   font-family: var(--bs-body-font-family);
   line-height: var(--bs-body-line-height);
@@ -77,15 +48,14 @@ body {
   margin: 0;
 }
 
+
 /* --- Kopfbereich --------------------------------------------------- */
 header {
   border-bottom: 1pt solid black;
 }
 
 
-/* --- Ueberschriften ------------------------------------------------
-   Groessen unveraendert. Gewicht und Laufweite von warius.info.
-   ------------------------------------------------------------------ */
+/* --- Ueberschriften ------------------------------------------------ */
 .h1,
 .h2,
 .h3,
@@ -98,7 +68,6 @@ h3,
 h4,
 h5,
 h6 {
-  /* NEU: aus theme.json, elements.heading */
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -147,7 +116,6 @@ table {
   border-collapse: collapse;
 }
 
-/* NEU: aus theme.json, styles.blocks.core/table */
 tbody {
   vertical-align: top;
 }
@@ -171,6 +139,11 @@ th,
   font-weight: 500;
 }
 
+[dir] .table> :not(caption)>*>* [dir] table:not([cellpadding]) td,
+[dir] table:not([cellpadding]) th {
+  padding: 0.2rem 0.4rem;
+}
+
 
 /* --- Karten -------------------------------------------------------- */
 .card {
@@ -185,10 +158,6 @@ th,
   font-weight: 500;
 }
 
-/* KORRIGIERT: Achsen waren vertauscht. Die Kurzform erwartet y x.
-   Wirkung: bisher 0.2rem oben/unten und 0 links/rechts, jetzt
-   umgekehrt. Falls der Kartenkopf dadurch zu flach wirkt, entweder
-   --bs-gutter-y anheben oder hier feste Werte setzen. */
 [dir] .card-header {
   padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);
 }
@@ -207,10 +176,15 @@ th,
   --bs-accordion-btn-padding-y: 0.25rem;
 }
 
-/* KORRIGIERT: Achsen waren vertauscht, siehe Kartenkopf. */
 [dir] .accordion-button,
 [dir] .accordion-body {
   padding: var(--bs-accordion-btn-padding-y) var(--bs-accordion-btn-padding-x);
+}
+
+
+/* --- DataTables 2 -------------------------------------------------- */
+[dir] div.dt-container div.dt-layout-full> :only-child {
+  margin: inherit;
 }
 
 
@@ -260,10 +234,6 @@ th,
   flex-wrap: wrap-reverse;
 }
 
-/* UNVERAENDERT bei 650. Ueberschriften stehen jetzt auf 700; diese
-   Regel gewinnt weiterhin, weil sie spaeter steht und gleich
-   spezifisch ist. Auf 700 anheben, wenn der Seitentitel zu den
-   uebrigen Ueberschriften passen soll. */
 .wt-page-title {
   font-weight: 650;
 }
@@ -298,28 +268,19 @@ th,
 }
 
 
-/* --- Statistikblock ------------------------------------------------ */
-/* Zahlen rechtsbuendig. Die Spaltenbreite dazu steht in Patch-23.css,
-   weil sie einen Fehler im Kern ausgleicht. */
-.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table td {
+/* --- Statistikblock, modules/gedcom-stats/statistics.phtml ---------- */
+.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table td {
   text-align: end;
 }
 
 
-/* --- Haeufigste Nachnamen ------------------------------------------ */
-/* Zahlen rechtsbuendig statt zentriert. Die Kernvorlage setzt die
-   Bootstrap-Utility "text-center", die mit !important arbeitet — ohne
-   !important ist sie nicht zu ueberschreiben. */
+/* --- Nachnamenliste, lists/surnames-table.phtml --------------------- */
 .wt-table-surname td.text-center {
   text-align: end !important;
 }
 
 
-/* --- Nachrichtenblock ---------------------------------------------- */
-/* Bei table-layout:auto sind Prozentwerte nur Wuensche — der lange
-   Betreff setzt sich sonst durch. Bei festem Layout zaehlen nur die
-   Breiten der ersten Zeile, und sie muessen zusammen 100 Prozent
-   ergeben. */
+/* --- Nachrichtenblock, modules/user-messages/user-messages.phtml ---- */
 .wt-block-content-user_messages table {
   table-layout: fixed;
 }
@@ -340,8 +301,6 @@ th,
   width: 25%;
 }
 
-/* Lange Adressen umbrechen statt ueberlaufen. Festes Layout wuerde
-   sonst in die Nachbarspalte schreiben. */
 .wt-block-content-user_messages td:nth-child(4) {
   overflow-wrap: anywhere;
 }
