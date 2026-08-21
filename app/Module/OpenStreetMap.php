@@ -88,9 +88,9 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'default'     => $default_layer === self::LAYER_GERMAN,
                 'label'       => 'Deutsch',
                 'referrerPolicy' => self::OSM_REFERRER_POLICY,
-                'maxZoom'     => 18,
+                'maxZoom'     => 20,
                 'minZoom'     => 2,
-                'url'         => 'https://tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+                'url'         => 'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
                 'localName'   => self::LAYER_GERMAN,
             ],
             (object) [
