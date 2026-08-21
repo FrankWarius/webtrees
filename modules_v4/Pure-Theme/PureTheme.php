@@ -89,21 +89,9 @@ class PureTheme extends MinimalTheme implements ModuleCustomInterface, ModuleGlo
     /**
      * Aus ModuleGlobalInterface. Wird im Layout nach vendor.min.js und
      * webtrees.min.js ausgegeben, Leaflet steht also bereit.
-     *
-     * addInitHook laeuft bei jeder Karte, die danach erzeugt wird — wir
-     * brauchen die Instanz nicht. Greift der Haken nicht, wurde die Karte
-     * schon vorher aufgebaut; dann ist der Weg ueber bodyContent zu spaet.
-     *
-     * Testweise eingebaut, um Zoomstufe und Massstab beurteilen zu koennen.
      */
     public function bodyContent(): string
     {
-        return '<script>
-            if (window.L !== undefined) {
-                L.Map.addInitHook(function () {
-                    L.control.scale({imperial: false}).addTo(this);
-                });
-            }
-        </script>';
+        return '<script src="' . e($this->assetUrl('js/OsmMapScale.js')) . '"></script>';
     }
 };
