@@ -115,7 +115,12 @@ Engere Abstände über und unter Absätzen, passend zur datendichten Oberfläche
 `tbody { vertical-align: top }` von warius.info.
 
 Der Zellabstand `0.2rem 0.4rem` muss die Vendor-Regel übertreffen, siehe
-Grundlagen oben. Zum aktuellen Zustand dieser Regel siehe „Offene Punkte".
+Grundlagen oben.
+
+Auf Seiten mit DataTables greift er nicht: DataTables bringt eigene Abstände
+mit einem Selektor der Form `[dir] table.dataTable > tbody > tr > td` mit, also
+0,2,4 gegen unsere 0,2,2. Wer dort etwas ändern will, muss über den
+DataTables-Abschnitt gehen.
 
 ## Karten
 
@@ -156,12 +161,20 @@ Kompakte Innenabstände, Schriftwerte aus den Grundwerten übernommen.
 
 `modules/gedcom-stats/statistics.phtml`
 
-Die Zahlen der linken Tabelle stehen rechtsbündig. `text-align: end` statt
-`right`, damit es bei rechtsläufigen Sprachen mitdreht.
+Die Vorlage gibt beiden Spalten `class="col col"`. Damit teilen sie die Zeile
+hälftig, obwohl die linke Tabelle schmal ist. Das doppelte `col` ist im Kern
+redundant. Die Regeln entsprechen dem, was `col col-sm-auto` im Markup bewirken
+würde.
 
-Die zugehörige Spaltenbreite steht in `Patch-23.css`, weil sie einen Fehler im
-Kern ausgleicht. Die Aufteilung auf zwei Dateien ist gewollt: `text-align` bleibt
-auch nach einem Upstream-Fix.
+Bewusst hier und nicht in `Patch-23.css`: das ist eine Layoutentscheidung, kein
+Fehler, für den ein Upstream-Fix zu erwarten wäre. Nicht gemeldet und nicht zu
+melden.
+
+`width: 1%` liegt unter der Mindestbreite, die Zahlenspalte fällt dadurch auf
+Inhaltsbreite zurück und die Beschriftungsspalte bekommt den Rest.
+
+Die Zahlen stehen rechtsbündig — `text-align: end` statt `right`, damit es bei
+rechtsläufigen Sprachen mitdreht.
 
 ## Nachnamenliste
 
@@ -201,48 +214,8 @@ Hier wächst der Body nicht mehr, und der Footer verliert Grund und Trennlinie,
 damit die Naht nicht sichtbar bleibt. Der verbleibende Leerraum sitzt dann unten
 in der Karte, wo er nicht stört.
 
-## Statistikblock
-
-`modules/gedcom-stats/statistics.phtml` — nicht gemeldet
-
-Die Vorlage gibt beiden Spalten `class="col col"`. Damit teilen sie die Zeile
-hälftig, obwohl die linke Tabelle schmal ist. Das doppelte `col` ist im Kern
-redundant.
-
-Die Regeln entsprechen dem, was `col col-sm-auto` im Markup bewirken würde.
-`width: 1%` liegt unter der Mindestbreite, die Zahlenspalte fällt dadurch auf
-Inhaltsbreite zurück und die Beschriftungsspalte bekommt den Rest.
-
 ---
 
 # Offene Punkte
 
-## Verrutschter Selektor beim Zellabstand
-
-In `Pure.css`, Abschnitt Tabellen, steht:
-
-```css
-[dir] .table> :not(caption)>*>* [dir] table:not([cellpadding]) td,
-[dir] table:not([cellpadding]) th {
-  padding: 0.2rem 0.4rem;
-}
-```
-
-Der erste Zweig kann nichts treffen: das zweite `[dir]` verlangt ein Element mit
-`dir`-Attribut innerhalb der Tabellenzelle und darin nochmals eine Tabelle.
-Wirksam ist nur `th`; bei `td` gewinnt weiterhin Bootstrap. Vermutlich ist beim
-Zusammenführen der Vendor-Selektor in den eigenen geraten. Gewollt war:
-
-```css
-[dir] table:not([cellpadding]) td,
-[dir] table:not([cellpadding]) th {
-  padding: 0.2rem 0.4rem;
-}
-```
-
-Nicht geändert — offen zur Entscheidung.
-
-## Meldung zum Statistikblock
-
-Das doppelte `col col` und die daraus folgende Spaltenaufteilung sind noch nicht
-bei fisharebest/webtrees gemeldet.
+Zurzeit keine.

@@ -139,7 +139,7 @@ th,
   font-weight: 500;
 }
 
-[dir] .table> :not(caption)>*>* [dir] table:not([cellpadding]) td,
+[dir] table:not([cellpadding]) td,
 [dir] table:not([cellpadding]) th {
   padding: 0.2rem 0.4rem;
 }
@@ -269,8 +269,20 @@ th,
 
 
 /* --- Statistikblock, modules/gedcom-stats/statistics.phtml ---------- */
+@media (min-width: 576px) {
+  .wt-block-content-gedcom_stats .row > .col:first-child {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table {
+  width: auto;
+}
+
 .wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table td {
   text-align: end;
+  width: 1%;
 }
 
 
