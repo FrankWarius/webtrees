@@ -12,9 +12,10 @@ namespace MyWariusTheme;
 use Fisharebest\Webtrees\Module\MinimalTheme;
 use Fisharebest\Webtrees\Module\ModuleCustomInterface;
 use Fisharebest\Webtrees\Module\ModuleCustomTrait;
+use Fisharebest\Webtrees\Module\ModuleGlobalInterface;
 use Fisharebest\Webtrees\View;
 
-class PureTheme extends MinimalTheme implements ModuleCustomInterface
+class PureTheme extends MinimalTheme implements ModuleCustomInterface, ModuleGlobalInterface
 {
     use ModuleCustomTrait;
 
@@ -74,5 +75,35 @@ class PureTheme extends MinimalTheme implements ModuleCustomInterface
     public function bootstrapColorScheme(): string
     {
         return 'light';
+    }
+
+    /**
+     * Aus ModuleGlobalInterface. Wird im Layout vor den Skripten
+     * ausgegeben, hier nicht gebraucht.
+     */
+    public function headContent(): string
+    {
+        return '';
+    }
+
+    /**
+     * Aus ModuleGlobalInterface. Wird im Layout nach vendor.min.js und
+     * webtrees.min.js ausgegeben, Leaflet steht also bereit.
+     *
+     * addInitHook laeuft bei jeder Karte, die danach erzeugt wird — wir
+     * brauchen die Instanz nicht. Greift der Haken nicht, wurde die Karte
+     * schon vorher aufgebaut; dann ist der Weg ueber bodyContent zu spaet.
+     *
+     * Testweise eingebaut, um Zoomstufe und Massstab beurteilen zu koennen.
+     */
+    public function bodyContent(): string
+    {
+        return '<script>
+            if (window.L !== undefined) {
+                L.Map.addInitHook(function () {
+                    L.control.scale({imperial: false}).addTo(this);
+                });
+            }
+        </script>';
     }
 };
