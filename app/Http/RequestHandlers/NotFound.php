@@ -22,8 +22,10 @@ namespace Fisharebest\Webtrees\Http\RequestHandlers;
 use Fisharebest\Webtrees\Enums\HttpRequestMethod;
 use Fisharebest\Webtrees\Enums\HttpStatusCode;
 use Fisharebest\Webtrees\Http\Controllers\HomePage;
+use Fisharebest\Webtrees\Http\Routing\Route;
 use Fisharebest\Webtrees\Http\Exceptions\HttpNotFoundException;
 use Fisharebest\Webtrees\Http\Middleware\BadBotBlocker;
+use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Registry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,14 +43,21 @@ final class NotFound implements RequestHandlerInterface
         if ($request->getAttribute(BadBotBlocker::ROBOT_ATTRIBUTE_NAME) !== null) {
             return response('', HttpStatusCode::NotFound);
         }
+        
+        // *** Mod: Layout und Themes verlangen ein Routen-Attribut - die
+        // Body-Klasse und das Anmelde-Menue lesen es. Bei einer unbekannten
+        // Adresse gibt es keines, deshalb hier ein kuenstliches setzen.
+        $request = $request->withAttribute('route', new Route($request->getUri()->getPath(), self::class));
 
         // Need the request to generate a route/error page.
         Registry::container()->set(ServerRequestInterface::class, $request);
-
         if ($request->getMethod() !== HttpRequestMethod::GET->value) {
             throw new HttpNotFoundException();
         }
 
-        return redirect(url: route(route_name: HomePage::class));
+        // *** Mod: keine Umleitung auf die Startseite. Unbekannte Adressen
+        // sollen einen Fehlerstatus liefern statt ueber zwei Umleitungen die
+        // teuerste Seite der Installation aufzubauen.
+        throw new HttpNotFoundException(I18N::translate('This page does not exist.'));
     }
 }
