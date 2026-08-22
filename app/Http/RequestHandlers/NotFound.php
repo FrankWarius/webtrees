@@ -19,17 +19,20 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Http\RequestHandlers;
 
-use Fisharebest\Webtrees\Enums\HttpRequestMethod;
-use Fisharebest\Webtrees\Enums\HttpStatusCode;
-use Fisharebest\Webtrees\Http\Controllers\HomePage;
-use Fisharebest\Webtrees\Http\Routing\Route;
-use Fisharebest\Webtrees\Http\Exceptions\HttpNotFoundException;
-use Fisharebest\Webtrees\Http\Middleware\BadBotBlocker;
-use Fisharebest\Webtrees\I18N;
-use Fisharebest\Webtrees\Registry;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Fisharebest\Webtrees\Tree;
+use Fisharebest\Webtrees\Site;
+use Fisharebest\Webtrees\Services\TreeService;
+use Fisharebest\Webtrees\Registry;
+use Fisharebest\Webtrees\I18N;
+use Fisharebest\Webtrees\Http\Routing\Route;
+use Fisharebest\Webtrees\Http\Middleware\BadBotBlocker;
+use Fisharebest\Webtrees\Http\Exceptions\HttpNotFoundException;
+use Fisharebest\Webtrees\Http\Controllers\HomePage;
+use Fisharebest\Webtrees\Enums\HttpStatusCode;
+use Fisharebest\Webtrees\Enums\HttpRequestMethod;
 
 use function redirect;
 use function response;
@@ -48,6 +51,16 @@ final class NotFound implements RequestHandlerInterface
         // Body-Klasse und das Anmelde-Menue lesen es. Bei einer unbekannten
         // Adresse gibt es keines, deshalb hier ein kuenstliches setzen.
         $request = $request->withAttribute('route', new Route($request->getUri()->getPath(), self::class));
+
+        // *** Mod: ohne Stammbaum-Attribut liefern die Fussmodule eine leere
+        // Zeichenkette - die Fehlerseite haette dann keinen Fuss. Denselben
+        // Standard-Stammbaum waehlen wie HandleExceptions.
+        $tree_service = Registry::container()->get(TreeService::class);
+        $default_tree = $tree_service->all()[Site::getPreference('DEFAULT_GEDCOM')] ?? $tree_service->all()->first();
+
+        if ($default_tree instanceof Tree) {
+            $request = $request->withAttribute('tree', $default_tree);
+        }
 
         // Need the request to generate a route/error page.
         Registry::container()->set(ServerRequestInterface::class, $request);
