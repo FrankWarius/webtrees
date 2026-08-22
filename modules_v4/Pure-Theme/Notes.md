@@ -44,14 +44,14 @@ Beispiel Zellabstand:
 
 ---
 
-# Pure.css
+## Pure.css
 
-## Farbschema
+### Farbschema
 
 Ausschließlich hell. Das Theme muss dazu `bootstrapColorScheme()` mit `light`
 überschreiben.
 
-## Angleichung an warius.info
+### Angleichung an warius.info
 
 Übernommen wurden Schriftfamilie, Überschriftengewicht 700, Laufweite
 `-0.02em`, die Hover-Farbe `#104e8b` und `tbody { vertical-align: top }`.
@@ -59,7 +59,7 @@ Ausschließlich hell. Das Theme muss dazu `bootstrapColorScheme()` mit `light`
 Größen und Abstände bleiben aus der bisherigen Fassung — die Oberfläche ist
 datendicht, nicht fließtextlastig.
 
-## Schrift Inter
+### Schrift Inter
 
 Selbst gehostet statt über Google Fonts, damit keine Anfrage an Dritte entsteht.
 Quelle: rsms/inter, SIL Open Font License 1.1.
@@ -82,7 +82,7 @@ wenn die optische Größe genutzt werden soll.
 Pfade wie `../fonts/` lösen gegen `/module/_Pure-Theme_/` auf und laufen ins
 Leere. Deshalb `url("Asset?asset=fonts%2FInter-Regular.woff2")`.
 
-## Grundwerte
+### Grundwerte
 
 `--bs-body-line-height: 1.05` steht bewusst ohne Einheit. Eine Prozentangabe
 wird zu einem festen Betrag berechnet und so vererbt; einheitenlos rechnet jedes
@@ -97,20 +97,20 @@ beides direkt am `body` setzt und damit Bootstraps variablengesteuerte Regel
 TinyMCE stammt und als `[dir] body { margin: 1rem }` global wirkt. Ein einfaches
 `body { margin: 0 }` verliert dagegen, weil `[dir]` eine Klassenstufe zählt.
 
-## Kopfbereich
+### Kopfbereich
 
 Trennlinie unter dem Kopf, sonst unverändert.
 
-## Überschriften
+### Überschriften
 
 Gewicht 700 und Laufweite `-0.02em` von warius.info. Die Größen in Prozent
 stammen unverändert aus der bisherigen Fassung.
 
-## Fließtext
+### Fließtext
 
 Engere Abstände über und unter Absätzen, passend zur datendichten Oberfläche.
 
-## Tabellen
+### Tabellen
 
 `border-collapse` und geerbte Rahmen, damit die Linien nicht doppelt stehen.
 `tbody { vertical-align: top }` von warius.info.
@@ -123,28 +123,28 @@ mit einem Selektor der Form `[dir] table.dataTable > tbody > tr > td` mit, also
 0,2,4 gegen unsere 0,2,2. Wer dort etwas ändern will, muss über den
 DataTables-Abschnitt gehen.
 
-## Karten
+### Karten
 
 Die Kurzform von `padding` erwartet `y x`. In der Vorgängerfassung waren die
 Achsen vertauscht — vorher 0.2rem oben und unten und 0 links und rechts, jetzt
 umgekehrt. Wirkt der Kartenkopf dadurch zu flach, entweder `--bs-gutter-y`
 anheben oder feste Werte setzen.
 
-## Raster
+### Raster
 
 Enge Rinnen: `--bs-gutter-x: 0.4rem`, `--bs-gutter-y: 0`.
 
-## Akkordeon
+### Akkordeon
 
 Gleiche Achsenkorrektur wie beim Kartenkopf.
 
-## DataTables 2
+### DataTables 2
 
 `div.dt-container div.dt-layout-full > :only-child` zielt auf die
 Markup-Struktur von DataTables 2. Mit dem vorbereiteten Wechsel auf 3.0.0 können
 sich die Klassennamen ändern.
 
-## webtrees-eigene Bausteine
+### webtrees-eigene Bausteine
 
 `.wt-page-title` steht unverändert bei 650, während die Überschriften auf 700
 stehen. Die Regel gewinnt weiterhin, weil sie später steht und gleich spezifisch
@@ -154,11 +154,11 @@ soll.
 Die Reihenfolge im Kopf — Titel, Suche, zweite Navigation — wird über `order`
 und `flex` gesetzt, nicht über das Markup.
 
-## Schaltflächen
+### Schaltflächen
 
 Kompakte Innenabstände, Schriftwerte aus den Grundwerten übernommen.
 
-## Statistikblock
+### Statistikblock
 
 `modules/gedcom-stats/statistics.phtml`
 
@@ -177,7 +177,7 @@ Inhaltsbreite zurück und die Beschriftungsspalte bekommt den Rest.
 Die Zahlen stehen rechtsbündig — `text-align: end` statt `right`, damit es bei
 rechtsläufigen Sprachen mitdreht.
 
-## Nachnamenliste
+### Nachnamenliste
 
 `lists/surnames-table.phtml`
 
@@ -185,7 +185,7 @@ Die Vorlage setzt an der Zahlenspalte die Bootstrap-Utility `text-center`.
 Utilities arbeiten mit `!important`, deshalb ist hier ohne `!important` nichts
 auszurichten.
 
-## Nachrichtenblock
+### Nachrichtenblock
 
 `modules/user-messages/user-messages.phtml`
 
@@ -198,7 +198,7 @@ zusammen 100 Prozent ergeben — daher 10/45/20/25.
 in die Nachbarspalte laufen. Ohne das erzwingt die Mindestbreite der längsten
 Adresse eine breitere Spalte, und die Prozentwerte greifen nicht.
 
-## Maßstabsbalken
+### Maßstabsbalken
 
 `resources/js/MapScale.js`
 
@@ -232,9 +232,9 @@ nicht mehr.
 
 ---
 
-# Patch-23.css
+## Patch-23.css
 
-## Medienliste
+### Medienliste
 
 `modules/media-list/page.phtml` — gemeldet als **#5469**
 
@@ -249,6 +249,6 @@ in der Karte, wo er nicht stört.
 
 ---
 
-# Offene Punkte
+## Offene Punkte
 
 Zurzeit keine.
