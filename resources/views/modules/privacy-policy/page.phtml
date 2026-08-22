@@ -231,13 +231,14 @@ use Illuminate\Support\Collection;
             <?php
             // *** Mod: Anbieter, die ihre Server selbst erklaeren, kommen in die
             // Tabelle. Alle uebrigen bleiben bei der bisherigen Aufzaehlung.
-            $declared = $map_providers->filter(
-                static fn ($module): bool => $module instanceof ModuleExternalInterface && $module->externalEndpoints() !== []
-            );
-            $endpoints = $declared->flatMap(
+            $declares = static fn ($module): bool =>
+                $module instanceof ModuleExternalInterface && $module->externalEndpoints() !== [];
+
+            $endpoints = $map_providers->filter($declares)->flatMap(
                 static fn (ModuleExternalInterface $module): array => $module->externalEndpoints()
             );
-            $undeclared = $map_providers->diff($declared);
+
+            $undeclared = $map_providers->reject($declares);
             ?>
 
             <?php if ($endpoints->isNotEmpty()) : ?>
