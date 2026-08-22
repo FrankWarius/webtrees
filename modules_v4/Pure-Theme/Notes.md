@@ -1,6 +1,7 @@
 # Pure-Theme — Notizen
 
-Begleittext zu `resources/css/Pure.css` und `resources/css/Patch-23.css`.
+Begleittext zu `resources/css/Pure.css`, `resources/css/Patch-23.css` und
+`resources/js/MapScale.js`.
 Die Stylesheets werden über die Asset-Route öffentlich ausgeliefert, deshalb
 stehen die Begründungen hier und nicht dort.
 
@@ -196,6 +197,38 @@ zusammen 100 Prozent ergeben — daher 10/45/20/25.
 `overflow-wrap: anywhere` in der letzten Spalte verhindert, dass lange Adressen
 in die Nachbarspalte laufen. Ohne das erzwingt die Mindestbreite der längsten
 Adresse eine breitere Spalte, und die Prozentwerte greifen nicht.
+
+## Maßstabsbalken
+
+`resources/js/MapScale.js`
+
+Hängt an jede Leaflet-Karte einen Maßstabsbalken. Ursprünglich als Diagnosehilfe
+gebaut, um beim Prüfen der Kachelserver die Auflösung ablesen zu können.
+
+Eingebunden über `PureTheme::bodyContent()`. Dafür implementiert die
+Theme-Klasse zusätzlich `ModuleGlobalInterface` — `MinimalTheme` bringt das
+nicht mit, und ohne die Schnittstelle taucht das Modul in der Schleife des
+Layouts nicht auf. `ModuleGlobalTrait` wird bewusst nicht benutzt: eine
+Trait-Methode verdrängt in PHP die geerbte aus `MinimalTheme`, deshalb sind
+`headContent()` und `bodyContent()` direkt geschrieben.
+
+Reihenfolge im Layout (`resources/views/layouts/default.phtml`):
+
+| Zeile | Inhalt |
+| --- | --- |
+| 63 | `headContent()` — Leaflet noch nicht geladen |
+| 141 | `vendor.min.js`, enthält Leaflet |
+| 143 | `webtrees.min.js` |
+| 147 | `bodyContent()` — hier hängt sich das Skript ein |
+
+`L.Map.addInitHook` greift bei jeder Karte, die **danach** erzeugt wird. Die
+Karteninstanz wird nicht gebraucht, was den Weg über einen Kernpatch erspart —
+webtrees baut alle Karten in `resources/js/webtrees/map.js` und legt die
+Instanz nicht global ab.
+
+Sollte der Balken eines Tages fehlen, ist die wahrscheinliche Ursache, dass die
+Karte schon vor Zeile 147 aufgebaut wird; dann trägt der Weg über `bodyContent`
+nicht mehr.
 
 ---
 
