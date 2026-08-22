@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Module\ModuleAnalyticsInterface;
+use Fisharebest\Webtrees\Module\ModuleExternalInterface;
 use Fisharebest\Webtrees\Module\ModuleExternalUrlInterface;
 use Fisharebest\Webtrees\Module\ModuleMapGeoLocationInterface;
 use Fisharebest\Webtrees\Module\ModuleMapProviderInterface;
@@ -227,14 +228,51 @@ use Illuminate\Support\Collection;
         <?php endif ?>
 
         <?php if ($key === 'third_party_services' && ($map_providers->isNotEmpty() || $geo_providers->isNotEmpty())) : ?>
-            <ul>
-                <?php foreach ($map_providers as $module) : ?>
-                    <li><?= I18N::translate('Map tiles') ?> — <?= $module->title() ?></li>
-                <?php endforeach ?>
-                <?php foreach ($geo_providers as $module) : ?>
-                    <li><?= I18N::translate('Geocoding') ?> — <?= $module->title() ?></li>
-                <?php endforeach ?>
-            </ul>
+            <?php
+            // *** Mod: Anbieter, die ihre Server selbst erklaeren, kommen in die
+            // Tabelle. Alle uebrigen bleiben bei der bisherigen Aufzaehlung.
+            $declared = $map_providers->filter(
+                static fn ($module): bool => $module instanceof ModuleExternalInterface && $module->externalEndpoints() !== []
+            );
+            $endpoints = $declared->flatMap(
+                static fn (ModuleExternalInterface $module): array => $module->externalEndpoints()
+            );
+            $undeclared = $map_providers->diff($declared);
+            ?>
+
+            <?php if ($endpoints->isNotEmpty()) : ?>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th><?= I18N::translate('Purpose') ?></th>
+                            <th><?= I18N::translate('Server') ?></th>
+                            <th><?= I18N::translate('Operator') ?></th>
+                            <th><?= I18N::translate('Country') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($endpoints as $endpoint) : ?>
+                            <tr>
+                                <td><?= e($endpoint->purpose) ?></td>
+                                <td dir="ltr"><?= e($endpoint->host) ?></td>
+                                <td><a href="<?= e($endpoint->privacyUrl) ?>"><?= e($endpoint->operator) ?></a></td>
+                                <td><?= e($endpoint->country) ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            <?php endif ?>
+
+            <?php if ($undeclared->isNotEmpty() || $geo_providers->isNotEmpty()) : ?>
+                <ul>
+                    <?php foreach ($undeclared as $module) : ?>
+                        <li><?= I18N::translate('Map tiles') ?> — <?= $module->title() ?></li>
+                    <?php endforeach ?>
+                    <?php foreach ($geo_providers as $module) : ?>
+                        <li><?= I18N::translate('Geocoding') ?> — <?= $module->title() ?></li>
+                    <?php endforeach ?>
+                </ul>
+            <?php endif ?>
         <?php endif ?>
 
         <?php if ($key === 'complaint') : ?>
