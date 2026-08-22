@@ -63,14 +63,8 @@ $theme = Registry::container()->get(ModuleThemeInterface::class);
         <?= Registry::container()->get(ModuleService::class)->findByInterface(ModuleGlobalInterface::class)->map(static fn (ModuleGlobalInterface $module): string => $module->headContent())->implode('') ?>
     </head>
 
-<?php
-    // *** Mod: bei unbekannten Adressen gibt es keine Route. Validator->route()
-    // wuerde dann werfen - mitten im Rendern der Fehlerseite.
-    $route      = $request->getAttribute('route');
-    $route_name = $route === null ? 'NotFound' : basename(strtr($route->controller, ['\\' => '/']));
-?>
     <body
-        class="wt-global wt-theme-<?= e($theme->name()) ?> wt-route-<?= e($route_name) ?>"
+        class="wt-global wt-theme-<?= e($theme->name()) ?> wt-route-<?= e(basename(strtr(Validator::attributes($request)->route()->controller, ['\\' => '/']))) ?>"
     >
         <header class="wt-header-wrapper d-print-none">
             <div class="container-lg wt-header-container">
