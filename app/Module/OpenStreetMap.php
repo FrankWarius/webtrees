@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Module;
 
+use Fisharebest\Webtrees\ExternalEndpoint;
 use Fisharebest\Webtrees\I18N;
 
 use function strtolower;
@@ -27,7 +28,7 @@ use function substr;
 /**
  * Class OpenStreetMap - use maps within webtrees
  */
-class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
+class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface, ModuleExternalInterface
 {
     use ModuleMapProviderTrait;
 
@@ -106,6 +107,43 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'url'         => 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
                 'localName'   => self::LAYER_FRENCH,
             ],
+        ];
+    }
+
+    /**
+     * Third-party servers contacted directly by the visitor's browser.
+     *
+     * One entry per tile server, because the visitor's choice in the layer
+     * control decides which of them is contacted.
+     *
+     * @return array<ExternalEndpoint>
+     */
+    public function externalEndpoints(): array
+    {
+        $purpose = I18N::translate('Map tiles');
+
+        return [
+            new ExternalEndpoint(
+                host:       'tile.openstreetmap.org',
+                operator:   'OpenStreetMap Foundation',
+                country:    'GB',
+                purpose:    $purpose,
+                privacyUrl: 'https://osmfoundation.org/wiki/Privacy_Policy',
+            ),
+            new ExternalEndpoint(
+                host:       'tile.openstreetmap.de',
+                operator:   'FOSSGIS e.V.',
+                country:    'DE',
+                purpose:    $purpose,
+                privacyUrl: 'https://www.fossgis.de/datenschutzerkl%C3%A4rung/',
+            ),
+            new ExternalEndpoint(
+                host:       '{s}.tile.openstreetmap.fr',
+                operator:   'OpenStreetMap France',
+                country:    'FR',
+                purpose:    $purpose,
+                privacyUrl: 'https://www.openstreetmap.fr/contact/',
+            ),
         ];
     }
 
