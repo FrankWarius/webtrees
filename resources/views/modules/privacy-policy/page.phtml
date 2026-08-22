@@ -249,22 +249,22 @@ use Illuminate\Support\Collection;
                         <thead>
                             <tr>
                                 <th><?= I18N::translate('Purpose') ?></th>
-                                <th><?= I18N::translate('Server') ?></th>
                                 <th><?= I18N::translate('Operator') ?></th>
                                 <th><?= I18N::translate('Country') ?></th>
+                                <th><?= I18N::translate('Server') ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($endpoints as $endpoint) : ?>
                                 <tr>
                                     <td><?= e($endpoint->purpose) ?></td>
-                                    <td dir="ltr"><?= e($endpoint->host) ?></td>
                                     <td>
                                         <a href="<?= e($endpoint->privacyUrl) ?>" target="_blank" rel="noopener noreferrer">
                                             <?= e($endpoint->operator) ?>
                                         </a>
                                     </td>
                                     <td><?= e($endpoint->country) ?></td>
+                                    <td dir="ltr"><?= e($endpoint->host) ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
