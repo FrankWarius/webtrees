@@ -163,6 +163,13 @@ th,
 }
 
 
+/* --- Form ---------------------------------------------------------- */
+.form-control,
+[dir] .form-control {
+  padding: .2rem .4rem;
+}
+
+
 /* --- Raster -------------------------------------------------------- */
 .row {
   --bs-gutter-x: 0.4rem;
@@ -220,6 +227,7 @@ th,
   font-size: x-large;
   font-weight: bold;
   color: black;
+  margin-bottom: .1rem !important;
 }
 
 .wt-header-search {
@@ -236,6 +244,10 @@ th,
 
 .wt-page-title {
   font-weight: 650;
+}
+
+[dir] .wt-main-container{
+  padding: 0.5rem 0.75 rem;
 }
 
 .wt-main-blocks,
@@ -280,17 +292,17 @@ th,
 
 /* --- Statistikblock, modules/gedcom-stats/statistics.phtml ---------- */
 @media (min-width: 576px) {
-  .wt-block-content-gedcom_stats .row > .col:first-child {
+  .wt-block-content-gedcom_stats .row>.col:first-child {
     flex: 0 0 auto;
     width: auto;
   }
 }
 
-.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table {
+.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table {
   width: auto;
 }
 
-.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table td {
+.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table td {
   text-align: end;
   width: 1%;
 }
