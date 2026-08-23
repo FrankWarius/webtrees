@@ -85,7 +85,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'n'     => $nonce,
                 'tok'   => $makeTok('org')
             ]);
-        $urlDe  = $base . 'de/tiles/osmde/{z}/{x}/{y}.png?' .
+        $urlDe  = $base . 'de/{z}/{x}/{y}.png?' .
             http_build_query([
                 'exp'   => $exp,
                 'n'     => $nonce,
@@ -109,7 +109,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'keepBuffer'  => 2,
                 'updateWhenIdle' => true,
                 'updateWhenZooming' => false,
-                'url'         => $urlOrg,
+                'url'         => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 'localName'   => 'OpenStreetMapsMapnik',
             ],
             (object) [
@@ -122,7 +122,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'keepBuffer'  => 2,
                 'updateWhenIdle' => true,
                 'updateWhenZooming' => false,
-                'url'         => $urlDe,
+                'url'         => 'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
                 'localName'   => 'OpenStreetMapsDeutsch',
             ],
             (object) [
@@ -135,7 +135,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'keepBuffer'  => 2,
                 'updateWhenIdle' => true,
                 'updateWhenZooming' => false,
-                'url'         => $urlFr,
+                'url'         => 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
                 'localName'   => 'OpenStreetMapsFrench',
             ],
         ];
