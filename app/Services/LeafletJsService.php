@@ -32,14 +32,19 @@ class LeafletJsService
 {
     public function __construct(
         private readonly ModuleService $module_service,
-    ) {
-    }
+    ) {}
 
     public function config(): object
     {
         $map_providers = $this->module_service
             ->findByInterface(ModuleMapProviderInterface::class)
-            ->map(static fn (ModuleMapProviderInterface $map_provider): object => (object) [
+
+            // *** Mod: OpenStreetMap zuerst, damit dessen sprachabhaengige
+            // Standardebene gewinnt. Ohne das entscheidet die Reihenfolge aus
+            // findByInterface, und dort steht Esri vor OpenStreetMap.
+            ->sortBy(static fn(ModuleMapProviderInterface $map_provider): int =>
+            $map_provider->name() === 'openstreetmap' ? 0 : 1)
+            ->map(static fn(ModuleMapProviderInterface $map_provider): object => (object) [
                 'children'  => $map_provider->leafletJsTileLayers(),
                 'collapsed' => true,
                 'label'     => $map_provider->title(),
