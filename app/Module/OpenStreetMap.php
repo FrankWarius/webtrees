@@ -109,7 +109,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'keepBuffer'  => 2,
                 'updateWhenIdle' => true,
                 'updateWhenZooming' => false,
-                'url'         => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'url'         => $urlOrg,
                 'localName'   => 'OpenStreetMapsMapnik',
             ],
             (object) [
@@ -122,7 +122,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'keepBuffer'  => 2,
                 'updateWhenIdle' => true,
                 'updateWhenZooming' => false,
-                'url'         => 'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
+                'url'         => $urlDe,
                 'localName'   => 'OpenStreetMapsDeutsch',
             ],
             (object) [
@@ -135,7 +135,7 @@ class OpenStreetMap extends AbstractModule implements ModuleMapProviderInterface
                 'keepBuffer'  => 2,
                 'updateWhenIdle' => true,
                 'updateWhenZooming' => false,
-                'url'         => 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                'url'         => $urlFr,
                 'localName'   => 'OpenStreetMapsFrench',
             ],
         ];
