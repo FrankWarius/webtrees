@@ -5,7 +5,7 @@ Begleittext zu `resources/css/Pure.css`, `resources/css/Patch-23.css` und
 Die Stylesheets werden über die Asset-Route öffentlich ausgeliefert, deshalb
 stehen die Begründungen hier und nicht dort.
 
-Ablage: `modules_v4/Pure-Theme/Theme-Notizen.md` — im Modulwurzelverzeichnis,
+Ablage: `modules_v4/Pure-Theme/Notes.md` — im Modulwurzelverzeichnis,
 also nicht über die Asset-Route erreichbar.
 
 Die Abschnitte folgen der Reihenfolge in den Stylesheets.
@@ -157,6 +157,38 @@ und `flex` gesetzt, nicht über das Markup.
 ### Schaltflächen
 
 Kompakte Innenabstände, Schriftwerte aus den Grundwerten übernommen.
+
+### Karten (Leaflet)
+
+Nicht zu verwechseln mit dem Abschnitt „Karten" weiter oben — der meint die
+Bootstrap-Cards. Hier geht es um die Landkarten.
+
+`[dir] .leaflet-bottom .leaflet-control-scale` bekommt `margin-bottom: 1.25rem`.
+Leaflet setzt Maßstabsbalken und Attributionszeile beide in die untere Ecke.
+Ohne den Abstand liegt der Balken auf der Attribution und ist nicht mehr zu
+lesen. 1.25rem ist der Wert, bei dem der Balken über der Zeile steht, ohne dass
+eine sichtbare Lücke entsteht.
+
+`.leaflet-container { margin-bottom: 0.5rem }` gibt der Karte wieder Luft nach
+unten. In der Ortshierarchie schließt die Liste „alle Orte" sonst unmittelbar
+an den Kartenrand an. Bewusst am Container und nicht am umgebenden Block, damit
+es für jede Karte gilt, unabhängig davon, was darunter steht.
+
+### Drittanbieter-Tabelle
+
+`modules/privacy-policy/page.phtml`
+
+Die Tabelle `wt-external-endpoints` listet die Server, die der Browser des
+Besuchers direkt kontaktiert. Der Betreibername in der zweiten Spalte ist ein
+Link auf dessen Datenschutzerklärung.
+
+`--link-color` steht im Theme global auf Schwarz, Unterstreichung erst beim
+Überfahren. In einer Tabelle voller Text ist damit nicht zu erkennen, dass der
+Betreibername klickbar ist. Deshalb bekommen die Links dort die Hover-Farbe
+`--link-color-hover` schon im Ruhezustand.
+
+Bewusst auf die Tabelle begrenzt: das Farbschema des Themes bleibt sonst
+unverändert.
 
 ### Statistikblock
 
