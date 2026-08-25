@@ -293,7 +293,6 @@ th,
 /* --- Drittanbieter-Tabelle, modules/privacy-policy/page.phtml ------- */
 .wt-external-endpoints a {
   color: var(--link-color-hover);
-  text-decoration: underline;
 }
 
 
