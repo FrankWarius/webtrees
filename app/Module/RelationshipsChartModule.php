@@ -169,9 +169,9 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
         ];
 
         return route(static::class, [
-            'xref' => $individual->xref(),
-            'tree' => $tree->name(),
-        ] + $parameters + $default_parameters);
+                'xref' => $individual->xref(),
+                'tree' => $tree->name(),
+            ] + $parameters + $default_parameters);
     }
 
     public function get(ServerRequestInterface $request): ResponseInterface
@@ -282,16 +282,6 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
             $min_y = 0;
             $max_y = 0;
             $max_x = 0;
-            // *** Mod: direction of the previous step - up, down, right, or an
-            // empty string at the start. A diagonal belongs only at a change of
-            // direction between up and down; consecutive steps in the same
-            // direction stay in the same column.
-            //
-            // 2.2.6 tested this with preg_match('/son|dau|chi/',
-            // $relationships[$n - 2]). That test was lost when the path logic
-            // was rewritten, leaving only "$n > 2" - so every step from the
-            // third one onwards was drawn diagonally.
-            $previous_direction = '';
             // For each node in the path.
             foreach ($nodes as $n => $record) {
                 if ($record instanceof Family) {
@@ -308,13 +298,12 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                             $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
                             '</div><div style="height: 32px;">' . view('icons/arrow-right') . '</div></div>';
                         $x                 += 2;
-                        $previous_direction = 'right';
                     } elseif (
                         $record->spouses()->contains($prev) && $record->children()->contains($next) ||
                         $record->spouses()->contains($prev) && $record->children()->contains($next)
                     ) {
-                        // Parent to child.  We are moving down.
-                        if ($n > 2) {
+                        // Parent to child.  Move down (or diagonally if it's a change in vertical direction).
+                        if ($n > 2 && $nodes[$n - 2]->children()->contains($nodes[$n - 3]) && $nodes[$n - 2]->spouses()->contains($prev)) {
                             $table[$x + 1][$y - 1] =
                                 '<div style="background:url(' . $diagonal2 . '); width: 64px; height: 64px; text-align: center;"><div style="height: 32px; text-align: end;">' .
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -326,11 +315,10 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
                                 '</div><div style="display: inline-block; width:50%; line-height: 64px;">' . view('icons/arrow-down') . '</div></div>';
                         }
-                        $y                 -= 2;
-                        $previous_direction = 'down';
+                        $y -= 2;
                     } else {
-                        // Child to parent.  We are moving up.
-                        if ($n > 2) {
+                        // Child to parent. Move up (or diagonally if it's a change in vertical direction).
+                        if ($n > 2 && $nodes[$n - 2]->spouses()->contains($nodes[$n - 3]) && $nodes[$n - 2]->children()->contains($prev)) {
                             $table[$x + 1][$y + 1] =
                                 '<div style="background:url(' . $diagonal1 . '); background-position: top right; width: 64px; height: 64px; text-align: center;"><div style="height: 32px; text-align: start;">' .
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -342,8 +330,7 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
                                 '</div><div style="display: inline-block; width: 50%; line-height: 32px">' . view('icons/arrow-up') . '</div></div>';
                         }
-                        $y                 += 2;
-                        $previous_direction = 'up';
+                        $y += 2;
                     }
 
                     $max_x = max($max_x, $x);
