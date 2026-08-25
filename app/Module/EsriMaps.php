@@ -19,12 +19,13 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Module;
 
+use Fisharebest\Webtrees\ExternalEndpoint;
 use Fisharebest\Webtrees\I18N;
 
 /**
  * Class EsriMaps - use maps within webtrees
  */
-class EsriMaps extends AbstractModule implements ModuleMapProviderInterface
+class EsriMaps extends AbstractModule implements ModuleMapProviderInterface, ModuleExternalInterface
 {
     use ModuleMapProviderTrait;
 
@@ -87,6 +88,27 @@ class EsriMaps extends AbstractModule implements ModuleMapProviderInterface
                 'url'         => 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
                 'localName'   => 'ESRINatGeoWorldMap',
             ],
+        ];
+    }
+
+    /**
+     * *** Mod: Third-party servers contacted directly by the visitor's browser.
+     *
+     * All three tile layers are served from the same host, so there is one
+     * endpoint rather than three.
+     *
+     * @return array<ExternalEndpoint>
+     */
+    public function externalEndpoints(): array
+    {
+        return [
+            new ExternalEndpoint(
+                host:       'server.arcgisonline.com',
+                operator:   'Esri Inc.',
+                country:    'US',
+                purpose:    I18N::translate('Map tiles'),
+                privacyUrl: 'https://www.esri.com/en-us/privacy/privacy-statements/privacy-statement',
+            ),
         ];
     }
 }

@@ -234,38 +234,37 @@ use Illuminate\Support\Collection;
             $declares = static fn ($module): bool =>
                 $module instanceof ModuleExternalInterface && $module->externalEndpoints() !== [];
 
-            $endpoints = $map_providers->filter($declares)->flatMap(
-                static fn (ModuleExternalInterface $module): array => $module->externalEndpoints()
-            );
-
+            $declared   = $map_providers->filter($declares);
             $undeclared = $map_providers->reject($declares);
             ?>
 
-            <?php if ($endpoints->isNotEmpty() || $undeclared->isNotEmpty()) : ?>
+            <?php if ($declared->isNotEmpty() || $undeclared->isNotEmpty()) : ?>
                 <h4><?= I18N::translate('Map provider') ?></h4>
 
-                <?php if ($endpoints->isNotEmpty()) : ?>
-                    <table class="table table-sm w-auto">
+                <?php if ($declared->isNotEmpty()) : ?>
+                    <table class="table table-sm w-auto wt-external-endpoints">
                         <thead>
                             <tr>
-                                <th><?= I18N::translate('Purpose') ?></th>
+                                <th><?= I18N::translate('Service') ?></th>
                                 <th><?= I18N::translate('Operator') ?></th>
                                 <th><?= I18N::translate('Country') ?></th>
                                 <th><?= I18N::translate('Server') ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($endpoints as $endpoint) : ?>
-                                <tr>
-                                    <td><?= e($endpoint->purpose) ?></td>
-                                    <td>
-                                        <a href="<?= e($endpoint->privacyUrl) ?>" target="_blank" rel="noopener noreferrer">
-                                            <?= e($endpoint->operator) ?>
-                                        </a>
-                                    </td>
-                                    <td><?= e($endpoint->country) ?></td>
-                                    <td dir="ltr"><?= e($endpoint->host) ?></td>
-                                </tr>
+                            <?php foreach ($declared as $module) : ?>
+                                <?php foreach ($module->externalEndpoints() as $endpoint) : ?>
+                                    <tr>
+                                        <td><?= $module->title() ?></td>
+                                        <td>
+                                            <a href="<?= e($endpoint->privacyUrl) ?>" target="_blank" rel="noopener noreferrer">
+                                                <?= e($endpoint->operator) ?>
+                                            </a>
+                                        </td>
+                                        <td><?= e($endpoint->country) ?></td>
+                                        <td dir="ltr"><?= e($endpoint->host) ?></td>
+                                    </tr>
+                                <?php endforeach ?>
                             <?php endforeach ?>
                         </tbody>
                     </table>

@@ -290,19 +290,26 @@ th,
 }
 
 
+/* --- Drittanbieter-Tabelle, modules/privacy-policy/page.phtml ------- */
+.wt-external-endpoints a {
+  color: var(--link-color-hover);
+  text-decoration: underline;
+}
+
+
 /* --- Statistikblock, modules/gedcom-stats/statistics.phtml ---------- */
 @media (min-width: 576px) {
-  .wt-block-content-gedcom_stats .row>.col:first-child {
+  .wt-block-content-gedcom_stats .row > .col:first-child {
     flex: 0 0 auto;
     width: auto;
   }
 }
 
-.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table {
+.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table {
   width: auto;
 }
 
-.wt-block-content-gedcom_stats .row>.col:first-child .wt-facts-table td {
+.wt-block-content-gedcom_stats .row > .col:first-child .wt-facts-table td {
   text-align: end;
   width: 1%;
 }
