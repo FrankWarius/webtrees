@@ -46,31 +46,14 @@ final class NotFound implements RequestHandlerInterface
         if ($request->getAttribute(BadBotBlocker::ROBOT_ATTRIBUTE_NAME) !== null) {
             return response('', HttpStatusCode::NotFound);
         }
-        
-        // *** Mod: Layout und Themes verlangen ein Routen-Attribut - die
-        // Body-Klasse und das Anmelde-Menue lesen es. Bei einer unbekannten
-        // Adresse gibt es keines, deshalb hier ein kuenstliches setzen.
-        $request = $request->withAttribute('route', new Route($request->getUri()->getPath(), self::class));
-
-        // *** Mod: ohne Stammbaum-Attribut liefern die Fussmodule eine leere
-        // Zeichenkette - die Fehlerseite haette dann keinen Fuss. Denselben
-        // Standard-Stammbaum waehlen wie HandleExceptions.
-        $tree_service = Registry::container()->get(TreeService::class);
-        $default_tree = $tree_service->all()[Site::getPreference('DEFAULT_GEDCOM')] ?? $tree_service->all()->first();
-
-        if ($default_tree instanceof Tree) {
-            $request = $request->withAttribute('tree', $default_tree);
-        }
 
         // Need the request to generate a route/error page.
         Registry::container()->set(ServerRequestInterface::class, $request);
+
         if ($request->getMethod() !== HttpRequestMethod::GET->value) {
             throw new HttpNotFoundException();
         }
 
-        // *** Mod: keine Umleitung auf die Startseite. Unbekannte Adressen
-        // sollen einen Fehlerstatus liefern statt ueber zwei Umleitungen die
-        // teuerste Seite der Installation aufzubauen.
-        throw new HttpNotFoundException(I18N::translate('This page does not exist.'));
+        return redirect(url: route(route_name: HomePage::class));
     }
 }

@@ -70,10 +70,10 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
     /** It would be more correct to use PHP_INT_MAX, but this isn't friendly in URLs */
     public const int UNLIMITED_RECURSION = 99;
 
-    /** By default new trees allow unlimited recursion */
+    /** By default, new trees allow unlimited recursion */
     public const string DEFAULT_RECURSION = '99';
 
-    /** By default new trees search for all relationships (not via ancestors) */
+    /** By default, new trees search for all relationships (not via ancestors) */
     public const string DEFAULT_ANCESTORS  = '0';
     public const array  DEFAULT_PARAMETERS = [
         'ancestors' => self::DEFAULT_ANCESTORS,
@@ -297,12 +297,12 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                 if ($record instanceof Family) {
                     $prev = $nodes[$n - 1];
                     $next = $nodes[$n + 1];
-                    // Need to draw a line between the two individuals, and label it with the relationship.
+                    // Need to draw a line between the two individuals and label it with the relationship.
                     if (
                         $record->children()->contains($prev) && $record->children()->contains($next) ||
                         $record->spouses()->contains($prev) && $record->spouses()->contains($next)
                     ) {
-                        // Spouses or siblings.  We are moving right.
+                        // Spouses or siblings.  Move right.
                         $table[$x + 1][$y] =
                             '<div style="background:url(' . e(asset('css/images/hline.png')) . ') repeat-x center;  width: 94px; text-align: center"><div style="height: 32px;">' .
                             $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -314,7 +314,7 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                         $record->spouses()->contains($prev) && $record->children()->contains($next)
                     ) {
                         // Parent to child.  We are moving down.
-                        if ($n > 2 && $previous_direction === 'up') {
+                        if ($n > 2) {
                             $table[$x + 1][$y - 1] =
                                 '<div style="background:url(' . $diagonal2 . '); width: 64px; height: 64px; text-align: center;"><div style="height: 32px; text-align: end;">' .
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -330,7 +330,7 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                         $previous_direction = 'down';
                     } else {
                         // Child to parent.  We are moving up.
-                        if ($n > 2 && $previous_direction === 'down') {
+                        if ($n > 2) {
                             $table[$x + 1][$y + 1] =
                                 '<div style="background:url(' . $diagonal1 . '); background-position: top right; width: 64px; height: 64px; text-align: center;"><div style="height: 32px; text-align: start;">' .
                                 $this->relationship_service->nameFromPath([$prev, $record, $next], I18N::language()) .
@@ -409,7 +409,7 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
     }
 
     /**
-     * Possible options for the ancestors option
+     * Possible options for the 'ancestors' option
      * @return array<int,string>
      */
     private function ancestorsOptions(): array
@@ -490,7 +490,7 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
                 'path'    => $path,
                 'exclude' => [],
             ];
-            // While there are un-extended paths
+            // While there are unextended paths
             for ($next = current($queue); $next !== false; $next = next($queue)) {
                 // For each family on the path
                 for ($n = count($next['path']) - 2; $n >= 1; $n -= 2) {
