@@ -242,11 +242,13 @@ use Illuminate\Support\Collection;
                 <h4><?= I18N::translate('Map provider') ?></h4>
 
                 <?php if ($declared->isNotEmpty()) : ?>
+                    <p><?= I18N::translate('Your browser loads the maps directly from these servers and sends your IP address to them. This happens only when you open a page containing a map, and only to the server of the map provider that is currently selected.') ?></p>
+
                     <table class="table table-sm w-auto wt-external-endpoints">
                         <thead>
                             <tr>
                                 <th><?= I18N::translate('Service') ?></th>
-                                <th><?= I18N::translate('Operator') ?></th>
+                                <th><?= I18N::translate('Operator') ?> / <?= I18N::translate('Privacy policy') ?></th>
                                 <th><?= I18N::translate('Country') ?></th>
                                 <th><?= I18N::translate('Server') ?></th>
                             </tr>
