@@ -609,18 +609,12 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
     }
 
     public function post(
-        ServerRequestInterface $request,
         Tree $tree,
+        int $ancestors,
+        int $recursion,
         Individual $xref,
         Individual $xref2,
     ): ResponseInterface {
-        // *** Mod: InvokeController sucht zuerst in den Routen-Attributen, und
-        // die Adresse enthaelt ancestors und recursion bereits. Als typisierte
-        // Parameter kaemen hier deshalb immer die alten Werte an, nie die
-        // Auswahl aus dem Formular. Darum ausdruecklich aus dem Body lesen.
-        $ancestors = Validator::parsedBody($request)->integer('ancestors', 0);
-        $recursion = Validator::parsedBody($request)->integer('recursion', 0);
-
         return redirect(route(static::class, [
             'tree'      => $tree->name(),
             'ancestors' => $ancestors,
