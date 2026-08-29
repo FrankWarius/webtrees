@@ -47,13 +47,7 @@ final class NotFound implements RequestHandlerInterface
             return response('', HttpStatusCode::NotFound);
         }
 
-        // *** Mod: Layout und Themes verlangen ein Routen-Attribut - die
-        // Body-Klasse und das Anmelde-Menue lesen es. Bei einer unbekannten
-        // Adresse gibt es keines, deshalb hier ein kuenstliches setzen.
         $request = $request->withAttribute('route', new Route($request->getUri()->getPath(), self::class));
-
-        // *** Mod: ohne Stammbaum-Attribut liefern die Fussmodule eine leere
-        // Zeichenkette und die Fehlerseite haette keinen Fuss.
         $tree_service = Registry::container()->get(TreeService::class);
         $default_tree = $tree_service->all()[Site::getPreference('DEFAULT_GEDCOM')] ?? $tree_service->all()->first();
 
@@ -64,10 +58,6 @@ final class NotFound implements RequestHandlerInterface
         // Need the request to generate a route/error page.
         Registry::container()->set(ServerRequestInterface::class, $request);
 
-        // *** Mod: keine Umleitung auf die Startseite. Unbekannte Adressen
-        // sollen einen Fehlerstatus liefern statt ueber zwei Umleitungen die
-        // teuerste Seite der Installation aufzubauen. Eigener Text, weil die
-        // Vorgabe "You do not have permission to view this page." lautet.
-        throw new HttpNotFoundException(I18N::translate('This page does not exist.'));
+        throw new HttpNotFoundException();
     }
 }
