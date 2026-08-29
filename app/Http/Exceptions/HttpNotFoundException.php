@@ -30,8 +30,9 @@ class HttpNotFoundException extends HttpException
 {
     public function __construct(string|null $message = null)
     {
-        $message ??=
-            I18N::translate('You do not have permission to view this page.');
+        // *** Mod: no home-page link - NotFound sets a tree attribute, so the
+        // header provides the navigation.
+        $message ??= I18N::translate('You do not have permission to view this page.');
 
         parent::__construct($message, HttpStatusCode::NotFound);
     }
