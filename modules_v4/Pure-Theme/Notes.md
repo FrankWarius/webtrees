@@ -1,7 +1,7 @@
 # Pure-Theme — Notizen
 
 Begleittext zu `resources/css/Pure.css`, `resources/css/Patch-23.css` und
-`resources/js/MapScale.js`.
+`resources/js/OsmMapScale.js`.
 Die Stylesheets werden über die Asset-Route öffentlich ausgeliefert, deshalb
 stehen die Begründungen hier und nicht dort.
 
@@ -232,7 +232,7 @@ Adresse eine breitere Spalte, und die Prozentwerte greifen nicht.
 
 ### Maßstabsbalken
 
-`resources/js/MapScale.js`
+`resources/js/OsmMapScale.js`
 
 Hängt an jede Leaflet-Karte einen Maßstabsbalken. Ursprünglich als Diagnosehilfe
 gebaut, um beim Prüfen der Kachelserver die Auflösung ablesen zu können.
