@@ -1535,11 +1535,14 @@ class BadBotBlocker implements MiddlewareInterface
             return $this->response('Not acceptable: no-ua');
         }
 
-        foreach (self::BAD_ROBOTS as $robot) {
-            if (str_contains($ua, $robot)) {
-                return $this->response('Not acceptable: bad-ua');
-            }
-        }
+        // *** Mod: Die Namensliste sperrt nicht mehr. Erkannt wird weiterhin
+        // ueber DNS, ASN und Verhalten; gesperrt wird erst in RobotsTxtBlocker,
+        // und nur bei einem Verstoss gegen robots.txt.
+        // foreach (self::BAD_ROBOTS as $robot) {
+        //     if (str_contains($ua, $robot)) {
+        //         return $this->response('Not acceptable: bad-ua');
+        //     }
+        // }
 
         $validated_bot =  false;
 

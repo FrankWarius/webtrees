@@ -66,6 +66,7 @@ use Fisharebest\Webtrees\Http\Middleware\LoadRoutes;
 use Fisharebest\Webtrees\Http\Middleware\PublicFiles;
 use Fisharebest\Webtrees\Http\Middleware\ReadConfigIni;
 use Fisharebest\Webtrees\Http\Middleware\RegisterGedcomTags;
+use Fisharebest\Webtrees\Http\Middleware\RobotsTxtBlocker;
 use Fisharebest\Webtrees\Http\Middleware\Router;
 use Fisharebest\Webtrees\Http\Middleware\SecurityHeaders;
 use Fisharebest\Webtrees\Http\Middleware\DebugLogger;
@@ -163,7 +164,10 @@ class Webtrees
         ClientIp::class,
         ContentLength::class,
         CompressResponse::class,
-    //  BadBotBlocker::class,
+        BadBotBlocker::class,
+        // *** Mod: sperrt Robots, die gegen robots.txt verstossen. Steht vor
+        // UseDatabase, damit eine abgewiesene Anfrage keine Verbindung aufbaut.
+        RobotsTxtBlocker::class,
         UseDatabase::class,
         DebugLogger::class,
         UpdateDatabaseSchema::class,
