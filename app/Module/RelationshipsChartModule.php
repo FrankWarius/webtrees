@@ -164,7 +164,10 @@ class RelationshipsChartModule extends AbstractModule implements ModuleChartInte
         $tree = $individual->tree();
 
         $default_parameters = [
-            'ancestors' => (int) $tree->getPreference('RELATIONSHIP_ANCESTORS', static::DEFAULT_ANCESTORS),
+            // *** Mod: Einstieg ueber Vorfahren. RELATIONSHIP_ANCESTORS ist eine
+            // Beschraenkung, keine Vorgabe - als Startwert benutzt liefert sie die
+            // teure Suche ueber beliebige Beziehungen. Umstellen geht im Formular.
+            'ancestors' => 1,
             'recursion' => (int) $tree->getPreference('RELATIONSHIP_RECURSION', static::DEFAULT_RECURSION),
         ];
 
