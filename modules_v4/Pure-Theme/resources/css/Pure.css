@@ -38,16 +38,6 @@
   --link-decoration-hover: underline;
 }
 
-/* Wiederholung noetig, siehe Notizen */
-body {
-  font-family: var(--bs-body-font-family);
-  line-height: var(--bs-body-line-height);
-}
-
-[dir] body {
-  margin: 0;
-}
-
 
 /* --- Kopfbereich --------------------------------------------------- */
 header {

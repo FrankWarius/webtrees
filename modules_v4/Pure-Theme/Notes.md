@@ -88,14 +88,16 @@ Leere. Deshalb `url("Asset?asset=fonts%2FInter-Regular.woff2")`.
 wird zu einem festen Betrag berechnet und so vererbt; einheitenlos rechnet jedes
 Element mit seiner eigenen Schriftgröße.
 
-Die Regel `body { font-family; line-height }` wiederholt, was schon in `:root`
-als Bootstrap-Variable steht. Sie ist trotzdem nötig, weil `vendor.min.css`
-beides direkt am `body` setzt und damit Bootstraps variablengesteuerte Regel
-überschreibt.
+Hier standen bis zum 29.08. zwei Gegenmaßnahmen: eine Wiederholung von
+`font-family` und `line-height` am `body`, und `[dir] body { margin: 0 }`. Beide
+richteten sich gegen das Inhalts-Stylesheet von TinyMCE, das global wirkte —
+siehe den früheren Befund S16.
 
-`[dir] body { margin: 0 }` entfernt einen Rand, der aus der Inhalts-CSS von
-TinyMCE stammt und als `[dir] body { margin: 1rem }` global wirkt. Ein einfaches
-`body { margin: 0 }` verliert dagegen, weil `[dir]` eine Klassenstufe zählt.
+Upstream behoben mit **#5442** „TinyMCE global styles are only needed for
+iframes". In `vendor.min.css` steht wieder Bootstraps eigenes
+`[dir] body { … margin: 0 … }`, die globale `body { font-family: -apple-system… }`
+ist verschwunden, und die Zellabstandsregel von TinyMCE greift nur noch
+innerhalb von `.tox`. Beide Regeln sind damit entfallen.
 
 ### Kopfbereich
 
