@@ -232,6 +232,14 @@ th,
   flex-wrap: wrap-reverse;
 }
 
+[dir] .wt-user-menu{
+  margin-left: -0.5rem;
+}
+
+[dir] .wt-user-menu .nav-link {
+    padding: .25rem .5rem;
+}
+
 .wt-page-title {
   font-weight: 650;
 }
