@@ -22,6 +22,7 @@ namespace Fisharebest\Webtrees\Http\Controllers;
 use Exception;
 use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\Contracts\UserInterface;
+use Fisharebest\Webtrees\Enums\HttpStatusCode;
 use Fisharebest\Webtrees\FlashMessages;
 use Fisharebest\Webtrees\Http\ViewResponseTrait;
 use Fisharebest\Webtrees\I18N;
@@ -123,11 +124,11 @@ final class Login
         } catch (Exception $ex) {
             FlashMessages::addMessage($ex->getMessage(), 'danger');
 
-            return redirect(route(self::class, [
-                'tree'     => $tree,
-                'username' => $username,
-                'url'      => $url,
-            ]));
+            // *** Mod: render the login page instead of redirecting to it, and
+            // send a 4xx status. A failed sign-in is then a single line in the
+            // web-server log and can be counted there.
+            return $this->get($tree, $username, $url)
+                ->withStatus(HttpStatusCode::Forbidden->value);
         }
     }
 
