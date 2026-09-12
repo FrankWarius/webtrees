@@ -116,7 +116,7 @@ class RobotsTxtBlocker implements MiddlewareInterface
         }
 
         if ($this->violatesRobotsTxt($request)) {
-            return response('Forbidden: robots-txt', HttpStatusCode::Forbidden);
+            return response('Not acceptable: robots-txt', HttpStatusCode::NotAcceptable);
         }
 
         return $handler->handle($request);

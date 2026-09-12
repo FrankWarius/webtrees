@@ -17,29 +17,21 @@
 
 declare(strict_types=1);
 
-namespace Fisharebest\Webtrees\Enums;
+namespace Fisharebest\Webtrees\Http\Exceptions;
 
-/**
- * HTTP status codes.
- *
- * @see https://www.iana.org/assignments/http-status-codes
- */
-enum HttpStatusCode: int
+use Fisharebest\Webtrees\Enums\HttpStatusCode;
+use Fisharebest\Webtrees\I18N;
+
+class HttpNotAuthorizedException extends HttpException
 {
-    case OK                  = 200;
-    case NoContent           = 204;
-    case MovedPermanently    = 301;
-    case Found               = 302;
-    case TemporaryRedirect   = 307;
-    case PermanentRedirect   = 308;
-    case BadRequest          = 400;
-    case Unauthorized        = 401;
-    case Forbidden           = 403;
-    case NotFound            = 404;
-    case MethodNotAllowed    = 405;
-    case NotAcceptable       = 406;
-    case Gone                = 410;
-    case TooManyRequests     = 429;
-    case InternalServerError = 500;
-    case ServiceUnavailable  = 503;
+    /**
+     * *** Mod: the record exists, but is only visible to signed-in members.
+     * No WWW-Authenticate header - it would open a browser dialog.
+     */
+    public function __construct(string|null $message = null)
+    {
+        $message ??= I18N::translate('You do not have permission to view this page.');
+
+        parent::__construct($message, HttpStatusCode::Unauthorized);
+    }
 }

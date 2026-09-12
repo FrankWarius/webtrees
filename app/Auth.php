@@ -23,6 +23,7 @@ use Fisharebest\Webtrees\Contracts\UserInterface;
 use Fisharebest\Webtrees\Enums\AccessLevel;
 use Fisharebest\Webtrees\Enums\Role;
 use Fisharebest\Webtrees\Http\Exceptions\HttpForbiddenException;
+use Fisharebest\Webtrees\Http\Exceptions\HttpNotAuthorizedException;
 use Fisharebest\Webtrees\Http\Exceptions\HttpNotFoundException;
 use Fisharebest\Webtrees\Module\ModuleInterface;
 use Fisharebest\Webtrees\Services\UserService;
@@ -194,7 +195,9 @@ class Auth
             return $family;
         }
 
-        throw new HttpForbiddenException($message);
+        // *** Mod: 401, not 403 - the record exists and a signed-in member
+        // may see it. Applies to all check*Access() methods below.
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkHeaderAccess(Header|null $header, bool $edit = false): Header
@@ -215,7 +218,7 @@ class Auth
             return $header;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     /**
@@ -243,7 +246,7 @@ class Auth
             return $individual;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkLocationAccess(Location|null $location, bool $edit = false): Location
@@ -264,7 +267,7 @@ class Auth
             return $location;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkMediaAccess(Media|null $media, bool $edit = false): Media
@@ -285,7 +288,7 @@ class Auth
             return $media;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkNoteAccess(Note|null $note, bool $edit = false): Note
@@ -306,7 +309,7 @@ class Auth
             return $note;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkSharedNoteAccess(SharedNote|null $shared_note, bool $edit = false): SharedNote
@@ -327,7 +330,7 @@ class Auth
             return $shared_note;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkRecordAccess(GedcomRecord|null $record, bool $edit = false): GedcomRecord
@@ -348,7 +351,7 @@ class Auth
             return $record;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkRepositoryAccess(Repository|null $repository, bool $edit = false): Repository
@@ -369,7 +372,7 @@ class Auth
             return $repository;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkSourceAccess(Source|null $source, bool $edit = false): Source
@@ -390,7 +393,7 @@ class Auth
             return $source;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkSubmitterAccess(Submitter|null $submitter, bool $edit = false): Submitter
@@ -411,7 +414,7 @@ class Auth
             return $submitter;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function checkSubmissionAccess(Submission|null $submission, bool $edit = false): Submission
@@ -432,7 +435,7 @@ class Auth
             return $submission;
         }
 
-        throw new HttpForbiddenException($message);
+        throw new HttpNotAuthorizedException($message);
     }
 
     public static function canUploadMedia(Tree $tree, UserInterface $user): bool
