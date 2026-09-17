@@ -61,9 +61,8 @@ final class MediaFileThumbnail
         }
 
         if (!$media->canShow()) {
-            // *** Mod: 401, not 403 - see Auth::check*Access().
             throw new ImageException(
-                status_code: HttpStatusCode::Unauthorized,
+                status_code: HttpStatusCode::Forbidden,
                 filename: $xref,
                 error: 'Access denied',
             );
