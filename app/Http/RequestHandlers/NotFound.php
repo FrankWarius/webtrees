@@ -20,16 +20,6 @@ declare(strict_types=1);
 namespace Fisharebest\Webtrees\Http\RequestHandlers;
 
 use LogicException;
-use Fisharebest\Webtrees\Enums\HttpRequestMethod;
-use Fisharebest\Webtrees\Enums\HttpStatusCode;
-use Fisharebest\Webtrees\Http\Controllers\HomePage;
-use Fisharebest\Webtrees\Http\Exceptions\HttpNotFoundException;
-use Fisharebest\Webtrees\Http\Middleware\BadBotBlocker;
-use Fisharebest\Webtrees\Http\Routing\Route;
-use Fisharebest\Webtrees\Registry;
-use Fisharebest\Webtrees\Services\TreeService;
-use Fisharebest\Webtrees\Site;
-use Fisharebest\Webtrees\Tree;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,25 +28,6 @@ final class NotFound implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // *** Mod: robots do not need a rendered error page.
-        if ($request->getAttribute(BadBotBlocker::ROBOT_ATTRIBUTE_NAME) !== null) {
-            return response('', HttpStatusCode::NotFound);
-        }
-
-        // *** Mod: the layout reads a route attribute, and the header needs a
-        // tree. An unknown URL supplies neither.
-        $request = $request->withAttribute('route', new Route($request->getUri()->getPath(), self::class));
-
-        $tree_service = Registry::container()->get(TreeService::class);
-        $default_tree = $tree_service->all()[Site::getPreference('DEFAULT_GEDCOM')] ?? $tree_service->all()->first();
-
-        if ($default_tree instanceof Tree) {
-            $request = $request->withAttribute('tree', $default_tree);
-        }
-
-        // Save this updated request.  We'll need it in the exception handler.
-        Registry::container()->set(ServerRequestInterface::class, $request);
-
         throw new LogicException('Should never get here. The router should handle not-found requests.');
     }
 }

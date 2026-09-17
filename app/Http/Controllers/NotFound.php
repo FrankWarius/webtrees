@@ -19,17 +19,51 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Http\Controllers;
 
+use Fisharebest\Webtrees\Enums\HttpStatusCode;
 use Fisharebest\Webtrees\Http\Exceptions\HttpNotFoundException;
+use Fisharebest\Webtrees\Http\Middleware\BadBotBlocker;
+use Fisharebest\Webtrees\Registry;
+use Fisharebest\Webtrees\Services\TreeService;
+use Fisharebest\Webtrees\Site;
+use Fisharebest\Webtrees\Tree;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+use function response;
 
 final class NotFound
 {
-    public function get(): never
+    public function get(ServerRequestInterface $request): ResponseInterface
     {
-        throw new HttpNotFoundException();
+        return $this->notFound($request);
     }
 
-    public function post(): never
+    public function post(ServerRequestInterface $request): ResponseInterface
     {
+        return $this->notFound($request);
+    }
+
+    /**
+     * *** Mod: robots get an empty response, and the error page needs a tree.
+     */
+    private function notFound(ServerRequestInterface $request): ResponseInterface
+    {
+        if ($request->getAttribute(BadBotBlocker::ROBOT_ATTRIBUTE_NAME) !== null) {
+            return response('', HttpStatusCode::NotFound);
+        }
+
+        // The router only supplies a tree when the route has a {tree} parameter,
+        // and an unknown URL has none. Without it the header has no navigation.
+        $tree_service = Registry::container()->get(TreeService::class);
+        $default_tree = $tree_service->all()[Site::getPreference('DEFAULT_GEDCOM')] ?? $tree_service->all()->first();
+
+        if ($default_tree instanceof Tree) {
+            Registry::container()->set(
+                ServerRequestInterface::class,
+                $request->withAttribute('tree', $default_tree)
+            );
+        }
+
         throw new HttpNotFoundException();
     }
 }
