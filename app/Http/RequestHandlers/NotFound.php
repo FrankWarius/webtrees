@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Http\RequestHandlers;
 
+use LogicException;
 use Fisharebest\Webtrees\Enums\HttpRequestMethod;
 use Fisharebest\Webtrees\Enums\HttpStatusCode;
 use Fisharebest\Webtrees\Http\Controllers\HomePage;
@@ -32,10 +33,6 @@ use Fisharebest\Webtrees\Tree;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-use function redirect;
-use function response;
-use function route;
 
 final class NotFound implements RequestHandlerInterface
 {
@@ -60,6 +57,6 @@ final class NotFound implements RequestHandlerInterface
         // Save this updated request.  We'll need it in the exception handler.
         Registry::container()->set(ServerRequestInterface::class, $request);
 
-        throw new HttpNotFoundException();
+        throw new LogicException('Should never get here. The router should handle not-found requests.');
     }
 }
